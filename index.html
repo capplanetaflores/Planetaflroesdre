@@ -337,6 +337,9 @@ th.ef-th { padding:8px 8px 8px 12px; }
 #dre-detalhe-kpis .kpi { padding:12px 14px; overflow:hidden; }
 #dre-detalhe-kpis .kpi-val { font-size:18px; line-height:1.15; word-break:break-word; }
 #dre-tabela-wrap .dre-row-final td { font-size:12px; }
+#dre-tabela-wrap .dre-row-cat { background:#fafaf9; }
+#dre-tabela-wrap .dre-row-cat td { padding-top:2px; padding-bottom:2px; border-top:none; }
+#dre-tabela-wrap .dre-row-cat:hover { background:#f5f4f2; }
 /* ── Item 4: fonte mais bonita, escopada só ao DRE ── */
 #dre-tabela-wrap .dfc-table { font-family:'Sora',sans-serif; }
 #dre-tabela-wrap .dfc-table td { font-family:'DM Mono',monospace; font-feature-settings:'tnum' 1; letter-spacing:.2px; }
@@ -2021,22 +2024,13 @@ th.ef-th { padding:8px 8px 8px 12px; }
         </div>
       </div>
 
-      <!-- Medidores de Metas do DRE (Venda, CPV, Margem, Lucro) -->
+      <!-- Medidores de Metas do DRE (8: Venda, CPV, Margem, Lucro + 4 Despesas do CPSV) -->
       <div class="card" style="margin-bottom:16px;">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:8px;">
           <div class="card-title" style="margin:0;">🎯 Metas do Mês <span id="metas-gauge-periodo" style="font-weight:400;color:#a8a29e;font-size:12px;"></span></div>
           <button class="btn btn-secondary" style="padding:6px 14px;font-size:12px;" onclick="abrirModalMetasDre()">⚙️ Definir Metas</button>
         </div>
-        <div id="dash-metas-gauges" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;"></div>
-      </div>
-
-      <!-- Medidores extras — Despesas do CPSV (Produtos, Insumos, RH, Manutenções) -->
-      <div class="card" style="margin-bottom:16px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:8px;">
-          <div class="card-title" style="margin:0;">📉 Despesas do CPSV <span style="font-weight:400;color:#a8a29e;font-size:12px;">— meta é teto, quanto menor melhor</span></div>
-          <button class="btn btn-secondary" style="padding:6px 14px;font-size:12px;" onclick="abrirModalMetasDre()">⚙️ Definir Metas</button>
-        </div>
-        <div id="dash-cpsv-gauges" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;"></div>
+        <div id="dash-metas-gauges" style="display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;padding-bottom:4px;"></div>
       </div>
 
       <!-- KPIs r&#225;pidos (Contas a Pagar / Contas a Receber) -->
@@ -2369,7 +2363,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
 <!-- ══ MODAL METAS DO DRE ══ -->
 <div class="modal-overlay" id="modal-metas-dre">
   <div class="modal" style="width:1180px;max-width:96vw;">
-    <div class="modal-title">🎯 Metas do DRE por mês — Venda em R$, demais em %</div>
+    <div class="modal-title">🎯 Metas do DRE por mês — Venda e Despesas do CPSV em R$, demais em %</div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
       <label style="margin:0;font-size:13px;">Ano</label>
       <select id="metas-ano" onchange="montarTabelaMetas()" style="width:120px;"></select>
@@ -2380,7 +2374,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
         <thead><tr>
           <th style="text-align:left;">Mês</th>
           <th>Venda (R$)</th><th>CPV (%)</th><th>Margem Contrib. (%)</th><th>Lucro Líquido (%)</th>
-          <th>Desp. Produtos (%)</th><th>Desp. Insumos (%)</th><th>Desp. RH (%)</th><th>Desp. Manutenções (%)</th>
+          <th>Desp. Produtos (R$)</th><th>Desp. Insumos (R$)</th><th>Desp. RH (R$)</th><th>Desp. Manutenções (R$)</th>
         </tr></thead>
         <tbody id="tabela-metas-dre-body"></tbody>
       </table>
@@ -3781,6 +3775,11 @@ const mesesAbr = ['','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out'
 
 function fmtBRL(v) {
   return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(v||0);
+}
+// Versão compacta (ex.: "R$ 12 mil", "R$ 1,2 mi") — usada dentro do círculo
+// do velocímetro, onde uma moeda completa ("R$ 12.345,67") não cabe.
+function fmtBRLCompacto(v) {
+  return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',notation:'compact',maximumFractionDigits:1}).format(v||0);
 }
 function fmtDate(s) {
   if(!s) return '—';
@@ -6825,7 +6824,7 @@ function speedometerSVG(valFrac, metaFrac, cor, centerText) {
   const metaTick = (metaFrac >= 0 && metaFrac <= 1)
     ? `<line x1="${mx1.toFixed(1)}" y1="${my1.toFixed(1)}" x2="${mx2.toFixed(1)}" y2="${my2.toFixed(1)}" stroke="#1f2937" stroke-width="2.5" stroke-dasharray="2 2"/>`
     : '';
-  return `<svg viewBox="0 0 200 118" style="width:100%;max-width:210px;">
+  return `<svg viewBox="0 0 200 118" style="width:100%;max-width:128px;display:block;">
     <path d="${bg}" fill="none" stroke="#f5f4f2" stroke-width="14" stroke-linecap="round"/>
     <path d="${prog}" fill="none" stroke="${cor}" stroke-width="14" stroke-linecap="round"/>
     ${metaTick}
@@ -6835,8 +6834,9 @@ function speedometerSVG(valFrac, metaFrac, cor, centerText) {
   </svg>`;
 }
 
-// Renderiza os 4 velocímetros conforme o filtro (kpi-ano / kpi-mes) do dashboard.
-// Venda = valor em R$. CPV, Margem e Lucro = percentual do DRE (sobre a Receita).
+// Renderiza os 8 velocímetros (Venda, CPV, Margem, Lucro + as 4 Despesas
+// do CPSV) numa única linha. Venda e as 4 Despesas do CPSV = valor em R$.
+// CPV, Margem e Lucro = percentual do DRE (sobre a Receita).
 function renderMetasGauges() {
   const wrap = document.getElementById('dash-metas-gauges');
   if (!wrap) return;
@@ -6849,6 +6849,8 @@ function renderMetasGauges() {
 
   const real = calcularDreParaMetas(ano);
   const metasAno = dreMetas[ano] || {};
+  // metaDe: valor-alvo em R$ — no modo "ano acumulado" SOMA as metas mensais
+  // (usado por Venda e pelas 4 Despesas do CPSV, agora também em R$).
   const metaDe = (metric) => {
     if (mes) { const mm = metasAno[mes]; return mm ? (parseFloat(mm[metric]) || 0) : 0; }
     let s = 0; for (let m=1;m<=12;m++){ const mm = metasAno[m]; if (mm) s += parseFloat(mm[metric])||0; } return s;
@@ -6861,8 +6863,9 @@ function renderMetasGauges() {
   const lucroReal = realDe(real.lucro);
   const pctDe = (v) => vendaReal ? (v / vendaReal) * 100 : 0; // % sobre a receita
 
-  // metaMedia = para o modo "ano acumulado", metaDe soma; para % isso não faz
-  // sentido, então nesse caso usamos a média das metas mensais preenchidas.
+  // metaPctMedia: valor-alvo em % — no modo "ano acumulado" não faz sentido
+  // somar percentuais, então usamos a média das metas mensais preenchidas.
+  // (usado por CPV, Margem e Lucro, que continuam em %).
   const metaPctMedia = (metric) => {
     if (mes) { const mm = metasAno[mes]; return mm ? (parseFloat(mm[metric])||0) : 0; }
     let s=0, n=0; for (let m=1;m<=12;m++){ const mm=metasAno[m]; if (mm && mm[metric]!=null && mm[metric]!=='') { s+=parseFloat(mm[metric])||0; n++; } }
@@ -6916,62 +6919,40 @@ function renderMetasGauges() {
       rpct.toFixed(1)+'%', meta>0?('meta: '+meta.toFixed(1)+'%'):'meta: <span style="color:#d6d3d1">sem meta</span>',
       'meta é piso (quanto maior, melhor)'));
   }
+  // 5-8) DESPESAS DO CPSV (Produtos, Insumos, RH, Manutenções) — R$
+  // (menor é melhor; meta é teto — mesma ideia do CPV, só que em valor)
+  {
+    const cpsv = calcularDespesasCpsvParaMetas(ano);
+    CPSV_METRICAS.forEach(mt => {
+      const realVal = realDe(cpsv[mt.key]);
+      const meta = metaDe(mt.key);
+      const cor = meta>0 ? (realVal<=meta ? '#16a34a' : '#dc2626') : '#d6d3d1';
+      const max = Math.max(meta*1.6, realVal*1.15, 1);
+      cards.push(cardGauge(mt.titulo,
+        meta>0 ? speedometerSVG(realVal/max, meta/max, cor, fmtBRLCompacto(realVal)) : gaugeVazio(),
+        fmtBRL(realVal), meta>0?('meta: '+fmtBRL(meta)):'meta: <span style="color:#d6d3d1">sem meta</span>',
+        'meta é teto (quanto menor, melhor)'));
+    });
+  }
 
-  wrap.innerHTML = cards.join('');
-  renderCpsvGauges();
-}
-
-// Renderiza os 4 velocímetros extras de Despesas do CPSV. Mesmo padrão do
-// CPV (%): meta é TETO — quanto menor o realizado em relação à meta, melhor
-// (verde = dentro da meta, vermelho = passou da meta).
-function renderCpsvGauges() {
-  const wrap = document.getElementById('dash-cpsv-gauges');
-  if (!wrap) return;
-  const kpiAnoEl = document.getElementById('kpi-ano');
-  const kpiMesEl = document.getElementById('kpi-mes');
-  const ano = parseInt(kpiAnoEl && kpiAnoEl.value) || new Date().getFullYear();
-  const mes = kpiMesEl && kpiMesEl.value ? parseInt(kpiMesEl.value) : null;
-
-  const real = calcularDreParaMetas(ano); // reaproveita a Venda (receita-base) já calculada
-  const cpsv = calcularDespesasCpsvParaMetas(ano);
-  const metasAno = dreMetas[ano] || {};
-  const realDe = (obj) => { if (mes) return obj[mes]||0; let s=0; for (let m=1;m<=12;m++) s += obj[m]||0; return s; };
-  const vendaReal = realDe(real.venda);
-  const pctDe = (v) => vendaReal ? (v / vendaReal) * 100 : 0;
-  const metaPctMedia = (metric) => {
-    if (mes) { const mm = metasAno[mes]; return mm ? (parseFloat(mm[metric])||0) : 0; }
-    let s=0, n=0; for (let m=1;m<=12;m++){ const mm=metasAno[m]; if (mm && mm[metric]!=null && mm[metric]!=='') { s+=parseFloat(mm[metric])||0; n++; } }
-    return n ? s/n : 0;
-  };
-
-  const cards = CPSV_METRICAS.map(mt => {
-    const rpct = pctDe(realDe(cpsv[mt.key]));
-    const meta = metaPctMedia(mt.key);
-    const cor = meta>0 ? (rpct<=meta ? '#16a34a' : '#dc2626') : '#d6d3d1';
-    const max = Math.max(meta*1.6, rpct*1.15, 100);
-    return cardGauge(mt.titulo,
-      meta>0 ? speedometerSVG(rpct/max, meta/max, cor, rpct.toFixed(1)+'%') : gaugeVazioPct(rpct),
-      rpct.toFixed(1)+'%', meta>0?('meta: '+meta.toFixed(1)+'%'):'meta: <span style="color:#d6d3d1">sem meta</span>',
-      'meta é teto (quanto menor, melhor)');
-  });
   wrap.innerHTML = cards.join('');
 }
 function cardGauge(titulo, svg, valorTxt, metaTxt, dica) {
-  return `<div style="background:#fff;border:1px solid #f5f4f2;border-radius:14px;padding:14px 12px;text-align:center;">
-    <div style="font-size:12px;font-weight:700;color:#57534e;margin-bottom:4px;min-height:30px;display:flex;align-items:center;justify-content:center;">${titulo}</div>
+  return `<div style="background:#fff;border:1px solid #f5f4f2;border-radius:12px;padding:8px 6px;text-align:center;flex:1 1 128px;min-width:118px;max-width:150px;">
+    <div style="font-size:10.5px;font-weight:700;color:#57534e;margin-bottom:2px;min-height:22px;display:flex;align-items:center;justify-content:center;line-height:1.15;">${titulo}</div>
     <div style="display:flex;justify-content:center;">${svg}</div>
-    <div style="margin-top:4px;font-family:'DM Mono',monospace;font-size:14px;font-weight:800;color:#1f2937;">${valorTxt}</div>
-    <div style="font-size:11px;color:#a8a29e;margin-top:2px;">${metaTxt}</div>
-    <div style="font-size:10px;color:#a8a29e;margin-top:3px;">${dica}</div>
+    <div style="margin-top:2px;font-family:'DM Mono',monospace;font-size:11.5px;font-weight:800;color:#1f2937;">${valorTxt}</div>
+    <div style="font-size:9.5px;color:#a8a29e;margin-top:1px;">${metaTxt}</div>
+    <div style="font-size:8.5px;color:#a8a29e;margin-top:2px;line-height:1.2;">${dica}</div>
   </div>`;
 }
 function gaugeVazio() {
-  return `<div style="width:100%;max-width:210px;height:118px;display:flex;align-items:center;justify-content:center;color:#d6d3d1;font-size:12px;">Sem meta definida</div>`;
+  return `<div style="width:100%;max-width:128px;height:72px;display:flex;align-items:center;justify-content:center;color:#d6d3d1;font-size:10px;">Sem meta</div>`;
 }
 function gaugeVazioPct(rpct) {
-  return `<div style="width:100%;max-width:210px;height:118px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#a8a29e;">
-    <div style="font-size:24px;font-weight:800;color:#1f2937;font-family:Sora,sans-serif;">${rpct.toFixed(1)}%</div>
-    <div style="font-size:11px;color:#d6d3d1;">sem meta definida</div></div>`;
+  return `<div style="width:100%;max-width:128px;height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#a8a29e;">
+    <div style="font-size:18px;font-weight:800;color:#1f2937;font-family:Sora,sans-serif;">${rpct.toFixed(1)}%</div>
+    <div style="font-size:9px;color:#d6d3d1;">sem meta</div></div>`;
 }
 
 // ── Modal de cadastro de metas ──
@@ -6997,7 +6978,7 @@ function montarTabelaMetas() {
   for (let m=1;m<=12;m++){
     const mm = metasAno[m] || {};
     const inp = (metric, ph) => `<td style="padding:2px 4px"><input type="text" inputmode="decimal" id="meta-${metric}-${m}" value="${fmtContabil(mm[metric])}" placeholder="${ph}" style="width:100%;min-width:90px;text-align:right;font-family:'DM Mono',monospace;font-size:12px;padding:5px 7px;border:1px solid #e7e5e4;border-radius:6px;" /></td>`;
-    html += `<tr><td style="text-align:left;font-family:'Sora',sans-serif;font-weight:600;">${meses[m]}</td>${inp('venda','0,00')}${inp('cpv','0,0')}${inp('mc','0,0')}${inp('lucro','0,0')}${inp('desp_prod','0,0')}${inp('desp_insumo','0,0')}${inp('desp_rh','0,0')}${inp('desp_manut','0,0')}</tr>`;
+    html += `<tr><td style="text-align:left;font-family:'Sora',sans-serif;font-weight:600;">${meses[m]}</td>${inp('venda','0,00')}${inp('cpv','0,0')}${inp('mc','0,0')}${inp('lucro','0,0')}${inp('desp_prod','0,00')}${inp('desp_insumo','0,00')}${inp('desp_rh','0,00')}${inp('desp_manut','0,00')}</tr>`;
   }
   tb.innerHTML = html;
 }
@@ -9629,6 +9610,16 @@ async function setVarEstoque(mes, rawValor) {
   renderDre();
 }
 
+// Mostra/oculta as linhas de categoria de um grupo do DRE (clique na setinha
+// ao lado do nome do grupo). Preferência não é salva — reabre expandido.
+function toggleDreCategorias(grupoId, el) {
+  const rows = document.querySelectorAll('tr[data-cat-grupo="' + grupoId + '"]');
+  if (!rows.length) return;
+  const oculto = rows[0].style.display === 'none';
+  rows.forEach(r => { r.style.display = oculto ? '' : 'none'; });
+  if (el) el.textContent = oculto ? '▾' : '▸';
+}
+
 function renderDre() {
   const ano = parseInt(document.getElementById('dre-ano').value);
   const somenteClassificados = document.getElementById('dre-somente-classificados').checked;
@@ -9654,6 +9645,11 @@ function renderDre() {
   const valoresMes = {};
   for (let m = 1; m <= 12; m++) { valoresMes[m] = {}; gruposValor.forEach(g => valoresMes[m][g.id] = 0); }
 
+  // valoresCatMes[mes][catId] = valor bruto lançado POR CATEGORIA (para exibir
+  // o detalhamento por categoria dentro de cada grupo do DRE).
+  const valoresCatMes = {};
+  for (let m = 1; m <= 12; m++) { valoresCatMes[m] = {}; db.dfc_cats.forEach(c => valoresCatMes[m][c.id] = 0); }
+
   // itensMes[mes][grupoId] = lista dos lançamentos que compõem o valor (para o drill-down por clique)
   const itensMes = {};
   for (let m = 1; m <= 12; m++) { itensMes[m] = {}; gruposValor.forEach(g => itensMes[m][g.id] = []); }
@@ -9678,10 +9674,11 @@ function renderDre() {
     if (!grupoId && !somenteClassificados) grupoId = grupoBaseId;
     if (grupoId && valoresMes[m][grupoId] !== undefined) {
       valoresMes[m][grupoId] += (l.valor || 0);
+      if (catId && valoresCatMes[m][catId] !== undefined) valoresCatMes[m][catId] += (l.valor || 0);
       itensMes[m][grupoId].push({
         tipo: 'receber', data: dtRef, nome: getClienteNome(l.cliente),
         prod: l.prod ? getProdVendaNome(l.prod) : '', valor: l.valor || 0,
-        status: l.recebido === 'sim' ? 'Recebido' : 'A Receber'
+        status: l.recebido === 'sim' ? 'Recebido' : 'A Receber', catId: catId || null
       });
     }
   });
@@ -9699,10 +9696,11 @@ function renderDre() {
     const grupoId = catId ? getDreCatGrupo(catId) : null;
     if (grupoId && valoresMes[m][grupoId] !== undefined) {
       valoresMes[m][grupoId] += (l.valor || 0);
+      if (catId && valoresCatMes[m][catId] !== undefined) valoresCatMes[m][catId] += (l.valor || 0);
       itensMes[m][grupoId].push({
         tipo: 'pagar', data: dtRef, nome: getFornNome(l.forn),
         prod: l.prod ? getProdNome(l.prod) : '', valor: l.valor || 0,
-        status: l.pago === 'sim' ? 'Pago' : 'A Pagar'
+        status: l.pago === 'sim' ? 'Pago' : 'A Pagar', catId: catId || null
       });
     }
   });
@@ -9781,6 +9779,13 @@ function renderDre() {
 
   const mesesHeader = mesesVisiveis.map(m => `<th>${MESES_ABR[m]}</th>`).join('') + '<th class="dfc-col-total">DRE Acumulada</th>';
 
+  // Soma bruta de uma CATEGORIA (não do grupo inteiro) — usada nas linhas de
+  // detalhamento por categoria dentro de cada grupo do DRE.
+  const catBruto = (catId, col) => {
+    if (col === 'total') { let s = 0; mesesVisiveis.forEach(m => s += (valoresCatMes[m][catId] || 0)); return s; }
+    return valoresCatMes[col][catId] || 0;
+  };
+
   const linhaValor = (g, cls, clicavel) => {
     const cells = mesesVisiveis.map(mes => {
       const v = linhaCalc[g.id][mes];
@@ -9793,7 +9798,52 @@ function renderDre() {
     const totalCell = (clicavel && Math.abs(totalVal) >= 0.005)
       ? `<td class="dfc-col-total dre-cell-click" onclick="abrirDetalheDreGrupo('${g.id}','total')" title="Ver lançamentos desta conta">${fmtDreVal(totalVal)}</td>`
       : `<td class="dfc-col-total">${fmtDreVal(totalVal)}</td>`;
-    return `<tr class="${cls}"><td>${g.nome}</td>${cells}${totalCell}</tr>`;
+    const temCats = clicavel && db.dfc_cats.some(c => c.grupo === g.id);
+    const nomeCell = temCats
+      ? `<span class="dre-cat-toggle" onclick="toggleDreCategorias('${g.id}', this)" title="Mostrar/ocultar categorias" style="cursor:pointer;display:inline-block;width:13px;color:#a8a29e;user-select:none;">▾</span>${g.nome}`
+      : g.nome;
+    return `<tr class="${cls}"><td>${nomeCell}</td>${cells}${totalCell}</tr>`;
+  };
+
+  // Linha de UMA categoria dentro de um grupo (indentada, fonte menor).
+  // O sinal (+/−) segue o tipo do grupo-pai, igual à linha do grupo.
+  const linhaCategoria = (c, parentG) => {
+    const sinal = parentG.tipo === 'entrada' ? 1 : -1;
+    const cells = mesesVisiveis.map(mes => {
+      const v = sinal * catBruto(c.id, mes);
+      if (Math.abs(v) >= 0.005) {
+        return `<td class="dre-cell-click" onclick="abrirDetalheDreGrupo('${parentG.id}',${mes},'${c.id}')" title="Ver lançamentos desta categoria">${fmtDreVal(v)}</td>`;
+      }
+      return `<td>${fmtDreVal(v)}</td>`;
+    }).join('');
+    const totalVal = sinal * catBruto(c.id, 'total');
+    const totalCell = Math.abs(totalVal) >= 0.005
+      ? `<td class="dfc-col-total dre-cell-click" onclick="abrirDetalheDreGrupo('${parentG.id}','total','${c.id}')" title="Ver lançamentos desta categoria">${fmtDreVal(totalVal)}</td>`
+      : `<td class="dfc-col-total">${fmtDreVal(totalVal)}</td>`;
+    return `<tr class="dre-row-cat" data-cat-grupo="${parentG.id}"><td style="padding-left:26px;font-weight:400;color:#78716c;font-size:10.5px;">↳ ${c.nome}</td>${cells}${totalCell}</tr>`;
+  };
+
+  // Linha "(Sem categoria)" — sobra entre o total do grupo e a soma das
+  // categorias conhecidas (ex.: vendas antigas sem categoria marcada), só
+  // aparece quando existe alguma diferença, pra o detalhamento sempre bater.
+  const linhaSemCategoria = (parentG, catsDoGrupo) => {
+    const sinal = parentG.tipo === 'entrada' ? 1 : -1;
+    const somaCatsCol = (col) => catsDoGrupo.reduce((s, c) => s + catBruto(c.id, col), 0);
+    const restoCol = (col) => valorBruto(parentG.id, col) - somaCatsCol(col);
+    const temResto = mesesVisiveis.some(m => Math.abs(restoCol(m)) >= 0.005) || Math.abs(restoCol('total')) >= 0.005;
+    if (!temResto) return '';
+    const cells = mesesVisiveis.map(mes => {
+      const v = sinal * restoCol(mes);
+      if (Math.abs(v) >= 0.005) {
+        return `<td class="dre-cell-click" onclick="abrirDetalheDreGrupo('${parentG.id}',${mes},'__sem_categoria__')" title="Ver lançamentos sem categoria">${fmtDreVal(v)}</td>`;
+      }
+      return `<td>${fmtDreVal(v)}</td>`;
+    }).join('');
+    const totalVal = sinal * restoCol('total');
+    const totalCell = Math.abs(totalVal) >= 0.005
+      ? `<td class="dfc-col-total dre-cell-click" onclick="abrirDetalheDreGrupo('${parentG.id}','total','__sem_categoria__')" title="Ver lançamentos sem categoria">${fmtDreVal(totalVal)}</td>`
+      : `<td class="dfc-col-total">${fmtDreVal(totalVal)}</td>`;
+    return `<tr class="dre-row-cat" data-cat-grupo="${parentG.id}"><td style="padding-left:26px;font-weight:400;font-style:italic;color:#a8a29e;font-size:10.5px;">↳ (Sem categoria)</td>${cells}${totalCell}</tr>`;
   };
   const linhaPercentual = (g) => {
     const cells = mesesVisiveis.map(mes => `<td>${fmtDrePercent(linhaCalc[g.id][mes])}</td>`).join('');
@@ -9832,7 +9882,10 @@ function renderDre() {
       if (g.id === ultimoSubtotalId) return linhaFinal(g, 'dre-row-final');
       return linhaValor(g, 'dre-row-subtotal', false);
     }
-    return linhaValor(g, 'dfc-row-sub', true);
+    const linhaPrincipal = linhaValor(g, 'dfc-row-sub', true);
+    const catsDoGrupo = db.dfc_cats.filter(c => c.grupo === g.id);
+    if (!catsDoGrupo.length) return linhaPrincipal;
+    return linhaPrincipal + catsDoGrupo.map(c => linhaCategoria(c, g)).join('') + linhaSemCategoria(g, catsDoGrupo);
   }).join('');
 
   // ── Ponto de Equilíbrio (R$) = Custos Fixos ÷ (Margem de Contribuição ÷ Receita)
@@ -10193,10 +10246,14 @@ function fmtDrePercent(v) {
 
 // Drill-down: clique em um valor do DRE abre o detalhe dos lançamentos
 // que compõem aquele número (mes = 1..12 ou 'total' para o ano inteiro).
-function abrirDetalheDreGrupo(grupoId, mes) {
+function abrirDetalheDreGrupo(grupoId, mes, catId) {
   if (!_dreItensCache) return;
   const grupo = db.dre_grupos.find(g => g.id === grupoId);
-  const nomeGrupo = grupo ? grupo.nome : 'Conta';
+  let nomeGrupo = grupo ? grupo.nome : 'Conta';
+  if (catId) {
+    if (catId === '__sem_categoria__') nomeGrupo += ' — (Sem categoria)';
+    else { const c = db.dfc_cats.find(x => x.id === catId); if (c) nomeGrupo += ' — ' + c.nome; }
+  }
 
   let itens = [];
   let periodoTxt = '';
@@ -10206,6 +10263,9 @@ function abrirDetalheDreGrupo(grupoId, mes) {
   } else {
     itens = _dreItensCache[mes][grupoId] || [];
     periodoTxt = `${meses[mes]} / ${_dreAnoCache}`;
+  }
+  if (catId) {
+    itens = itens.filter(it => catId === '__sem_categoria__' ? !it.catId : it.catId === catId);
   }
   itens = [...itens].sort((a, b) => (a.data || '').localeCompare(b.data || ''));
 
