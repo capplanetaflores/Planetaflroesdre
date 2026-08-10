@@ -2030,6 +2030,15 @@ th.ef-th { padding:8px 8px 8px 12px; }
         <div id="dash-metas-gauges" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;"></div>
       </div>
 
+      <!-- Medidores extras — Despesas do CPSV (Produtos, Insumos, RH, Manutenções) -->
+      <div class="card" style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:8px;">
+          <div class="card-title" style="margin:0;">📉 Despesas do CPSV <span style="font-weight:400;color:#a8a29e;font-size:12px;">— meta é teto, quanto menor melhor</span></div>
+          <button class="btn btn-secondary" style="padding:6px 14px;font-size:12px;" onclick="abrirModalMetasDre()">⚙️ Definir Metas</button>
+        </div>
+        <div id="dash-cpsv-gauges" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;"></div>
+      </div>
+
       <!-- KPIs r&#225;pidos (Contas a Pagar / Contas a Receber) -->
       <div class="grid4" id="dash-kpis-top" style="margin-bottom:20px;"></div>
 
@@ -2359,7 +2368,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
 
 <!-- ══ MODAL METAS DO DRE ══ -->
 <div class="modal-overlay" id="modal-metas-dre">
-  <div class="modal" style="width:820px;">
+  <div class="modal" style="width:1180px;max-width:96vw;">
     <div class="modal-title">🎯 Metas do DRE por mês — Venda em R$, demais em %</div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
       <label style="margin:0;font-size:13px;">Ano</label>
@@ -2371,6 +2380,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
         <thead><tr>
           <th style="text-align:left;">Mês</th>
           <th>Venda (R$)</th><th>CPV (%)</th><th>Margem Contrib. (%)</th><th>Lucro Líquido (%)</th>
+          <th>Desp. Produtos (%)</th><th>Desp. Insumos (%)</th><th>Desp. RH (%)</th><th>Desp. Manutenções (%)</th>
         </tr></thead>
         <tbody id="tabela-metas-dre-body"></tbody>
       </table>
@@ -5840,7 +5850,7 @@ async function gerarBackupCompleto() {
 
   const conteudo = { geradoEm: agora.toISOString(), ...dados };
   const jsonString = JSON.stringify(conteudo, null, 2);
-  const nomeArquivo = `backup-autocenter-${dataStr}.json`;
+  const nomeArquivo = `backup-planetaflores-${dataStr}.json`;
 
   baixarBackupLocal(nomeArquivo, jsonString);
 
@@ -6682,6 +6692,52 @@ function getSubtotalMargemId() {
   return g ? g.id : null;
 }
 
+// Encontra uma Categoria (dfc_categorias) pelo nome, usando trechos que
+// precisam aparecer todos no nome normalizado (sem acento/maiúsculas).
+// Usado pelos velocímetros extras de Despesas do CPSV (produtos, insumos,
+// RH, manutenções) — assim eles funcionam mesmo sem guardar o id fixo.
+function getDfcCatIdPorNome(termos) {
+  const c = db.dfc_cats.find(c => {
+    const n = normText(c.nome || '');
+    return termos.every(t => n.includes(t));
+  });
+  return c ? c.id : null;
+}
+
+// ── VELOCÍMETROS EXTRAS — DESPESAS DO CPSV (Produtos, Insumos, RH, Manutenções) ──
+// Mesma lógica do CPV: % sobre a Receita, meta é TETO (quanto menor, melhor).
+// As 4 categorias são localizadas pelo nome (cadastradas em DFC/DRE → Categorias),
+// dentro do grupo "Custo do Produto e Serviço Vendido – CPSV".
+const CPSV_METRICAS = [
+  { key: 'desp_prod',  titulo: 'Despesas c/ Produtos (%)',    termos: ['despesa', 'produto'] },
+  { key: 'desp_insumo',titulo: 'Despesas c/ Insumos (%)',     termos: ['despesa', 'insumo'] },
+  { key: 'desp_rh',    titulo: 'Despesas c/ RH (%)',          termos: ['despesa', 'rh'] },
+  { key: 'desp_manut', titulo: 'Despesas c/ Manutenções (%)', termos: ['despesa', 'manutenc'] }
+];
+
+// Calcula, para cada mês do ano, o valor REALIZADO (R$) de cada uma das 4
+// categorias de despesa do CPSV — somando os lançamentos (Contas a Pagar)
+// cuja categoria (direta, ou herdada do produto) seja a categoria alvo.
+function calcularDespesasCpsvParaMetas(ano) {
+  const out = {};
+  CPSV_METRICAS.forEach(m => { out[m.key] = {}; for (let mes=1; mes<=12; mes++) out[m.key][mes] = 0; });
+  if (!ano) return out;
+  const idsAlvo = {};
+  CPSV_METRICAS.forEach(m => { idsAlvo[m.key] = getDfcCatIdPorNome(m.termos); });
+  db.lancamentos.forEach(l => {
+    const dtRef = l.dtcompra; if (!dtRef) return;
+    const p = dtRef.split('-'); if (parseInt(p[0]) !== ano) return;
+    const m = parseInt(p[1]);
+    const prodObj = db.produtos.find(x => x.id === l.prod);
+    const catId = l.cat_dre || (prodObj ? prodObj.cat : null);
+    if (!catId) return;
+    CPSV_METRICAS.forEach(mt => {
+      if (idsAlvo[mt.key] && catId === idsAlvo[mt.key]) out[mt.key][m] += (l.valor || 0);
+    });
+  });
+  return out;
+}
+
 // Calcula, para cada mês do ano, o REALIZADO de Venda, CPV, Margem de
 // Contribuição e Lucro Líquido — seguindo exatamente a mesma lógica do DRE
 // (inclusive a variação de estoque somada ao CPV).
@@ -6862,6 +6918,43 @@ function renderMetasGauges() {
   }
 
   wrap.innerHTML = cards.join('');
+  renderCpsvGauges();
+}
+
+// Renderiza os 4 velocímetros extras de Despesas do CPSV. Mesmo padrão do
+// CPV (%): meta é TETO — quanto menor o realizado em relação à meta, melhor
+// (verde = dentro da meta, vermelho = passou da meta).
+function renderCpsvGauges() {
+  const wrap = document.getElementById('dash-cpsv-gauges');
+  if (!wrap) return;
+  const kpiAnoEl = document.getElementById('kpi-ano');
+  const kpiMesEl = document.getElementById('kpi-mes');
+  const ano = parseInt(kpiAnoEl && kpiAnoEl.value) || new Date().getFullYear();
+  const mes = kpiMesEl && kpiMesEl.value ? parseInt(kpiMesEl.value) : null;
+
+  const real = calcularDreParaMetas(ano); // reaproveita a Venda (receita-base) já calculada
+  const cpsv = calcularDespesasCpsvParaMetas(ano);
+  const metasAno = dreMetas[ano] || {};
+  const realDe = (obj) => { if (mes) return obj[mes]||0; let s=0; for (let m=1;m<=12;m++) s += obj[m]||0; return s; };
+  const vendaReal = realDe(real.venda);
+  const pctDe = (v) => vendaReal ? (v / vendaReal) * 100 : 0;
+  const metaPctMedia = (metric) => {
+    if (mes) { const mm = metasAno[mes]; return mm ? (parseFloat(mm[metric])||0) : 0; }
+    let s=0, n=0; for (let m=1;m<=12;m++){ const mm=metasAno[m]; if (mm && mm[metric]!=null && mm[metric]!=='') { s+=parseFloat(mm[metric])||0; n++; } }
+    return n ? s/n : 0;
+  };
+
+  const cards = CPSV_METRICAS.map(mt => {
+    const rpct = pctDe(realDe(cpsv[mt.key]));
+    const meta = metaPctMedia(mt.key);
+    const cor = meta>0 ? (rpct<=meta ? '#16a34a' : '#dc2626') : '#d6d3d1';
+    const max = Math.max(meta*1.6, rpct*1.15, 100);
+    return cardGauge(mt.titulo,
+      meta>0 ? speedometerSVG(rpct/max, meta/max, cor, rpct.toFixed(1)+'%') : gaugeVazioPct(rpct),
+      rpct.toFixed(1)+'%', meta>0?('meta: '+meta.toFixed(1)+'%'):'meta: <span style="color:#d6d3d1">sem meta</span>',
+      'meta é teto (quanto menor, melhor)');
+  });
+  wrap.innerHTML = cards.join('');
 }
 function cardGauge(titulo, svg, valorTxt, metaTxt, dica) {
   return `<div style="background:#fff;border:1px solid #f5f4f2;border-radius:14px;padding:14px 12px;text-align:center;">
@@ -6904,7 +6997,7 @@ function montarTabelaMetas() {
   for (let m=1;m<=12;m++){
     const mm = metasAno[m] || {};
     const inp = (metric, ph) => `<td style="padding:2px 4px"><input type="text" inputmode="decimal" id="meta-${metric}-${m}" value="${fmtContabil(mm[metric])}" placeholder="${ph}" style="width:100%;min-width:90px;text-align:right;font-family:'DM Mono',monospace;font-size:12px;padding:5px 7px;border:1px solid #e7e5e4;border-radius:6px;" /></td>`;
-    html += `<tr><td style="text-align:left;font-family:'Sora',sans-serif;font-weight:600;">${meses[m]}</td>${inp('venda','0,00')}${inp('cpv','0,0')}${inp('mc','0,0')}${inp('lucro','0,0')}</tr>`;
+    html += `<tr><td style="text-align:left;font-family:'Sora',sans-serif;font-weight:600;">${meses[m]}</td>${inp('venda','0,00')}${inp('cpv','0,0')}${inp('mc','0,0')}${inp('lucro','0,0')}${inp('desp_prod','0,0')}${inp('desp_insumo','0,0')}${inp('desp_rh','0,0')}${inp('desp_manut','0,0')}</tr>`;
   }
   tb.innerHTML = html;
 }
@@ -6913,7 +7006,7 @@ async function salvarMetasDre() {
   if (!dreMetas[ano]) dreMetas[ano] = {};
   for (let m=1;m<=12;m++){
     const obj = {};
-    ['venda','cpv','mc','lucro'].forEach(metric => {
+    ['venda','cpv','mc','lucro','desp_prod','desp_insumo','desp_rh','desp_manut'].forEach(metric => {
       const v = parseContabil(document.getElementById(`meta-${metric}-${m}`).value);
       if (v) obj[metric] = v;
     });
