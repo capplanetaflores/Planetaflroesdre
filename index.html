@@ -3263,9 +3263,11 @@ async function sbFetch(table, method='GET', body=null, params='') {
   // [OTIMIZADO] Qualquer gravação invalida os índices e o cache de parcelas.
   if (method !== 'GET' && typeof bumpDbVer === 'function') bumpDbVer();
   try {
+    window.SB_ULTIMO_ERRO = null;
     const res = await fetch(url, opts);
     if (!res.ok) {
       const err = await res.text();
+      window.SB_ULTIMO_ERRO = { table, method, status: res.status, detalhe: err };
       console.error(`[477] sbFetch ${method} ${table} erro ${res.status}:`, err);
       // Exibe no console de forma destacada para facilitar diagnóstico
       console.warn(`[477] Dado NÃO salvo no banco! Tabela: ${table} | Status: ${res.status} | Detalhe:`, err);
@@ -3275,9 +3277,46 @@ async function sbFetch(table, method='GET', body=null, params='') {
     const text = await res.text();
     return text ? JSON.parse(text) : [];
   } catch(e) {
+    window.SB_ULTIMO_ERRO = { table, method, status: 0, detalhe: (e && e.message) || String(e) };
     console.error(`sbFetch ${method} ${table} exceção:`, e);
     return null;
   }
+}
+
+// ── Diagnóstico legível do último erro do Supabase ──
+// Transforma o retorno cru da API em uma explicação em português,
+// para o usuário não precisar abrir o console do navegador.
+function sbErroDetalhe() {
+  const e = window.SB_ULTIMO_ERRO;
+  if (!e) return '';
+  let msg = '', dica = '';
+  try {
+    const j = JSON.parse(e.detalhe);
+    msg = j.message || j.msg || j.error || j.hint || e.detalhe;
+  } catch(_) { msg = e.detalhe || ''; }
+  const txt = (msg || '').toLowerCase();
+
+  if (e.status === 0) {
+    dica = 'Sem resposta do servidor — verifique sua conexão com a internet.';
+  } else if (e.status === 404 || txt.includes('does not exist') || txt.includes('not find the table')) {
+    dica = `A tabela "${e.table}" NÃO existe no banco. Crie-a no SQL Editor do Supabase.`;
+  } else if (txt.includes('row-level security') || txt.includes('row level security')) {
+    dica = `A tabela "${e.table}" existe, mas o RLS está bloqueando. Falta uma policy de ${e.method === 'POST' ? 'INSERT' : e.method} para usuários autenticados.`;
+  } else if (e.status === 401 || txt.includes('jwt')) {
+    dica = 'Sessão expirada ou inválida. Saia e entre novamente no sistema.';
+  } else if (e.status === 403) {
+    dica = `Permissão negada na tabela "${e.table}". Verifique as policies de RLS e o GRANT.`;
+  } else if (txt.includes('column') && (txt.includes('does not exist') || txt.includes('of relation'))) {
+    dica = `Uma coluna enviada não existe na tabela "${e.table}". Confira os nomes das colunas.`;
+  } else if (txt.includes('duplicate key')) {
+    dica = 'Já existe um registro com essa chave (id duplicado).';
+  } else if (txt.includes('violates not-null')) {
+    dica = 'Um campo obrigatório da tabela ficou vazio.';
+  } else if (txt.includes('invalid input syntax')) {
+    dica = 'Tipo de dado incompatível com a coluna (ex.: coluna uuid recebendo texto comum).';
+  }
+
+  return `\n\n▸ Status HTTP: ${e.status}\n▸ Mensagem: ${msg || '(sem detalhe)'}${dica ? '\n▸ Provável causa: ' + dica : ''}`;
 }
 
 // [OTIMIZADO] versão dos dados em memória (usada pelos índices e caches)
@@ -3914,7 +3953,7 @@ async function saveFornecedor() {
     cat: document.getElementById('f-cat').value,
     obs: document.getElementById('f-obs').value };
   const result = await sbFetch('fornecedores', 'POST', rec);
-  if(!result) { alert('\u274c Erro ao salvar fornecedor. Verifique sua conex\u00e3o e tente novamente.'); return; }
+  if(!result) { alert('\u274c Erro ao salvar fornecedor.' + sbErroDetalhe()); return; }
   db.fornecedores.push(rec);
   clearFornecedor(); renderFornecedores(); populateFornSelects(); fecharFormModalSeAberto('form-forn');
 }
@@ -4022,7 +4061,7 @@ async function saveProduto() {
     preco: parseFloat(document.getElementById('p-preco').value)||0,
     obs: document.getElementById('p-obs').value };
   const rP = await sbFetch('produtos', 'POST', recP);
-  if(!rP) { alert('❌ Erro ao salvar produto. Verifique sua conexão e tente novamente.'); return; }
+  if(!rP) { alert('❌ Erro ao salvar produto.' + sbErroDetalhe()); return; }
   db.produtos.push(recP);
   clearProduto(); renderProdutos(); populateProdSelects();
   closeModal('modal-novo-prod');
@@ -4325,7 +4364,7 @@ async function salvarCadastroRapido() {
   }
 
   const ok = await sbFetch(cfg.tabela, 'POST', rec);
-  if (!ok) { alert('❌ Erro ao salvar. Verifique sua conexão e tente novamente.'); return; }
+  if (!ok) { alert('❌ Erro ao salvar.' + sbErroDetalhe()); return; }
   db[cfg.lista].push(rec);
 
   // Recarrega os selects e as listas afetadas
@@ -4615,7 +4654,7 @@ async function saveLancamento() {
     parcela_datas: parcelas > 1 ? buildParcelaDatasPayload('l-parcela-dates', parcelas) : null
   };
   const rL = await sbFetch('lancamentos', 'POST', lanc);
-  if(!rL) { alert('❌ Erro ao salvar lançamento. Verifique sua conexão e tente novamente.'); return; }
+  if(!rL) { alert('❌ Erro ao salvar lançamento.' + sbErroDetalhe()); return; }
   db.lancamentos.push(lanc);
   clearLancamento(); closeModal('modal-novo-lanc'); renderLancamentos(); renderApagar(); renderPagas(); populateYearSelects();
 }
@@ -5919,7 +5958,7 @@ async function salvarCategoriaPago() {
   const l = db.lancamentos.find(x => x.id === lancId);
   if (!l) { closeModal('modal-editar-categoria-pago'); return; }
   const res = await sbFetch('lancamentos', 'PATCH', { cat_dre: catId }, `?id=eq.${lancId}`);
-  if (!res) { alert('❌ Erro ao salvar categoria.'); return; }
+  if (!res) { alert('❌ Erro ao salvar categoria.' + sbErroDetalhe()); return; }
   l.cat_dre = catId;
   closeModal('modal-editar-categoria-pago');
   renderPagas(); renderApagar(); renderLancamentos();
@@ -7852,7 +7891,7 @@ async function saveCliente() {
     cat: document.getElementById('cl-cat').value,
     obs: document.getElementById('cl-obs').value };
   const rCl = await sbFetch('clientes','POST',rec);
-  if(!rCl) { alert('❌ Erro ao salvar cliente. Verifique sua conexão e tente novamente.'); return; }
+  if(!rCl) { alert('❌ Erro ao salvar cliente.' + sbErroDetalhe()); return; }
   db.clientes.push(rec);
   clearCliente(); renderClientes(); populateClienteSelects(); fecharFormModalSeAberto('form-cli');
 }
@@ -7930,7 +7969,7 @@ async function saveProdVenda() {
     preco:parseFloat(document.getElementById('pv-preco').value)||0,
     obs:document.getElementById('pv-obs').value };
   const rPV = await sbFetch('prodvenda','POST',rec);
-  if(!rPV) { alert('❌ Erro ao salvar produto de venda. Verifique sua conexão e tente novamente.'); return; }
+  if(!rPV) { alert('❌ Erro ao salvar produto de venda.' + sbErroDetalhe()); return; }
   db.prodvenda.push(rec);
   clearProdVenda(); renderProdVenda(); populateProdVendaSelects();
   closeModal('modal-novo-pv');
@@ -8029,7 +8068,7 @@ async function saveLancReceber() {
     obs:document.getElementById('lr-obs').value,
     parcela_datas: parcelas > 1 ? buildParcelaDatasPayload('lr-parcela-dates', parcelas) : null };
   const rLR = await sbFetch('lancreceber','POST',lanc);
-  if(!rLR) { alert('❌ Erro ao salvar lançamento. Verifique sua conexão e tente novamente.'); return; }
+  if(!rLR) { alert('❌ Erro ao salvar lançamento.' + sbErroDetalhe()); return; }
   db.lancreceber.push(lanc);
   clearLancReceber(); closeModal('modal-novo-lr'); renderLancReceber(); renderAReceber(); renderRecebido();
   populateYearSelectsReceber(); renderDashboard();
@@ -9116,7 +9155,7 @@ async function saveDreGrupo() {
     ordem: parseInt(document.getElementById('dre-grp-ordem').value) || (db.dre_grupos.length + 1),
     obs: document.getElementById('dre-grp-obs').value };
   const res = await sbFetch('dre_grupos', 'POST', rec);
-  if (!res) { alert('❌ Erro ao salvar grupo. Verifique se a tabela "dre_grupos" existe no Supabase.'); return; }
+  if (!res) { alert('❌ Erro ao salvar grupo.' + sbErroDetalhe()); return; }
   db.dre_grupos.push(rec);
   db.dre_grupos.sort((a,b) => (a.ordem||0) - (b.ordem||0));
   // Classe do custo (Fixo/Variável) — só para grupos de Saída
@@ -10687,7 +10726,7 @@ async function saveBanco() {
     saldo_inicial: parseFloat(document.getElementById('bnk-saldo').value)||0,
     obs:    document.getElementById('bnk-obs').value };
   const res = await sbFetch('bancos','POST',rec);
-  if (!res) { alert('Erro ao salvar! Verifique se a tabela "bancos" existe no Supabase e o RLS está configurado.'); return; }
+  if (!res) { alert('❌ Erro ao salvar a conta/banco.' + sbErroDetalhe()); return; }
   db.bancos.push(rec);
   clearBanco(); renderBancos(); populateBancoSelects(); renderFluxoBancoDiario(); renderDashboard(); fecharFormModalSeAberto('form-bnk');
 }
@@ -10786,7 +10825,7 @@ async function saveTransferencia() {
   // entre as empresas — por isso não é vinculada a nenhuma empresa.
   const rec = { id: uid(), data, origem, destino, valor, obs: obs || '' };
   const res = await sbFetch('transferencias', 'POST', rec);
-  if (!res) { alert('Erro ao salvar! Verifique se a tabela "transferencias" existe no Supabase e o RLS está configurado.'); return; }
+  if (!res) { alert('❌ Erro ao salvar a transferência.' + sbErroDetalhe()); return; }
   db.transferencias.push(rec);
   clearTransferencia();
   renderTransferencias(); renderBancos(); renderFluxoBancoDiario(); renderDashboard();
