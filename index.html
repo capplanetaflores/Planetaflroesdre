@@ -2197,12 +2197,29 @@ th.ef-th { padding:8px 8px 8px 12px; }
       <div class="form-group"><label>Nº da Nota Fiscal</label><input id="l-nf" type="text" placeholder="000000" /></div>
     </div>
     <div class="grid3">
-      <div class="form-group"><label class="label-add">Fornecedor *<button type="button" class="btn-add-inline" title="Cadastrar novo fornecedor" onclick="abrirCadastroRapido('fornecedor','l-forn')">+</button></label><select id="l-forn"><option value="">Selecione...</option></select></div>
+      <div class="form-group"><label class="label-add">Fornecedor<button type="button" class="btn-add-inline" title="Cadastrar novo fornecedor" onclick="abrirCadastroRapido('fornecedor','l-forn')">+</button></label><select id="l-forn"><option value="">Selecione...</option></select></div>
       <div class="form-group"><label class="label-add">Produto<button type="button" class="btn-add-inline" title="Cadastrar novo produto" onclick="abrirCadastroRapido('produto','l-prod')">+</button></label><select id="l-prod"><option value="">Nenhum (opcional)</option></select></div>
       <div class="form-group"><label>Valor Total (R$) *</label><input id="l-valor" type="number" step="0.01" placeholder="0,00" /></div>
     </div>
     <div class="grid3">
       <div class="form-group" style="grid-column:span 2"><label class="label-add">Categoria<button type="button" class="btn-add-inline" title="Cadastrar nova categoria" onclick="abrirCadastroRapido('categoria','l-catdre')">+</button></label><select id="l-catdre"><option value="">Nenhuma</option></select></div>
+    </div>
+    <div class="grid3">
+      <div class="form-group">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600">
+          <input type="checkbox" id="l-fixa" onchange="toggleContaFixaVigencia()" style="width:16px;height:16px;cursor:pointer" />
+          Conta Fixa (recorrente mensal)
+        </label>
+      </div>
+    </div>
+    <div id="l-fixa-bloco" style="display:none;margin-bottom:16px">
+      <div class="grid3" style="margin-bottom:10px">
+        <div class="form-group"><label>Vigência — De</label><input id="l-fixa-inicio" type="month" /></div>
+        <div class="form-group"><label>Vigência — Até</label><input id="l-fixa-fim" type="month" /></div>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:#ea580c;padding:8px 12px;background:#fff1e6;border-radius:6px;border-left:3px solid #ea580c;">
+        🔁 Será criado 1 lançamento por mês dentro da vigência, repetindo o dia da "Data da Compra" em cada mês (ajustado se o mês não tiver esse dia, ex.: dia 31 em fevereiro).
+      </div>
     </div>
     <div class="grid3">
       <div class="form-group"><label>Número de Parcelas</label>
@@ -4624,33 +4641,109 @@ function validarBancoObrigatorio(status, banco) {
   return true;
 }
 
+// ── CONTA FIXA (recorrente mensal, com vigência) ──────────────────────
+// Mostra/esconde os campos de vigência e desativa "Parcelas" quando a
+// conta é marcada como fixa (cada mês vira 1 lançamento avulso — não faz
+// sentido combinar com parcelamento de uma compra única).
+function toggleContaFixaVigencia() {
+  const on = document.getElementById('l-fixa').checked;
+  const bloco = document.getElementById('l-fixa-bloco');
+  if (bloco) bloco.style.display = on ? 'block' : 'none';
+  const parcelasEl = document.getElementById('l-parcelas');
+  if (parcelasEl) {
+    parcelasEl.disabled = on;
+    if (on) { parcelasEl.value = '1'; toggleParcelaDates('l-parcelas','l-parcela-dates'); }
+  }
+}
+
+// Lista de {ano, mes} entre "YYYY-MM" de início e fim, inclusive.
+function _mesesEntreVigencia(inicio, fim) {
+  const [ai, mi] = inicio.split('-').map(Number);
+  const [af, mf] = fim.split('-').map(Number);
+  const meses = [];
+  let ano = ai, mes = mi;
+  while (ano < af || (ano === af && mes <= mf)) {
+    meses.push({ ano, mes });
+    mes++;
+    if (mes > 12) { mes = 1; ano++; }
+  }
+  return meses;
+}
+
+// Monta "YYYY-MM-DD" para o ano/mês dado, usando o dia informado — se o
+// mês não tiver esse dia (ex.: 31 em abril), usa o último dia do mês.
+function _dataComDiaFixo(ano, mes, dia) {
+  const ultimoDia = new Date(ano, mes, 0).getDate();
+  const d = Math.min(dia, ultimoDia);
+  return `${ano}-${String(mes).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+}
+
 async function saveLancamento() {
   const dtcompra = document.getElementById('l-dtcompra').value;
   const forn = document.getElementById('l-forn').value;
   const prod = document.getElementById('l-prod').value;
   const valor = parseFloat(document.getElementById('l-valor').value);
-  if(!dtcompra || !forn || !valor) { alert('Preencha data da compra, fornecedor e valor.'); return; }
-  // Produto é opcional: serviços e despesas avulsas não têm produto associado.
+  if(!dtcompra || !valor) { alert('Preencha data da compra e valor.'); return; }
+  // Fornecedor e produto são opcionais: nem toda despesa tem um fornecedor
+  // cadastrado (ex.: tarifas bancárias, impostos, taxas avulsas).
   const pago = document.getElementById('l-pago').value;
   const banco = document.getElementById('l-banco').value;
   if (!validarBancoObrigatorio(pago, banco)) return;
   const empresa_id = empresaDoForm('l-empresa');
   if (empresa_id === null) return;
-  const parcelas = parseInt(document.getElementById('l-parcelas').value)||1;
-  const lanc = {
-    id: uid(),
+
+  const baseRec = {
     empresa_id,
-    dtcompra,
-    dtprev: document.getElementById('l-dtprev').value,
     nf: document.getElementById('l-nf').value,
     forn, prod, valor,
-    parcelas,
     financeiro: document.getElementById('l-financeiro').value,
     pago,
     tipo_pag: document.getElementById('l-tipo-pag').value,
     banco,
     cat_dre: document.getElementById('l-catdre') ? document.getElementById('l-catdre').value : '',
-    obs: document.getElementById('l-obs').value,
+    obs: document.getElementById('l-obs').value
+  };
+
+  const ehFixa = document.getElementById('l-fixa') && document.getElementById('l-fixa').checked;
+
+  if (ehFixa) {
+    const vigInicio = document.getElementById('l-fixa-inicio').value;
+    const vigFim = document.getElementById('l-fixa-fim').value;
+    if (!vigInicio || !vigFim) { alert('Informe o início e o fim da vigência da conta fixa.'); return; }
+    if (vigFim < vigInicio) { alert('O fim da vigência não pode ser antes do início.'); return; }
+    const dia = parseInt(dtcompra.split('-')[2], 10) || 1;
+    const meses = _mesesEntreVigencia(vigInicio, vigFim);
+    if (meses.length > 60) { alert('Vigência muito longa (máximo 60 meses). Reduza o período.'); return; }
+    const fixoGrupo = uid();
+    const novos = meses.map(({ano, mes}) => ({
+      id: uid(),
+      dtcompra: _dataComDiaFixo(ano, mes, dia),
+      dtprev: '',
+      ...baseRec,
+      parcelas: 1,
+      parcela_datas: null,
+      fixo: true,
+      fixo_grupo: fixoGrupo,
+      vigencia_inicio: vigInicio,
+      vigencia_fim: vigFim
+    }));
+    for (const l of novos) {
+      const ok = await sbFetch('lancamentos', 'POST', l);
+      if (!ok) { alert(`❌ Erro ao salvar a conta fixa (parou em ${fmtDate(l.dtcompra)}).` + sbErroDetalhe()); return; }
+      db.lancamentos.push(l);
+    }
+    clearLancamento(); closeModal('modal-novo-lanc'); renderLancamentos(); renderApagar(); renderPagas(); populateYearSelects();
+    alert(`✅ Conta fixa criada: ${novos.length} lançamento(s), de ${vigInicio} até ${vigFim}.`);
+    return;
+  }
+
+  const parcelas = parseInt(document.getElementById('l-parcelas').value)||1;
+  const lanc = {
+    id: uid(),
+    dtcompra,
+    dtprev: document.getElementById('l-dtprev').value,
+    ...baseRec,
+    parcelas,
     parcela_datas: parcelas > 1 ? buildParcelaDatasPayload('l-parcela-dates', parcelas) : null
   };
   const rL = await sbFetch('lancamentos', 'POST', lanc);
@@ -4672,6 +4765,16 @@ function clearLancamento() {
   const grid = document.getElementById('l-parcela-dates-grid');
   if(container) container.style.display='none';
   if(grid) grid.innerHTML='';
+  // Reset conta fixa
+  const fixaEl = document.getElementById('l-fixa');
+  if (fixaEl) fixaEl.checked = false;
+  const fixaInicio = document.getElementById('l-fixa-inicio');
+  const fixaFim = document.getElementById('l-fixa-fim');
+  if (fixaInicio) fixaInicio.value = '';
+  if (fixaFim) fixaFim.value = '';
+  const parcelasEl = document.getElementById('l-parcelas');
+  if (parcelasEl) parcelasEl.disabled = false;
+  toggleContaFixaVigencia();
 }
 
 function renderLancamentos() {
@@ -4746,8 +4849,9 @@ function renderLancamentos() {
     const prodObj = l.prod ? db.produtos.find(x=>x.id===l.prod) : null;
     const catId = l.cat_dre || (prodObj ? prodObj.cat : null);
     const catCell = catId ? `<span class="badge badge-blue">${getDreCatNome(catId)}</span>` : '<span style="color:#d6d3d1;font-size:12px">—</span>';
+    const fixaBadge = l.fixo ? ' <span class="badge badge-blue" style="font-size:10px" title="Gerado a partir de uma conta fixa">Fixa</span>' : '';
     return `<tr>
-      <td>${fmtDate(l.dtcompra)}</td>
+      <td>${fmtDate(l.dtcompra)}${fixaBadge}</td>
       <td>${getFornNome(l.forn)}</td>
       <td>${l.prod ? getProdNome(l.prod) : '—'}</td>
       <td>${catCell}</td>
