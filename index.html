@@ -1047,6 +1047,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
     <div class="page" id="page-fornecedores">
       <div class="page-header">
         <div><div class="page-title">Despesas/Fornecedor</div><div class="page-sub" style="margin-bottom:0">Cadastro e gestão de fornecedores</div></div>
+        <button class="btn-pdf" style="margin-right:8px" onclick="abrirPainelDuplicados('fornecedor')" title="Procurar e unificar cadastros com o mesmo nome">🧹 Duplicados</button>
         <button class="btn-novo" id="btn-novo-forn" onclick="toggleFormPanel('form-forn',this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Novo
         </button>
@@ -1083,6 +1084,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
     <div class="page" id="page-produtos">
       <div class="page-header">
         <div><div class="page-title">Itens (Despesas)</div><div class="page-sub" style="margin-bottom:0">Cadastro e gestão de itens de despesa</div></div>
+        <button class="btn-pdf" style="margin-right:8px" onclick="abrirPainelDuplicados('produto')" title="Procurar e unificar cadastros com o mesmo nome">🧹 Duplicados</button>
         <button class="btn-novo" id="btn-novo-prod" onclick="abrirNovoProduto()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Novo
         </button>
@@ -1369,6 +1371,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
     <div class="page" id="page-clientes">
       <div class="page-header">
         <div><div class="page-title">Clientes</div><div class="page-sub" style="margin-bottom:0">Cadastro e gestão de clientes</div></div>
+        <button class="btn-pdf" style="margin-right:8px" onclick="abrirPainelDuplicados('cliente')" title="Procurar e unificar cadastros com o mesmo nome">🧹 Duplicados</button>
         <button class="btn-novo" id="btn-novo-cli" onclick="toggleFormPanel('form-cli',this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Novo
         </button>
@@ -1411,6 +1414,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
     <div class="page" id="page-prodvenda">
       <div class="page-header">
         <div><div class="page-title">Produtos de Venda</div><div class="page-sub" style="margin-bottom:0">Cadastro de produtos vendidos</div></div>
+        <button class="btn-pdf" style="margin-right:8px" onclick="abrirPainelDuplicados('prodvenda')" title="Procurar e unificar cadastros com o mesmo nome">🧹 Duplicados</button>
         <button class="btn-novo" id="btn-novo-pv" onclick="abrirNovoProdVenda()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Novo
         </button>
@@ -3069,6 +3073,21 @@ th.ef-th { padding:8px 8px 8px 12px; }
   </div>
 </div>
 
+<!-- ══ MODAL: CADASTROS DUPLICADOS ══ -->
+<div class="modal-overlay" id="modal-duplicados">
+  <div class="modal" style="max-width:640px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+      <div class="modal-title" id="dup-titulo" style="margin-bottom:0;">🧹 Cadastros duplicados</div>
+      <button onclick="closeModal('modal-duplicados')" style="background:none;border:none;cursor:pointer;color:#a8a29e;font-size:22px;line-height:1;padding:4px;" title="Fechar">✕</button>
+    </div>
+    <input type="hidden" id="dup-tipo" />
+    <div id="dup-corpo" style="margin-top:16px"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-duplicados')">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ MODAL EDITAR FORNECEDOR ══ -->
 <div class="modal-overlay" id="modal-forn">
   <div class="modal">
@@ -4335,6 +4354,8 @@ function getProdNome(id) {
 async function saveFornecedor() {
   const nome = document.getElementById('f-nome').value.trim();
   if(!nome) { alert('Informe o nome do fornecedor.'); return; }
+  const dupF = acharPorNomeExato(db.fornecedores, nome);
+  if (dupF) { alert(`Já existe um cadastro com o nome "${dupF.nome}".\n\nUse o que já existe ou dê um nome diferente a este.`); return; }
   // A categoria foi removida deste formulário de cadastro rápido (fica só na
   // edição/listagem, para quem já usava); todo fornecedor novo nasce sem ela.
   const rec = { id: uid(), nome,
@@ -4443,7 +4464,9 @@ async function deleteFornecedor(id) {
 // ══════════════════════════════════════════
 async function saveProduto() {
   const nome = document.getElementById('p-nome').value.trim();
-  if(!nome) { alert('Informe o nome do produto.'); return; }
+  if(!nome) { alert('Informe o nome do item.'); return; }
+  const dupP = acharPorNomeExato(db.produtos, nome);
+  if (dupP) { alert(`Já existe um item cadastrado com o nome "${dupP.nome}".\n\nUse o que já existe ou dê um nome diferente a este.`); return; }
   const recP = { id: uid(), nome,
     sku: document.getElementById('p-sku').value,
     unidade: document.getElementById('p-unidade').value,
@@ -4741,6 +4764,18 @@ async function salvarCadastroRapido() {
   if (!cfg) return;
   const nome = document.getElementById('rapido-nome').value.trim();
   if (!nome) { alert('Informe o nome.'); return; }
+  // Se já existe um com esse nome, seleciona o existente em vez de duplicar.
+  const jaExiste = acharPorNomeExato(db[cfg.lista], nome);
+  if (jaExiste) {
+    const destinoJa = document.getElementById('rapido-destino').value;
+    if (destinoJa) {
+      const elJa = document.getElementById(destinoJa);
+      if (elJa) { elJa.value = jaExiste.id; elJa.dispatchEvent(new Event('change')); }
+    }
+    closeModal('modal-rapido');
+    alert(`"${jaExiste.nome}" já estava cadastrado — selecionei o registro existente em vez de criar outro igual.`);
+    return;
+  }
 
   let rec;
   if (tipo === 'categoria') {
@@ -6117,6 +6152,9 @@ function enhanceSearchableSelect(select, opts) {
 // campos (CNPJ, contato, etc.) podem ser completados depois na tela de
 // Fornecedores/Clientes, editando o cadastro.
 async function criarFornecedorRapido(nome) {
+  // Se já existe um com o mesmo nome, reaproveita em vez de duplicar.
+  const jaTem = acharPorNomeExato(db.fornecedores, nome);
+  if (jaTem) { populateFornSelects(); return jaTem.id; }
   const novo = { id: uid(), nome, cnpj:'', contato:'', tel:'', email:'', cat:'', obs:'' };
   const ok = await sbFetch('fornecedores', 'POST', novo);
   if (!ok) { alert('❌ Erro ao cadastrar fornecedor. Verifique sua conexão e tente novamente.'); return null; }
@@ -6125,6 +6163,8 @@ async function criarFornecedorRapido(nome) {
   return novo.id;
 }
 async function criarClienteRapido(nome) {
+  const jaTem = acharPorNomeExato(db.clientes, nome);
+  if (jaTem) { populateClienteSelects(); return jaTem.id; }
   const novo = { id: uid(), nome, cnpj:'', contato:'', tel:'', email:'', cat:'', obs:'' };
   const ok = await sbFetch('clientes', 'POST', novo);
   if (!ok) { alert('❌ Erro ao cadastrar cliente. Verifique sua conexão e tente novamente.'); return null; }
@@ -8631,6 +8671,8 @@ function _buildParcelasReceber() {
 async function saveCliente() {
   const nome = document.getElementById('cl-nome').value.trim();
   if(!nome){ alert('Informe o nome do cliente.'); return; }
+  const dupC = acharPorNomeExato(db.clientes, nome);
+  if (dupC) { alert(`Já existe um cliente com o nome "${dupC.nome}".\n\nUse o que já existe ou dê um nome diferente a este.`); return; }
   const rec = { id:uid(), nome,
     cnpj: document.getElementById('cl-cnpj').value,
     contato: document.getElementById('cl-contato').value,
@@ -8710,6 +8752,8 @@ async function deleteCliente(id) {
 async function saveProdVenda() {
   const nome=document.getElementById('pv-nome').value.trim();
   if(!nome){ alert('Informe o nome do produto.'); return; }
+  const dupPV = acharPorNomeExato(db.prodvenda, nome);
+  if (dupPV) { alert(`Já existe um produto de venda com o nome "${dupPV.nome}".\n\nUse o que já existe ou dê um nome diferente a este.`); return; }
   const rec={ id:uid(), nome,
     sku:document.getElementById('pv-sku').value,
     unidade:document.getElementById('pv-unidade').value,
@@ -12377,6 +12421,165 @@ function normText(s) {
   return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
 }
 
+// ══════════════════════════════════════════════════════════
+// CADASTROS DUPLICADOS
+// Nenhuma das telas de cadastro conferia se o nome já existia, e havia 4
+// caminhos diferentes que criam um fornecedor (formulário completo, botão
+// "+", digitar no campo de busca e a importação de extrato) — por isso
+// apareciam registros repetidos "sozinhos". As funções abaixo são a
+// checagem única usada por todos esses caminhos.
+// ══════════════════════════════════════════════════════════
+function acharPorNomeExato(lista, nome, ignorarId) {
+  const n = normText(nome);
+  if (!n) return null;
+  return (lista || []).find(x => x.id !== ignorarId && normText(x.nome) === n) || null;
+}
+
+// Impede o clique duplo em botões "Salvar" (a gravação é assíncrona; dois
+// cliques rápidos criavam dois registros iguais).
+async function comTravaDeClique(fn) {
+  const btn = (typeof event !== 'undefined' && event && event.currentTarget) ? event.currentTarget : null;
+  if (btn) {
+    if (btn.dataset.salvando === '1') return;
+    btn.dataset.salvando = '1';
+    btn.disabled = true;
+  }
+  try { return await fn(); }
+  finally { if (btn) { btn.dataset.salvando = ''; btn.disabled = false; } }
+}
+
+// ── Limpeza dos duplicados que já existem no banco ─────────────────────
+// Para cada tipo de cadastro, indica onde ele é referenciado, para que ao
+// unificar dois registros os lançamentos apontem para o que ficar.
+const DUP_CFG = {
+  fornecedor: { lista:'fornecedores', tabela:'fornecedores', rotulo:'Despesas/Fornecedor',
+    refs:[ {lista:'lancamentos', tabela:'lancamentos', campo:'forn'},
+           {lista:'produtos',    tabela:'produtos',    campo:'forn'} ],
+    depois: () => { populateFornSelects(); renderFornecedores(); renderLancamentos(); renderApagar(); renderPagas(); } },
+  produto: { lista:'produtos', tabela:'produtos', rotulo:'Item (Despesa)',
+    refs:[ {lista:'lancamentos', tabela:'lancamentos', campo:'prod'} ],
+    depois: () => { populateProdSelects(); renderProdutos(); renderLancamentos(); renderApagar(); renderPagas(); } },
+  cliente: { lista:'clientes', tabela:'clientes', rotulo:'Cliente',
+    refs:[ {lista:'lancreceber',        tabela:'lancreceber',        campo:'cliente'},
+           {lista:'pedidos_cancelados', tabela:'pedidos_cancelados', campo:'cliente'},
+           {lista:'reposicoes',         tabela:'reposicoes',         campo:'cliente'} ],
+    depois: () => { populateClienteSelects(); renderClientes(); renderLancReceber(); renderAReceber(); renderRecebido(); } },
+  prodvenda: { lista:'prodvenda', tabela:'prodvenda', rotulo:'Produto de Venda',
+    refs:[ {lista:'lancreceber',        tabela:'lancreceber',        campo:'prod'},
+           {lista:'pedidos_cancelados', tabela:'pedidos_cancelados', campo:'prod'},
+           {lista:'reposicoes',         tabela:'reposicoes',         campo:'prod'} ],
+    depois: () => { populateProdVendaSelects(); renderProdVenda(); renderLancReceber(); renderAReceber(); renderRecebido(); } }
+};
+
+// Agrupa os cadastros que têm exatamente o mesmo nome (ignorando acentos e
+// maiúsculas). Retorna só os grupos com 2 ou mais registros.
+function acharCadastrosDuplicados(tipo) {
+  const cfg = DUP_CFG[tipo];
+  if (!cfg) return [];
+  const porNome = new Map();
+  (db[cfg.lista] || []).forEach(item => {
+    const chave = normText(item.nome);
+    if (!chave) return;
+    if (!porNome.has(chave)) porNome.set(chave, []);
+    porNome.get(chave).push(item);
+  });
+  const grupos = [];
+  porNome.forEach(itens => { if (itens.length > 1) grupos.push(itens); });
+  // Quantos lançamentos usam cada registro (para escolher qual manter)
+  grupos.forEach(itens => itens.forEach(it => { it._usos = _contarUsosCadastro(cfg, it.id); }));
+  return grupos.sort((a,b) => a[0].nome.localeCompare(b[0].nome));
+}
+
+function _contarUsosCadastro(cfg, id) {
+  let n = 0;
+  cfg.refs.forEach(ref => {
+    (db[ref.lista] || []).forEach(row => { if (row[ref.campo] === id) n++; });
+  });
+  return n;
+}
+
+// Quantos campos preenchidos o registro tem (desempate: mantém o mais completo)
+function _riquezaCadastro(item) {
+  return ['cnpj','contato','tel','email','cat','sku','unidade','obs','forn','preco']
+    .reduce((n, k) => n + (item[k] ? 1 : 0), 0);
+}
+
+// Unifica um grupo de duplicados: mantém o registro mais usado (desempate pelo
+// mais completo) e reaponta todos os lançamentos dos demais para ele.
+async function unificarCadastrosDuplicados(tipo, ids) {
+  const cfg = DUP_CFG[tipo];
+  if (!cfg) return;
+  const itens = ids.map(id => (db[cfg.lista] || []).find(x => x.id === id)).filter(Boolean);
+  if (itens.length < 2) return;
+
+  const manter = itens.slice().sort((a,b) =>
+    (_contarUsosCadastro(cfg,b.id) - _contarUsosCadastro(cfg,a.id)) || (_riquezaCadastro(b) - _riquezaCadastro(a))
+  )[0];
+  const remover = itens.filter(x => x.id !== manter.id);
+  const totalRef = remover.reduce((n,x) => n + _contarUsosCadastro(cfg, x.id), 0);
+
+  if (!confirm(`Unificar "${manter.nome}"?\n\n${remover.length} cadastro(s) repetido(s) serão excluídos e ${totalRef} lançamento(s) passarão a apontar para o cadastro que ficar.\n\nEssa ação não pode ser desfeita.`)) return;
+
+  let falhas = 0;
+  for (const velho of remover) {
+    // 1) reaponta as referências
+    for (const ref of cfg.refs) {
+      const linhas = (db[ref.lista] || []).filter(row => row[ref.campo] === velho.id);
+      for (const row of linhas) {
+        const ok = await sbFetch(ref.tabela, 'PATCH', { [ref.campo]: manter.id }, `?id=eq.${row.id}`);
+        if (ok) row[ref.campo] = manter.id; else falhas++;
+      }
+    }
+    // 2) só então apaga o cadastro repetido
+    if (!falhas) {
+      const okDel = await sbFetch(cfg.tabela, 'DELETE', null, `?id=eq.${velho.id}`);
+      if (okDel) db[cfg.lista] = db[cfg.lista].filter(x => x.id !== velho.id);
+      else falhas++;
+    }
+  }
+  bumpDbVer();
+  if (cfg.depois) cfg.depois();
+  renderPainelDuplicados(tipo);
+  alert(falhas
+    ? `⚠️ A unificação foi interrompida: ${falhas} atualização(ões) falharam. Nenhum cadastro com pendência foi excluído — verifique a conexão e tente de novo.`
+    : `✅ "${manter.nome}" unificado. ${remover.length} cadastro(s) repetido(s) removido(s) e ${totalRef} lançamento(s) reapontado(s).`);
+}
+
+// ── Painel "Cadastros duplicados" ──────────────────────────────────────
+function abrirPainelDuplicados(tipo) {
+  document.getElementById('dup-tipo').value = tipo;
+  renderPainelDuplicados(tipo);
+  openModal('modal-duplicados');
+}
+
+function renderPainelDuplicados(tipo) {
+  const cfg = DUP_CFG[tipo];
+  const box = document.getElementById('dup-corpo');
+  const tit = document.getElementById('dup-titulo');
+  if (!cfg || !box) return;
+  tit.textContent = `🧹 Cadastros duplicados — ${cfg.rotulo}`;
+  const grupos = acharCadastrosDuplicados(tipo);
+  if (!grupos.length) {
+    box.innerHTML = '<div class="empty-state" style="padding:26px">Nenhum cadastro duplicado encontrado. 🎉</div>';
+    return;
+  }
+  const totalExtras = grupos.reduce((n,g) => n + g.length - 1, 0);
+  box.innerHTML =
+    `<div style="font-size:13px;color:#57534e;margin-bottom:12px;padding:10px 12px;background:#fff1e6;border-radius:8px;border-left:3px solid #ea580c;">
+       Encontrei <b>${grupos.length}</b> nome(s) repetido(s), somando <b>${totalExtras}</b> cadastro(s) a mais.
+       Ao unificar, fica o registro mais usado e os lançamentos dos outros são transferidos para ele — nenhum lançamento é perdido.
+     </div>` +
+    grupos.map(g => {
+      const linhas = g.map(it => `<li style="margin:2px 0">${it.nome} <span style="color:#a8a29e">— ${it._usos} lançamento(s)</span></li>`).join('');
+      const ids = g.map(x => x.id);
+      return `<div style="border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:10px;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">
+        <div><div style="font-weight:700;font-size:13px;margin-bottom:4px">${g[0].nome}</div>
+        <ul style="margin:0;padding-left:18px;font-size:12px;color:#57534e">${linhas}</ul></div>
+        <button class="btn btn-primary btn-sm" onclick='unificarCadastrosDuplicados("${tipo}", ${JSON.stringify(ids)})'>Unificar</button>
+      </div>`;
+    }).join('');
+}
+
 // Converte "1.234,56" ou "1234.56" em Number
 function parseValorBR(s) {
   if(s === undefined || s === null) return 0;
@@ -12911,7 +13114,12 @@ function recalcDuplicadoLinha(i) {
 async function importarLinha(tipo, r) {
   let idAlvo = r.matchId;
   if(r.isNovo || !idAlvo) {
-    if(tipo === 'pagar') {
+    // Antes de criar, confere de novo pelo nome: o usuário pode ter editado o
+    // nome na prévia, ou o cadastro pode ter surgido durante esta importação.
+    const existente = acharPorNomeExato(tipo === 'pagar' ? db.fornecedores : db.clientes, r.nomeRaw);
+    if (existente) {
+      idAlvo = existente.id;
+    } else if(tipo === 'pagar') {
       const novoForn = { id: uid(), nome: r.nomeRaw, cnpj:'', contato:'', tel:'', email:'', cat:'', obs:'Importado via conciliação bancária' };
       const okF = await sbFetch('fornecedores', 'POST', novoForn);
       if(!okF) return false;
