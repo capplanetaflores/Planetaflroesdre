@@ -627,6 +627,26 @@ th.ef-th { padding:8px 8px 8px 12px; }
 .btn-pdf:hover { background:#faf9f7; color:#ea580c; border-color:#ea580c; }
 .btn-pdf svg { width:13px; height:13px; flex-shrink:0; }
 
+/* ── Caixas e filtros compactos: Contas a Pagar e Contas Recebidas ──────
+   Essas duas telas usam listas longas de parcelas, então os KPIs no topo
+   e o card de filtros ficam mais enxutos para sobrar mais altura para a
+   tabela de lançamentos. Só entra em telas maiores: no celular o layout
+   próprio de mobile (fontes maiores, toque mais fácil) continua valendo. */
+@media (min-width: 861px) {
+  .kpis-compact { gap:10px; margin-bottom:12px; }
+  .kpis-compact .card.kpi { padding:12px 14px; margin-bottom:0; }
+  .kpis-compact .kpi-val { font-size:19px; }
+  .kpis-compact .kpi-lbl { font-size:10px; margin-top:2px; }
+
+  .card-compact { padding:14px 18px; margin-bottom:12px; }
+  .card-compact .card-title { margin-bottom:8px; }
+
+  .filter-compact { gap:8px; margin-bottom:10px; }
+  .filter-compact .form-group { margin-bottom:6px; }
+  .filter-compact label { margin-bottom:3px; font-size:11px; }
+  .filter-compact input, .filter-compact select { padding:6px 9px; font-size:12px; }
+}
+
 /* ══════════════════════════════════════════════════════════
    MOBILE / TABLET — layout profissional para celular
    ══════════════════════════════════════════════════════════
@@ -878,7 +898,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
         </div>
         <div class="nav-sub-item" onclick="showPage('produtos')" id="nav-produtos">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-          Produtos (Compra)
+          Itens (Despesas)
         </div>
         <div class="nav-sub-item" onclick="showPage('lancamentos')" id="nav-lancamentos">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
@@ -990,7 +1010,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
       </div>
       <div class="form-panel" id="form-forn" style="margin-bottom:0">
       <div class="card">
-        <div class="card-title">Novo(a) Fornecedor/Despesa</div>
+        <div class="card-title">Novo Fornecedor/Despesas</div>
         <div class="grid3">
           <div class="form-group"><label>Razão Social / Nome *</label><input id="f-nome" type="text" placeholder="Nome do fornecedor" /></div>
           <div class="form-group"><label>CNPJ / CPF</label><input id="f-cnpj" type="text" placeholder="00.000.000/0001-00" /></div>
@@ -999,13 +1019,6 @@ th.ef-th { padding:8px 8px 8px 12px; }
         <div class="grid3">
           <div class="form-group"><label>Telefone</label><input id="f-tel" type="text" placeholder="(47) 99999-0000" /></div>
           <div class="form-group"><label>E-mail</label><input id="f-email" type="text" placeholder="contato@fornecedor.com" /></div>
-          <div class="form-group"><label>Categoria</label>
-            <select id="f-cat">
-              <option value="">Selecione...</option>
-              <option>Matéria-prima</option><option>Embalagem</option><option>Serviços</option>
-              <option>Equipamentos</option><option>Logística</option><option>Outros</option>
-            </select>
-          </div>
         </div>
         <div class="form-group"><label>Observações</label><textarea id="f-obs" rows="2" placeholder="Informações adicionais..."></textarea></div>
         <div class="btn-row">
@@ -1026,17 +1039,17 @@ th.ef-th { padding:8px 8px 8px 12px; }
     <!-- ══ PRODUTOS ══ -->
     <div class="page" id="page-produtos">
       <div class="page-header">
-        <div><div class="page-title">Produtos</div><div class="page-sub" style="margin-bottom:0">Cadastro e gestão de produtos</div></div>
+        <div><div class="page-title">Itens (Despesas)</div><div class="page-sub" style="margin-bottom:0">Cadastro e gestão de itens de despesa</div></div>
         <button class="btn-novo" id="btn-novo-prod" onclick="abrirNovoProduto()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Novo
         </button>
       </div>
-      <!-- MODAL: Novo Produto -->
+      <!-- MODAL: Novo Item -->
       <div class="modal-overlay" id="modal-novo-prod">
         <div class="modal">
-          <div class="modal-title">Novo Produto</div>
+          <div class="modal-title">Novo Item</div>
           <div class="grid3">
-            <div class="form-group"><label>Nome do Produto *</label><input id="p-nome" type="text" placeholder="Descrição do produto" /></div>
+            <div class="form-group"><label>Nome do Item *</label><input id="p-nome" type="text" placeholder="Descrição do item" /></div>
             <div class="form-group"><label>Código / SKU</label><input id="p-sku" type="text" placeholder="SKU-001" /></div>
             <div class="form-group"><label>Unidade de Medida</label>
               <select id="p-unidade">
@@ -1054,12 +1067,12 @@ th.ef-th { padding:8px 8px 8px 12px; }
           <div class="form-group"><label>Descrição / Observações</label><textarea id="p-obs" rows="2" placeholder="Descrição detalhada..."></textarea></div>
           <div class="modal-footer">
             <button class="btn btn-secondary" onclick="closeModal('modal-novo-prod')">Cancelar</button>
-            <button class="btn btn-primary" onclick="saveProduto()">Salvar Produto</button>
+            <button class="btn btn-primary" onclick="saveProduto()">Salvar Item</button>
           </div>
         </div>
       </div><!-- /modal-novo-prod -->
       <div class="card" style="margin-top:16px">
-        <div class="card-title">Produtos Cadastrados</div>
+        <div class="card-title">Itens Cadastrados</div>
         <div class="form-group" style="max-width:340px;margin-bottom:14px">
           <input type="text" id="prod-busca" placeholder="🔍 Buscar por nome ou SKU..." oninput="renderProdutos()" />
         </div>
@@ -1144,10 +1157,10 @@ th.ef-th { padding:8px 8px 8px 12px; }
     <!-- ══ A PAGAR ══ -->
     <div class="page" id="page-apagar">
       <div class="page-header"><div><div class="page-title">Contas a Pagar</div><div class="page-sub" style="margin-bottom:0">Parcelas em aberto e próximas do vencimento</div></div><div style="display:flex;gap:8px"><button class="btn-pdf" onclick="abrirPdfDia('apagar')" style="background:#0f766e">📅 PDF por Dia</button><button class="btn-pdf" onclick="imprimirPagina('apagar')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> PDF</button></div></div>
-      <div id="apagar-kpis" class="grid4" style="margin-bottom:20px;"></div>
-      <div class="card">
+      <div id="apagar-kpis" class="grid4 kpis-compact" style="margin-bottom:20px;"></div>
+      <div class="card card-compact">
         <div class="card-title">Filtros</div>
-        <div class="filter-row">
+        <div class="filter-row filter-compact">
           <div class="form-group"><label>Mês</label>
             <select id="af-mes" onchange="renderApagar()">
               <option value="">Todos</option>
@@ -1548,10 +1561,10 @@ th.ef-th { padding:8px 8px 8px 12px; }
     <!-- ══ RECEBIDO ══ -->
     <div class="page" id="page-recebido">
       <div class="page-header"><div><div class="page-title">Contas Recebidas</div><div class="page-sub" style="margin-bottom:0">Histórico de recebimentos realizados</div></div><div style="display:flex;gap:8px"><button class="btn-pdf" onclick="abrirPdfDia('recebido')" style="background:#0f766e">📅 PDF por Dia</button><button class="btn-pdf" onclick="imprimirPagina('recebido')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> PDF</button></div></div>
-      <div id="recebido-kpis" class="grid4" style="margin-bottom:20px;"></div>
-      <div class="card">
+      <div id="recebido-kpis" class="grid4 kpis-compact" style="margin-bottom:20px;"></div>
+      <div class="card card-compact">
         <div class="card-title">Filtros</div>
-        <div class="filter-row">
+        <div class="filter-row filter-compact">
           <div class="form-group"><label>Mês</label>
             <select id="recf-mes" onchange="renderRecebido()">
               <option value="">Todos</option>
@@ -2372,7 +2385,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
     </div>
     <div class="grid3">
       <div class="form-group"><label class="label-add">Fornecedor/Despesas<button type="button" class="btn-add-inline" title="Cadastrar novo fornecedor" onclick="abrirCadastroRapido('fornecedor','l-forn')">+</button></label><select id="l-forn"><option value="">Selecione...</option></select></div>
-      <div class="form-group"><label class="label-add">Produto<button type="button" class="btn-add-inline" title="Cadastrar novo produto" onclick="abrirCadastroRapido('produto','l-prod')">+</button></label><select id="l-prod"><option value="">Nenhum (opcional)</option></select></div>
+      <div class="form-group"><label class="label-add">Item<button type="button" class="btn-add-inline" title="Cadastrar novo item" onclick="abrirCadastroRapido('produto','l-prod')">+</button></label><select id="l-prod"><option value="">Nenhum (opcional)</option></select></div>
       <div class="form-group"><label>Valor Total (R$) *</label><input id="l-valor" type="number" step="0.01" placeholder="0,00" /></div>
     </div>
     <div class="grid3">
@@ -2970,6 +2983,14 @@ th.ef-th { padding:8px 8px 8px 12px; }
       <div id="edit-parcela-dates-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;"></div>
     </div>
     <div class="form-group"><label>Observações</label><textarea id="edit-obs" rows="2"></textarea></div>
+    <!-- Edição em massa de Conta Fixa: só aparece quando o lançamento faz parte de -->
+    <!-- um grupo de conta fixa com mais de uma ocorrência gerada. -->
+    <div id="edit-fixa-massa-bloco" style="display:none;margin-bottom:16px">
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;padding:12px 14px;background:#fff1e6;border-radius:8px;border-left:3px solid #ea580c;">
+        <input type="checkbox" id="edit-fixa-massa" style="width:16px;height:16px;cursor:pointer;flex-shrink:0;margin-top:2px" />
+        <span>🔁 <b>Esta é uma Conta Fixa.</b> Aplicar Fornecedor/Despesas, Produto, Categoria, Valor, Financeiro, Forma de Pagamento, Banco e Observações também aos outros <b id="edit-fixa-massa-qtd">0</b> lançamento(s) desta mesma conta fixa (as datas e o status "Pago" de cada mês continuam individuais).</span>
+      </label>
+    </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modal-lanc')">Cancelar</button>
       <button class="btn btn-primary" onclick="updateLancamento()">Salvar Alterações</button>
@@ -3006,13 +3027,13 @@ th.ef-th { padding:8px 8px 8px 12px; }
   </div>
 </div>
 
-<!-- ══ MODAL EDITAR PRODUTO ══ -->
+<!-- ══ MODAL EDITAR ITEM ══ -->
 <div class="modal-overlay" id="modal-prod">
   <div class="modal">
-    <div class="modal-title">Editar Produto</div>
+    <div class="modal-title">Editar Item</div>
     <input type="hidden" id="edit-prod-id" />
     <div class="grid3">
-      <div class="form-group"><label>Nome do Produto</label><input id="ep-nome" type="text" /></div>
+      <div class="form-group"><label>Nome do Item</label><input id="ep-nome" type="text" /></div>
       <div class="form-group"><label>Código / SKU</label><input id="ep-sku" type="text" /></div>
       <div class="form-group"><label>Unidade</label>
         <select id="ep-unidade"><option>UN</option><option>KG</option><option>LT</option><option>MT</option><option>CX</option><option>PC</option></select>
@@ -3292,7 +3313,7 @@ const PAGES_CONFIG = [
   { id:'transferencias',    label:'Transferência entre Contas', grupo:'pagar' },
   { id:'fluxo-futuro',      label:'Fluxo de Caixa Futuro',grupo:'pagar'  },
   { id:'fornecedores',      label:'Fornecedor/Despesa',  grupo:'pagar'   },
-  { id:'produtos',          label:'Produtos (Compra)',   grupo:'pagar'   },
+  { id:'produtos',          label:'Itens (Despesas)',    grupo:'pagar'   },
   { id:'lancamentos',       label:'Lançamentos (Compra)',grupo:'pagar'   },
   { id:'apagar',            label:'Contas a Pagar',      grupo:'pagar'   },
   { id:'pagas',             label:'Contas Pagas',        grupo:'pagar'   },
@@ -4190,12 +4211,14 @@ function getProdNome(id) {
 async function saveFornecedor() {
   const nome = document.getElementById('f-nome').value.trim();
   if(!nome) { alert('Informe o nome do fornecedor.'); return; }
+  // A categoria foi removida deste formulário de cadastro rápido (fica só na
+  // edição/listagem, para quem já usava); todo fornecedor novo nasce sem ela.
   const rec = { id: uid(), nome,
     cnpj: document.getElementById('f-cnpj').value,
     contato: document.getElementById('f-contato').value,
     tel: document.getElementById('f-tel').value,
     email: document.getElementById('f-email').value,
-    cat: document.getElementById('f-cat').value,
+    cat: '',
     obs: document.getElementById('f-obs').value };
   const result = await sbFetch('fornecedores', 'POST', rec);
   if(!result) { alert('\u274c Erro ao salvar fornecedor.' + sbErroDetalhe()); return; }
@@ -4205,7 +4228,6 @@ async function saveFornecedor() {
 
 function clearFornecedor() {
   ['f-nome','f-cnpj','f-contato','f-tel','f-email','f-obs'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('f-cat').value='';
 }
 
 function renderFornecedores() {
@@ -5132,7 +5154,7 @@ function editLancamento(id) {
   populateDreCatSelects();
   const ecd = document.getElementById('edit-catdre');
   if (ecd) ecd.value = l.cat_dre || '';
-  // Populate manual parcela dates if present
+  // Datas manuais de parcelas no modal
   if (l.parcelas > 1) {
     toggleParcelaDates('edit-parcelas', 'edit-parcela-dates');
     if (l.parcela_datas) restoreParcelaFields('edit-parcela-dates', l.parcela_datas);
@@ -5142,6 +5164,15 @@ function editLancamento(id) {
     if(container) container.style.display='none';
     if(grid) grid.innerHTML='';
   }
+  // Conta Fixa: se houver outras ocorrências no mesmo grupo, oferece o
+  // checkbox de aplicar as alterações em massa a todas elas.
+  const massaBloco = document.getElementById('edit-fixa-massa-bloco');
+  const massaCheck = document.getElementById('edit-fixa-massa');
+  const massaQtd = document.getElementById('edit-fixa-massa-qtd');
+  const irmaosFixa = (l.fixo && l.fixo_grupo) ? db.lancamentos.filter(x => x.fixo_grupo === l.fixo_grupo && x.id !== l.id) : [];
+  if (massaBloco) massaBloco.style.display = irmaosFixa.length ? '' : 'none';
+  if (massaCheck) massaCheck.checked = false;
+  if (massaQtd) massaQtd.textContent = irmaosFixa.length;
   openModal('modal-lanc');
 }
 
@@ -5152,6 +5183,19 @@ async function updateLancamento() {
   const pago = document.getElementById('edit-pago').value;
   const banco = document.getElementById('edit-banco') ? document.getElementById('edit-banco').value : (l.banco||'');
   if (!validarBancoObrigatorio(pago, banco)) return;
+
+  // Conta Fixa em massa: descobre os "irmãos" (mesma fixo_grupo) ANTES de
+  // gravar, para poder abortar cedo se a operação deixaria algum deles num
+  // estado inválido (pago sem banco vinculado).
+  const aplicarMassa = document.getElementById('edit-fixa-massa') && document.getElementById('edit-fixa-massa').checked;
+  const irmaosFixa = (aplicarMassa && l.fixo_grupo)
+    ? db.lancamentos.filter(x => x.fixo_grupo === l.fixo_grupo && x.id !== l.id)
+    : [];
+  if (irmaosFixa.length && !banco && irmaosFixa.some(x => x.pago === 'sim')) {
+    alert('Não é possível aplicar em massa sem um banco/conta selecionado: há lançamento(s) desta conta fixa já marcados como pagos, que exigem banco vinculado.');
+    return;
+  }
+
   const _empEdit = empresaDoForm('edit-empresa');
   if (_empEdit === null) return;
   l.empresa_id = _empEdit;
@@ -5179,7 +5223,26 @@ async function updateLancamento() {
     cat_dre: l.cat_dre,
     parcela_datas: l.parcela_datas
   }, `?id=eq.${l.id}`);
-  closeModal('modal-lanc'); renderLancamentos();
+
+  // ── Aplica em massa às demais ocorrências desta Conta Fixa ──
+  // Replica só os dados "cadastrais" (fornecedor, produto, categoria, valor,
+  // financeiro, forma de pagamento, banco, observações). Data de cada mês e
+  // status "Pago" continuam individuais — não fazia sentido igualar isso.
+  if (irmaosFixa.length) {
+    const camposMassa = {
+      forn: l.forn, prod: l.prod, cat_dre: l.cat_dre, valor: l.valor,
+      financeiro: l.financeiro, tipo_pag: l.tipo_pag, banco: l.banco, obs: l.obs
+    };
+    let ok = 0, falhas = 0;
+    for (const irmao of irmaosFixa) {
+      const r = await sbFetch('lancamentos', 'PATCH', camposMassa, `?id=eq.${irmao.id}`);
+      if (r) { Object.assign(irmao, camposMassa); ok++; } else { falhas++; }
+    }
+    if (falhas) alert(`✅ Alterações aplicadas a ${ok+1} lançamento(s) desta conta fixa. ⚠️ ${falhas} não puderam ser atualizados — tente novamente.`);
+    else alert(`✅ Alterações aplicadas a ${ok+1} lançamento(s) desta conta fixa (todas as ocorrências).`);
+  }
+
+  closeModal('modal-lanc'); renderLancamentos(); renderApagar(); renderPagas(); populateYearSelects();
 }
 
 async function deleteLancamento(id) {
@@ -11615,7 +11678,7 @@ async function importarPlanilha() {
 // O valor do mapa é o título mostrado no topo da janela.
 // ══════════════════════════════════════════
 const PAINEIS_MODAL = {
-  'form-forn':    'Novo Fornecedor',
+  'form-forn':    'Novo Fornecedor/Despesas',
   'form-cli':     'Novo Cliente',
   'form-bnk':     'Nova Conta / Banco',
   'form-empresa': 'Nova Empresa'
@@ -12459,11 +12522,18 @@ function renderImportPreview() {
       .concat(catsDoTipo.map(c=>`<option value="${c.id}" ${r.catId===c.id?'selected':''}>${c.nome}</option>`));
     const dupBadge = r.duplicado ? '<span class="badge badge-red" style="margin-left:4px" title="Já existe um lançamento com mesmo fornecedor/cliente, data e valor">⚠️ Já existe</span>' : '';
     const aporteBadge = r.aporteSuspeito ? '<span class="badge badge-yellow" style="margin-left:4px" title="'+((r.motivoSuspeita||'Movimentação interna da conta — provavelmente não é uma venda/compra').replace(/"/g,'&quot;'))+'">🔁 '+(r.motivoSuspeita ? 'Movimentação interna' : 'Possível aporte próprio')+'</span>' : '';
+    // Quando a linha vai virar um cadastro novo, o nome extraído do PDF pode
+    // vir sujo (documento colado, nome cortado etc.) — por isso, além de
+    // escolher um fornecedor/cliente já existente no select, dá pra digitar
+    // o nome manualmente antes de confirmar a importação.
+    const nomeManual = r.isNovo
+      ? `<input type="text" value="${(r.nomeRaw||'').replace(/"/g,'&quot;')}" placeholder="Nome do ${tipo==='pagar'?'fornecedor':'cliente'}" style="font-size:12px;max-width:200px;margin-top:4px;display:block" onchange="importPreviewRows[${i}].nomeRaw=this.value; recalcDuplicadoLinha(${i})" />`
+      : '';
     return `<tr${r.duplicado?' style="background:#fff5f5"':(r.aporteSuspeito?' style="background:#fffaf0"':'')}>
       <td><input type="checkbox" ${r.incluir?'checked':''} onchange="importPreviewRows[${i}].incluir=this.checked" /></td>
       <td><input type="date" value="${r.dataRef}" style="padding:5px;font-size:12px;width:120px" onchange="importPreviewRows[${i}].dataRef=this.value; recalcDuplicadoLinha(${i})" /></td>
       <td><input type="date" value="${r.venc}" style="padding:5px;font-size:12px;width:120px" onchange="importPreviewRows[${i}].venc=this.value" /></td>
-      <td><select style="font-size:12px;max-width:200px" onchange="importPreviewRows[${i}].matchId=(this.value==='__novo__'?null:this.value); importPreviewRows[${i}].isNovo=(this.value==='__novo__'); recalcDuplicadoLinha(${i})">${nomeOptions.join('')}</select>${dupBadge}${aporteBadge}</td>
+      <td><select style="font-size:12px;max-width:200px" onchange="importPreviewRows[${i}].matchId=(this.value==='__novo__'?null:this.value); importPreviewRows[${i}].isNovo=(this.value==='__novo__'); recalcDuplicadoLinha(${i})">${nomeOptions.join('')}</select>${nomeManual}${dupBadge}${aporteBadge}</td>
       <td style="font-family:DM Mono,monospace;font-size:12px"><input type="number" step="0.01" value="${r.valor}" style="width:100px;padding:5px;font-size:12px" onchange="importPreviewRows[${i}].valor=parseFloat(this.value)||0; recalcDuplicadoLinha(${i})" /></td>
       <td style="font-size:12px">${r.nf||'—'}</td>
       <td><select style="font-size:12px;max-width:180px" onchange="importPreviewRows[${i}].catId=this.value">${catOptions.join('')}</select></td>
