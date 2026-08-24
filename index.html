@@ -894,7 +894,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
         </div>
         <div class="nav-sub-item" onclick="showPage('fornecedores')" id="nav-fornecedores">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          Fornecedor/Despesa
+          Despesas/Fornecedor
         </div>
         <div class="nav-sub-item" onclick="showPage('produtos')" id="nav-produtos">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
@@ -1003,7 +1003,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
     <!-- ══ FORNECEDORES ══ -->
     <div class="page" id="page-fornecedores">
       <div class="page-header">
-        <div><div class="page-title">Fornecedor/Despesa</div><div class="page-sub" style="margin-bottom:0">Cadastro e gestão de fornecedores</div></div>
+        <div><div class="page-title">Despesas/Fornecedor</div><div class="page-sub" style="margin-bottom:0">Cadastro e gestão de fornecedores</div></div>
         <button class="btn-novo" id="btn-novo-forn" onclick="toggleFormPanel('form-forn',this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Novo
         </button>
@@ -1108,7 +1108,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
           <div class="form-group"><label>Ano</label>
             <select id="lf-ano" onchange="renderLancamentos()"><option value="">Todos</option></select>
           </div>
-          <div class="form-group"><label>Fornecedor</label>
+          <div class="form-group"><label>Despesas/Fornecedor</label>
             <select id="lf-forn" onchange="renderLancamentos()"><option value="">Todos</option></select>
           </div>
           <div class="form-group"><label>Grupo</label>
@@ -1148,7 +1148,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
           <div style="align-self:flex-end"><button class="btn btn-secondary" onclick="clearLancamentoFiltros()">Limpar Filtros</button></div>
         </div>
         <div class="table-scroll"><table><thead><tr id="th-lancamentos-row">
-          <th>Data Compra</th><th>Fornecedor</th><th>Produto</th><th>Categoria</th><th>Valor</th><th>Parcelas</th>
+          <th>Data Compra</th><th>Despesas/Fornecedor</th><th>Produto</th><th>Categoria</th><th>Valor</th><th>Parcelas</th>
           <th>Prev. Pgto</th><th>Lead Time</th><th>NF</th><th>Financeiro</th><th>Pago</th><th>Ações</th>
         </tr></thead><tbody id="tb-lancamentos"><tr><td colspan="12" class="empty-state">Nenhum lançamento registrado.</td></tr></tbody></table></div>
       </div>
@@ -1173,7 +1173,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
           <div class="form-group"><label>Ano</label>
             <select id="af-ano" onchange="renderApagar()"><option value="">Todos</option></select>
           </div>
-          <div class="form-group"><label>Fornecedor</label>
+          <div class="form-group"><label>Despesas/Fornecedor</label>
             <select id="af-forn" onchange="renderApagar()"><option value="">Todos</option></select>
           </div>
           <div class="form-group"><label>Produto</label>
@@ -1218,7 +1218,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
           </div>
         </div>
         <div class="table-scroll"><table><thead><tr id="th-apagar-row">
-          <th>Fornecedor</th><th>Produto</th><th>Categoria</th><th>Parcela</th><th>Valor Parcela</th><th>Dt. Compra</th><th>Vencimento</th><th>Situação</th><th>NF</th><th>Financeiro</th><th>Ações</th>
+          <th>Despesas/Fornecedor</th><th>Produto</th><th>Categoria</th><th>Parcela</th><th>Valor Parcela</th><th>Dt. Compra</th><th>Vencimento</th><th>Situação</th><th>NF</th><th>Financeiro</th><th>Ações</th>
         </tr></thead><tbody id="tb-apagar"><tr><td colspan="11" class="empty-state">Nenhuma parcela em aberto.</td></tr></tbody></table></div>
       </div>
     </div>
@@ -1242,7 +1242,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
           <div class="form-group"><label>Ano</label>
             <select id="pgf-ano" onchange="renderPagas()"><option value="">Todos</option></select>
           </div>
-          <div class="form-group"><label>Fornecedor</label>
+          <div class="form-group"><label>Despesas/Fornecedor</label>
             <select id="pgf-forn" onchange="renderPagas()"><option value="">Todos</option></select>
           </div>
           <div class="form-group"><label>Produto</label>
@@ -1272,7 +1272,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
           <div style="align-self:flex-end"><button class="btn btn-secondary" onclick="clearPagasFiltros()">Limpar</button></div>
         </div>
         <div class="table-scroll"><table><thead><tr id="th-pagas-row">
-          <th>Fornecedor</th><th>Produto</th><th>Categoria</th><th>Parcela</th><th>Valor Parcela</th><th>Vencimento</th><th>Data Compra</th><th>Data Pgto</th><th>Forma Pgto</th><th>NF</th><th>Financeiro</th><th>Ações</th>
+          <th>Despesas/Fornecedor</th><th>Produto</th><th>Categoria</th><th>Parcela</th><th>Valor Parcela</th><th>Vencimento</th><th>Data Compra</th><th>Data Pgto</th><th>Forma Pgto</th><th>NF</th><th>Financeiro</th><th>Ações</th>
         </tr></thead><tbody id="tb-pagas"><tr><td colspan="12" class="empty-state">Nenhuma parcela paga.</td></tr></tbody></table></div>
       </div>
     </div>
@@ -3312,7 +3312,7 @@ const PAGES_CONFIG = [
   { id:'bancos',            label:'Bancos / Caixas',     grupo:'pagar'   },
   { id:'transferencias',    label:'Transferência entre Contas', grupo:'pagar' },
   { id:'fluxo-futuro',      label:'Fluxo de Caixa Futuro',grupo:'pagar'  },
-  { id:'fornecedores',      label:'Fornecedor/Despesa',  grupo:'pagar'   },
+  { id:'fornecedores',      label:'Despesas/Fornecedor',  grupo:'pagar'   },
   { id:'produtos',          label:'Itens (Despesas)',    grupo:'pagar'   },
   { id:'lancamentos',       label:'Lançamentos (Compra)',grupo:'pagar'   },
   { id:'apagar',            label:'Contas a Pagar',      grupo:'pagar'   },
@@ -5076,7 +5076,7 @@ function renderLancamentos() {
   const _catDeLanc = l => l.cat_dre || (l.prod ? ((db.produtos.find(x=>x.id===l.prod)||{}).cat) : null);
   const colsLanc = [
     { key:'dtcompra', label:'Data Compra', get:l=>l.dtcompra, display:l=>fmtDate(l.dtcompra) },
-    { key:'forn', label:'Fornecedor', get:l=>getFornNome(l.forn) },
+    { key:'forn', label:'Despesas/Fornecedor', get:l=>getFornNome(l.forn) },
     { key:'prod', label:'Produto', get:l=>l.prod?getProdNome(l.prod):null },
     { key:'cat', label:'Categoria', get:l=>{ const c=_catDeLanc(l); return c?getDreCatNome(c):null; } },
     { key:'valor', label:'Valor', get:l=>l.valor||0, display:l=>fmtBRL(l.valor) },
@@ -5886,7 +5886,7 @@ function renderApagar() {
 
   // Colunas para o filtro/ordenação estilo Excel no cabeçalho da tabela
   const colsApagar = [
-    { key:'forn', label:'Fornecedor', get:p=>getFornNome(p.forn) },
+    { key:'forn', label:'Despesas/Fornecedor', get:p=>getFornNome(p.forn) },
     { key:'prod', label:'Produto', get:p=>p.prod?getProdNome(p.prod):null },
     { key:'cat', label:'Categoria', get:p=>p.catId?getDreCatNome(p.catId):null },
     { key:'parcela', label:'Parcela', get:p=>p.parcIdx+(p.totalParc/1000), display:p=>`${p.parcIdx}/${p.totalParc}` },
@@ -6502,7 +6502,7 @@ function renderPagas() {
 
   // Colunas para o filtro/ordenação estilo Excel no cabeçalho da tabela
   const colsPagas = [
-    { key:'forn', label:'Fornecedor', get:p=>getFornNome(p.forn) },
+    { key:'forn', label:'Despesas/Fornecedor', get:p=>getFornNome(p.forn) },
     { key:'prod', label:'Produto', get:p=>p.prod?getProdNome(p.prod):null },
     { key:'cat', label:'Categoria', get:p=>p.catId?getDreCatNome(p.catId):null },
     { key:'parcela', label:'Parcela', get:p=>p.parcIdx+(p.totalParc/1000), display:p=>`${p.parcIdx}/${p.totalParc}` },
@@ -12710,7 +12710,7 @@ function _pdfDiaColsDef(pagina) {
   const jurosDe = p => calcJuros(p.valParc, p.venc, p.juros != null ? p.juros : getJurosGlobal());
   const defs = {
     apagar: [
-      { key:'forn',      label:'Fornecedor',     get:p=>getFornNome(p.forn) },
+      { key:'forn',      label:'Despesas/Fornecedor',     get:p=>getFornNome(p.forn) },
       { key:'prod',      label:'Produto',        get:p=>p.prod?getProdNome(p.prod):'—' },
       { key:'cat',       label:'Categoria',      get:p=>p.catId?getDreCatNome(p.catId):'—' },
       { key:'parcela',   label:'Parcela',        get:p=>`${p.parcIdx}/${p.totalParc}` },
@@ -12722,7 +12722,7 @@ function _pdfDiaColsDef(pagina) {
       { key:'financeiro',label:'Financeiro',     get:p=>p.financeiro==='sim'?'Sim':'Não' }
     ],
     pagas: [
-      { key:'forn',      label:'Fornecedor',     get:p=>getFornNome(p.forn) },
+      { key:'forn',      label:'Despesas/Fornecedor',     get:p=>getFornNome(p.forn) },
       { key:'prod',      label:'Produto',        get:p=>p.prod?getProdNome(p.prod):'—' },
       { key:'cat',       label:'Categoria',      get:p=>p.catId?getDreCatNome(p.catId):'—' },
       { key:'parcela',   label:'Parcela',        get:p=>`${p.parcIdx}/${p.totalParc}` },
