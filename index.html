@@ -647,6 +647,49 @@ th.ef-th { padding:8px 8px 8px 12px; }
   .filter-compact input, .filter-compact select { padding:6px 9px; font-size:12px; }
 }
 
+/* ── BOTÕES FLUTUANTES (desktop) — atalho global para lançar ───────────
+   Mesma ideia da barra inferior do celular, mas em formato "suspenso" no
+   canto inferior direito, disponível em qualquer tela do sistema.
+   No celular ficam ocultos, porque lá já existe a barra fixa embaixo. */
+.fab-wrap { display:none; }
+@media (min-width: 861px) {
+  .fab-wrap {
+    display:flex; flex-direction:column; align-items:flex-end; gap:10px;
+    position:fixed; right:26px; bottom:26px; z-index:95;
+  }
+  .fab-btn {
+    display:inline-flex; align-items:center; gap:9px;
+    border:none; border-radius:999px; cursor:pointer; color:#fff;
+    font-family:inherit; font-weight:700; font-size:13.5px; line-height:1;
+    padding:13px 20px; white-space:nowrap;
+    box-shadow:0 6px 20px rgba(15,30,58,0.22);
+    transition:transform .14s ease, box-shadow .14s ease, filter .14s ease;
+  }
+  .fab-btn:hover { transform:translateY(-2px); filter:brightness(1.07); box-shadow:0 10px 26px rgba(15,30,58,0.30); }
+  .fab-btn:active { transform:translateY(0) scale(.97); }
+  .fab-ico {
+    width:22px; height:22px; border-radius:50%; flex-shrink:0;
+    background:rgba(255,255,255,0.24);
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px; font-weight:800; line-height:1;
+  }
+  .fab-receita { background:linear-gradient(135deg,#16a34a,#15803d); }
+  .fab-despesa { background:linear-gradient(135deg,#ea580c,#c2410c); }
+  /* Botão pequeno para recolher/expandir, caso atrapalhe a leitura da tela */
+  .fab-toggle {
+    width:30px; height:30px; border-radius:50%; border:1.5px solid #e7e5e4;
+    background:#fff; color:#a8a29e; cursor:pointer; font-family:inherit;
+    font-size:13px; line-height:1; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 3px 10px rgba(15,30,58,0.16); transition:.15s;
+  }
+  .fab-toggle:hover { color:#ea580c; border-color:#ea580c; }
+  /* Estado recolhido: some com os dois botões, fica só o toggle */
+  .fab-wrap.recolhido .fab-btn { display:none; }
+  /* Espaço no fim da página para os botões não taparem o último conteúdo */
+  .main { padding-bottom:104px; }
+}
+@media print { .fab-wrap { display:none !important; } }
+
 /* ══════════════════════════════════════════════════════════
    MOBILE / TABLET — layout profissional para celular
    ══════════════════════════════════════════════════════════
@@ -2348,6 +2391,17 @@ th.ef-th { padding:8px 8px 8px 12px; }
       <span class="mq-ico">−</span> Despesa
     </button>
   </nav>
+
+  <!-- ══ BOTÕES FLUTUANTES — ATALHO GLOBAL (somente desktop) ══ -->
+  <div class="fab-wrap" id="fab-wrap">
+    <button class="fab-btn fab-receita" id="fab-receita" onclick="novaEntradaRapida('receita')" title="Lançar uma nova receita (contas a receber)">
+      <span class="fab-ico">+</span> Nova Receita
+    </button>
+    <button class="fab-btn fab-despesa" id="fab-despesa" onclick="novaEntradaRapida('despesa')" title="Lançar uma nova despesa (contas a pagar)">
+      <span class="fab-ico">−</span> Nova Despesa
+    </button>
+    <button class="fab-toggle" id="fab-toggle" onclick="toggleFabs()" title="Recolher atalhos">✕</button>
+  </div>
 </div><!-- /app -->
 
 
@@ -2990,6 +3044,23 @@ th.ef-th { padding:8px 8px 8px 12px; }
         <input type="checkbox" id="edit-fixa-massa" style="width:16px;height:16px;cursor:pointer;flex-shrink:0;margin-top:2px" />
         <span>🔁 <b>Esta é uma Conta Fixa.</b> Aplicar Fornecedor/Despesas, Produto, Categoria, Valor, Financeiro, Forma de Pagamento, Banco e Observações também aos outros <b id="edit-fixa-massa-qtd">0</b> lançamento(s) desta mesma conta fixa (as datas e o status "Pago" de cada mês continuam individuais).</span>
       </label>
+      <!-- Ajuste da vigência: encurta (apaga meses do fim) ou estende (cria meses novos) -->
+      <div style="margin-top:10px;padding:12px 14px;background:#f7f7f6;border-radius:8px;border-left:3px solid #a8a29e;">
+        <div style="font-size:13px;font-weight:600;color:#57534e;margin-bottom:4px;">📆 Alterar até quando esta conta fixa vai</div>
+        <div style="font-size:12px;color:#78716c;margin-bottom:10px;">
+          Hoje ela vai de <b id="edit-fixa-de">—</b> até <b id="edit-fixa-ate">—</b>
+          (<b id="edit-fixa-total">0</b> mês(es)). Escolha o novo mês final: se for antes, os meses
+          seguintes são <b>excluídos</b>; se for depois, os meses que faltam são <b>criados</b>.
+          Meses já marcados como pagos nunca são excluídos.
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;">
+          <div class="form-group" style="margin-bottom:0">
+            <label style="font-size:11px">Novo mês final</label>
+            <input type="month" id="edit-fixa-novo-fim" style="padding:7px 10px;font-size:13px;width:170px" />
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="ajustarVigenciaContaFixa()">Aplicar novo período</button>
+        </div>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modal-lanc')">Cancelar</button>
@@ -4045,6 +4116,54 @@ function novaEntradaRapida(tipo) {
   }
 }
 
+// ── Botões flutuantes do desktop ──────────────────────────
+// Recolhe/expande os atalhos, guardando a preferência do usuário.
+const FAB_KEY = 'cap_fab_recolhido';
+function toggleFabs() {
+  const wrap = document.getElementById('fab-wrap');
+  const btn = document.getElementById('fab-toggle');
+  if (!wrap) return;
+  const recolher = !wrap.classList.contains('recolhido');
+  wrap.classList.toggle('recolhido', recolher);
+  if (btn) { btn.textContent = recolher ? '+' : '✕'; btn.title = recolher ? 'Mostrar atalhos de lançamento' : 'Recolher atalhos'; }
+  try { localStorage.setItem(FAB_KEY, recolher ? '1' : '0'); } catch(e) {}
+}
+
+function carregarEstadoFabs() {
+  let recolhido = false;
+  try { recolhido = localStorage.getItem(FAB_KEY) === '1'; } catch(e) {}
+  const wrap = document.getElementById('fab-wrap');
+  const btn = document.getElementById('fab-toggle');
+  if (wrap) wrap.classList.toggle('recolhido', recolhido);
+  if (btn) { btn.textContent = recolhido ? '+' : '✕'; btn.title = recolhido ? 'Mostrar atalhos de lançamento' : 'Recolher atalhos'; }
+}
+
+// Só mostra cada atalho se o usuário tiver permissão na tela correspondente:
+// Nova Despesa depende de "Lançamentos (Compra)"; Nova Receita, de
+// "Lançamentos (Venda)". Se nenhum dos dois for permitido, esconde tudo.
+function aplicarPermissoesFabs() {
+  const wrap = document.getElementById('fab-wrap');
+  if (!wrap || !currentUser) return;
+  const isAdmin = currentUser.role === 'admin';
+  const allowed = currentUser.pages || [];
+  const podeDespesa = isAdmin || allowed.includes('lancamentos');
+  const podeReceita = isAdmin || allowed.includes('lancreceber');
+  const bd = document.getElementById('fab-despesa');
+  const br = document.getElementById('fab-receita');
+  if (bd) bd.style.display = podeDespesa ? '' : 'none';
+  if (br) br.style.display = podeReceita ? '' : 'none';
+  wrap.style.display = (podeDespesa || podeReceita) ? '' : 'none';
+  // Mesma regra para a barra inferior do celular
+  const qb = document.getElementById('mobile-quickbar');
+  if (qb) {
+    const qbd = qb.querySelector('.mq-despesa');
+    const qbr = qb.querySelector('.mq-receita');
+    if (qbd) qbd.style.display = podeDespesa ? '' : 'none';
+    if (qbr) qbr.style.display = podeReceita ? '' : 'none';
+    qb.style.display = (podeDespesa || podeReceita) ? '' : 'none';
+  }
+}
+
 // Fecha a gaveta com a tecla ESC e ao voltar para o tamanho desktop.
 document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharMenuMobile(); });
 window.addEventListener('resize', () => { if (!ehMobile()) fecharMenuMobile(); });
@@ -4576,7 +4695,7 @@ function agendarTrocaFraseDoDia() {
 // ══════════════════════════════════════════
 const CAD_RAPIDO = {
   fornecedor: { titulo:'Novo Fornecedor',        label:'Nome do fornecedor *', tabela:'fornecedores',   lista:'fornecedores' },
-  produto:    { titulo:'Novo Produto (Compra)',  label:'Nome do produto *',    tabela:'produtos',       lista:'produtos' },
+  produto:    { titulo:'Item Novo (Compra)',     label:'Nome do item *',       tabela:'produtos',       lista:'produtos' },
   cliente:    { titulo:'Novo Cliente',           label:'Nome do cliente *',    tabela:'clientes',       lista:'clientes' },
   prodvenda:  { titulo:'Novo Produto de Venda',  label:'Nome do produto *',    tabela:'prodvenda',      lista:'prodvenda' },
   categoria:  { titulo:'Nova Categoria',         label:'Nome da categoria *',  tabela:'dfc_categorias', lista:'dfc_cats' }
@@ -5173,7 +5292,29 @@ function editLancamento(id) {
   if (massaBloco) massaBloco.style.display = irmaosFixa.length ? '' : 'none';
   if (massaCheck) massaCheck.checked = false;
   if (massaQtd) massaQtd.textContent = irmaosFixa.length;
+  // Resumo do período atual da conta fixa + sugestão no campo de novo fim
+  if (irmaosFixa.length) {
+    const serie = _serieContaFixa(l.fixo_grupo);
+    const de = serie[0].dtcompra.slice(0,7);
+    const ate = serie[serie.length-1].dtcompra.slice(0,7);
+    const _lbl = m => { const [a,x] = m.split('-'); return `${x}/${a}`; };
+    const elDe = document.getElementById('edit-fixa-de');
+    const elAte = document.getElementById('edit-fixa-ate');
+    const elTot = document.getElementById('edit-fixa-total');
+    const elNovo = document.getElementById('edit-fixa-novo-fim');
+    if (elDe) elDe.textContent = _lbl(de);
+    if (elAte) elAte.textContent = _lbl(ate);
+    if (elTot) elTot.textContent = serie.length;
+    if (elNovo) { elNovo.value = ate; elNovo.min = de; }
+  }
   openModal('modal-lanc');
+}
+
+// Todas as ocorrências de uma conta fixa, em ordem cronológica.
+function _serieContaFixa(grupo) {
+  return db.lancamentos
+    .filter(x => x.fixo_grupo === grupo)
+    .sort((a,b) => (a.dtcompra||'').localeCompare(b.dtcompra||''));
 }
 
 async function updateLancamento() {
@@ -5250,6 +5391,110 @@ async function deleteLancamento(id) {
   await sbFetch('lancamentos', 'DELETE', null, `?id=eq.${id}`);
   db.lancamentos = db.lancamentos.filter(x=>x.id!==id);
   renderLancamentos();
+}
+
+// ── Alterar até quando uma Conta Fixa vai ──────────────────────────────
+// Encurtar: apaga as ocorrências dos meses posteriores ao novo fim.
+// Estender: cria as ocorrências que faltam, copiando os dados da série.
+// Meses já marcados como PAGOS nunca são apagados — apagá-los bagunçaria
+// o saldo do banco e o histórico de contas pagas.
+async function ajustarVigenciaContaFixa() {
+  const id = document.getElementById('edit-lanc-id').value;
+  const l = db.lancamentos.find(x => x.id === id);
+  if (!l || !l.fixo_grupo) return;
+
+  const novoFim = document.getElementById('edit-fixa-novo-fim').value; // "YYYY-MM"
+  if (!novoFim) { alert('Escolha o novo mês final da conta fixa.'); return; }
+
+  const serie = _serieContaFixa(l.fixo_grupo);
+  if (!serie.length) return;
+  const inicio = serie[0].dtcompra.slice(0, 7);
+  const fimAtual = serie[serie.length - 1].dtcompra.slice(0, 7);
+  const rotulo = m => { const [a, x] = m.split('-'); return `${x}/${a}`; };
+
+  if (novoFim < inicio) {
+    alert(`O mês final não pode ser antes do início da conta fixa (${rotulo(inicio)}).\n\nSe quiser apagar a conta fixa inteira, exclua os lançamentos pela lista.`);
+    return;
+  }
+  if (novoFim === fimAtual) { alert(`A conta fixa já vai até ${rotulo(fimAtual)}. Nada a alterar.`); return; }
+
+  // ── ENCURTAR ──
+  if (novoFim < fimAtual) {
+    const posteriores = serie.filter(x => x.dtcompra.slice(0, 7) > novoFim);
+    const pagos = posteriores.filter(x => x.pago === 'sim');
+    const remover = posteriores.filter(x => x.pago !== 'sim');
+    if (!remover.length) {
+      alert(`Nada foi removido: todos os ${posteriores.length} mês(es) após ${rotulo(novoFim)} já estão marcados como pagos.`);
+      return;
+    }
+    const avisoPagos = pagos.length
+      ? `\n\n⚠️ ${pagos.length} mês(es) desse período já estão PAGOS e serão mantidos.`
+      : '';
+    if (!confirm(`Encurtar a conta fixa para terminar em ${rotulo(novoFim)}?\n\nSerão excluídos ${remover.length} lançamento(s) em aberto (de ${rotulo(serie.filter(x=>x.dtcompra.slice(0,7)>novoFim)[0].dtcompra.slice(0,7))} até ${rotulo(fimAtual)}).${avisoPagos}`)) return;
+
+    let ok = 0, falhas = 0;
+    for (const item of remover) {
+      const r = await sbFetch('lancamentos', 'DELETE', null, `?id=eq.${item.id}`);
+      if (r) { db.lancamentos = db.lancamentos.filter(x => x.id !== item.id); ok++; } else { falhas++; }
+    }
+    await _gravarNovaVigencia(l.fixo_grupo, inicio, novoFim);
+    closeModal('modal-lanc');
+    renderLancamentos(); renderApagar(); renderPagas(); populateYearSelects();
+    alert(falhas
+      ? `✅ ${ok} lançamento(s) removido(s). ⚠️ ${falhas} não puderam ser excluídos — tente novamente.`
+      : `✅ Conta fixa agora vai de ${rotulo(inicio)} até ${rotulo(novoFim)} (${ok} mês(es) removido(s)).`);
+    return;
+  }
+
+  // ── ESTENDER ──
+  const jaExistem = new Set(serie.map(x => x.dtcompra.slice(0, 7)));
+  const dia = parseInt(serie[0].dtcompra.split('-')[2], 10) || 1;
+  const faltando = _mesesEntreVigencia(inicio, novoFim)
+    .map(({ano, mes}) => ({ ano, mes, chave: `${ano}-${String(mes).padStart(2,'0')}` }))
+    .filter(m => !jaExistem.has(m.chave));
+  if (!faltando.length) { alert('Não há meses novos para criar nesse período.'); return; }
+  if (faltando.length > 60) { alert('Período muito longo (máximo 60 meses novos de uma vez).'); return; }
+  if (!confirm(`Estender a conta fixa até ${rotulo(novoFim)}?\n\nSerão criados ${faltando.length} lançamento(s) novo(s), copiando os dados desta conta fixa. Eles nascem como NÃO pagos.`)) return;
+
+  const modelo = serie[serie.length - 1];
+  let ok = 0, falhas = 0;
+  for (const m of faltando) {
+    const novo = {
+      id: uid(),
+      empresa_id: modelo.empresa_id,
+      dtcompra: _dataComDiaFixo(m.ano, m.mes, dia),
+      dtprev: '',
+      nf: '', obs: modelo.obs || '',
+      forn: modelo.forn, prod: modelo.prod, valor: modelo.valor,
+      financeiro: modelo.financeiro,
+      pago: 'nao',
+      tipo_pag: modelo.tipo_pag || '',
+      banco: modelo.banco || '',
+      cat_dre: modelo.cat_dre || '',
+      parcelas: 1, parcela_datas: null,
+      fixo: true, fixo_grupo: modelo.fixo_grupo,
+      vigencia_inicio: inicio, vigencia_fim: novoFim
+    };
+    const r = await sbFetch('lancamentos', 'POST', novo);
+    if (r) { db.lancamentos.push(novo); ok++; } else { falhas++; }
+  }
+  await _gravarNovaVigencia(l.fixo_grupo, inicio, novoFim);
+  closeModal('modal-lanc');
+  renderLancamentos(); renderApagar(); renderPagas(); populateYearSelects();
+  alert(falhas
+    ? `✅ ${ok} lançamento(s) criado(s). ⚠️ ${falhas} falharam — tente novamente.`
+    : `✅ Conta fixa agora vai de ${rotulo(inicio)} até ${rotulo(novoFim)} (${ok} mês(es) adicionado(s)).`);
+}
+
+// Grava a nova vigência em todas as ocorrências restantes do grupo, para o
+// período mostrado na tela ficar coerente com o que existe de fato.
+async function _gravarNovaVigencia(grupo, inicio, fim) {
+  const restantes = db.lancamentos.filter(x => x.fixo_grupo === grupo);
+  for (const item of restantes) {
+    item.vigencia_inicio = inicio;
+    item.vigencia_fim = fim;
+    await sbFetch('lancamentos', 'PATCH', { vigencia_inicio: inicio, vigencia_fim: fim }, `?id=eq.${item.id}`);
+  }
 }
 
 // ══════════════════════════════════════════
@@ -8074,6 +8319,8 @@ function applyNavPermissions() {
     const first = document.querySelector('.nav-item[style=""]');
     if (first) first.click();
   }
+  // Atalhos rápidos (botões flutuantes / barra do celular) seguem a mesma permissão
+  aplicarPermissoesFabs();
 }
 
 async function renderUsuariosAdmin() {
@@ -11555,6 +11802,7 @@ async function initApp() {
   populateMotivoSelects();
   populatePedidosCanceladosFiltros();
   carregarModoMenu();
+  carregarEstadoFabs();
   atualizarTituloMobile('dashboard');
   populateDreYearSelects();
   populateDreGrupoSelects();
