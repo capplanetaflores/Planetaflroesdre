@@ -11879,7 +11879,7 @@ function atualizarFormatoImport() {
   if(formato === 'extrato') {
     fileInput.setAttribute('accept', '.pdf,.txt,application/pdf,text/plain');
     label.textContent = 'Arquivo do Extrato (PDF ou TXT)';
-    instrucao.textContent = 'Selecione o PDF do extrato bancário (ex: Sicoob, Banco do Brasil, etc.) ou cole o texto do extrato abaixo. O sistema reconhece as movimentações de pagamento a fornecedores (boleto/título) ou recebimento de clientes (Pix/TED/transferência/depósito), conforme a tela em que você abriu esta importação.';
+    instrucao.textContent = 'Selecione o PDF do extrato bancário ou cole o texto abaixo. O sistema reconhece automaticamente os formatos do Sicoob, do Banco do Brasil e da Ailos/Viacredi, e traz as entradas (créditos) ou saídas (débitos) conforme a tela em que você abriu esta importação. Movimentações internas (empréstimo, aplicação, estorno, tarifa) aparecem na lista, porém já desmarcadas.';
     textarea.placeholder = 'Cole aqui o texto do extrato bancário...';
   } else {
     fileInput.setAttribute('accept', '.csv,text/csv');
@@ -11922,15 +11922,23 @@ async function extrairTextoPdf(file) {
   for(let p = 1; p <= pdf.numPages; p++) {
     const page = await pdf.getPage(p);
     const content = await page.getTextContent();
-    let linhaAtual = '', ultimaY = null;
+    let linhaAtual = '', ultimaY = null, ultimoFimX = null;
     content.items.forEach(item => {
       const y = item.transform[5];
+      const x = item.transform[4];
       if(ultimaY !== null && Math.abs(y - ultimaY) > 2) {
         textoCompleto += linhaAtual + '\n';
         linhaAtual = '';
+        ultimoFimX = null;
       }
+      // [CORREÇÃO] Antes os pedaços de texto eram colados sem espaço, o que grudava
+      // o nº do documento no valor ("13113 892171200489717" + "93,10" virava
+      // "...89717 93,10" lido como 793,10). Agora, quando há um vão horizontal
+      // entre um pedaço e o seguinte (colunas diferentes), insere-se um espaço.
+      if(linhaAtual && ultimoFimX !== null && x > ultimoFimX + 1) linhaAtual += ' ';
       linhaAtual += item.str;
       ultimaY = y;
+      ultimoFimX = x + (item.width || 0);
     });
     textoCompleto += linhaAtual + '\n';
   }
@@ -12102,7 +12110,7 @@ function acharDuplicado(tipo, nomeRaw, matchId, isNovo, dataRef, valor) {
 // Monta uma linha de prévia a partir dos dados brutos já identificados (nome, valor, data etc),
 // reaproveitando o match de fornecedor/cliente, sugestão de categoria e checagem de duplicidade.
 function montarLinhaImport(tipo, dados) {
-  const { nomeRaw, valor, dataRef, venc, nf, obs, aporteSuspeito } = dados;
+  const { nomeRaw, valor, dataRef, venc, nf, obs, aporteSuspeito, motivoSuspeita } = dados;
   let matchId = null, isNovo = true;
   if(tipo === 'pagar') {
     const f = acharFornecedorPorNome(nomeRaw);
@@ -12115,83 +12123,228 @@ function montarLinhaImport(tipo, dados) {
   const duplicado = acharDuplicado(tipo, nomeRaw, matchId, isNovo, dataRef, valor);
   return {
     incluir: !duplicado && !aporteSuspeito, nomeRaw, matchId, isNovo, duplicado, aporteSuspeito: !!aporteSuspeito,
+    motivoSuspeita: motivoSuspeita || '',
     dataRef, venc, valor, nf: nf||'', obs: obs||'',
     catId: catSugerida
   };
 }
 
-// Interpreta um extrato bancário (texto extraído de PDF ou colado) e retorna os lançamentos
-// relevantes para o tipo (pagar: débitos de boleto/título a fornecedores; receber: créditos
-// de Pix/TED/transferência/depósito de clientes).
-function parseExtratoBancario(texto, tipo) {
-  const linhas = texto.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n');
-  const txRe = /^(\d{2})\/(\d{2})\s+(.*?)\s*([\d.]+,\d{2})([CD])\s*(.*)$/;
+// ══════════════════════════════════════════════════════════
+// LEITURA DE EXTRATOS BANCÁRIOS (PDF ou texto colado)
+// Formatos reconhecidos automaticamente: Sicoob, Banco do Brasil e Ailos/Viacredi.
+// Cada banco imprime o extrato de um jeito, então há um leitor para cada um e o
+// sistema escolhe sozinho o que melhor entendeu o arquivo.
+// ══════════════════════════════════════════════════════════
+const _NUM_BR = '\\d{1,3}(?:\\.\\d{3})*,\\d{2}';
+// Nome do banco reconhecido na última leitura (usado só nas mensagens ao usuário)
+let _extratoBancoDetectado = '';
 
-  // Ano base a partir do período informado no extrato (ex: "PERÍODO: 01/07/2026 - 23/07/2026")
+// Linhas que NUNCA são lançamentos (saldos, totais, previsões de encargos...)
+const _EXTRATO_IGNORAR = [
+  /s\s*a\s*l\s*d\s*o/i, /^total/i, /^juros\s*\*/i, /^iof\s*\*/i,
+  /^data de d[eé]bito/i, /^previs[aã]o/i, /^encargos/i,
+  /vencid[ao]s? (remanescentes|provisionad)/i, /^cheque especial contratado/i
+];
+
+// Cabeçalhos/rodapés que se repetem a cada página do PDF
+const _EXTRATO_RUIDO = [
+  /^extrato\b/i, /^cliente\b/i, /^ag[êe]ncia:/i, /^conta:/i, /^coop\.?:/i,
+  /^cooperativa:/i, /^banco:/i, /^lan[çc]amentos/i, /^dia\s+lote/i, /^dia\s+hist/i,
+  /^data\s+lan[çc]/i, /^p[áa]gina/i, /^sac\b/i, /^ouvidoria/i, /^cnpj/i,
+  /^documento:/i, /^emitido em/i, /^hist[óo]rico de/i, /^plataforma/i, /^sistema de/i,
+  /^informa[çc][õo]es/i, /^\* saldos/i, /^sujeitos a/i, /^total /i,
+  /atendimento (das|todos)/i, /^saldo (inicial|final)/i, /^\d+$/
+];
+
+// Movimentações internas da conta (empréstimo, aplicação, estorno, tarifa...).
+// São importadas mesmo assim, porém já vêm DESMARCADAS para o usuário conferir.
+const _EXTRATO_INTERNO = [
+  { re: /estorno/i,                                                      motivo: 'Estorno de um lançamento anterior' },
+  { re: /rende f[áa]cil|aplic\.?\s*programada|aplica[çc][ãa]o|resgate/i, motivo: 'Aplicação/resgate financeiro da própria conta' },
+  { re: /empr[ée]stimo|emprest|bb giro|pronampe|anot\.?\s*cred|parc\.?\s*empr/i, motivo: 'Movimentação de empréstimo/financiamento' },
+  { re: /juros de mora|multa \d|iof s\/|tarifa|liq\.?\s*cob|cred\.?\s*cobr/i,    motivo: 'Tarifa ou encargo bancário' },
+  { re: /transf(er[êe]ncia)?\s*entre\s*contas|tr\.?\s*internet/i,        motivo: 'Transferência entre contas próprias' },
+  { re: /dep din|dep[óo]sito em dinheiro|pix transf pagador/i,           motivo: 'Depósito/aporte do próprio titular' }
+];
+
+function _extratoIgnorar(h) { return _EXTRATO_IGNORAR.some(re => re.test(h)); }
+function _ehRuidoExtrato(l) {
+  const t = (l || '').trim();
+  if(!t) return true;
+  return _EXTRATO_RUIDO.some(re => re.test(t));
+}
+function _extratoInterno(h) {
+  for(const it of _EXTRATO_INTERNO) if(it.re.test(h)) return it.motivo;
+  return null;
+}
+function _pareceNome(s) {
+  const t = (s || '').trim();
+  if(t.length < 3 || t.length > 70) return false;
+  if(/\d{2}\/\d{2}/.test(t)) return false;
+  if(/^doc\.?:/i.test(t)) return false;
+  return t.replace(/[^A-Za-zÀ-ÿ]/g, '').length >= 3;
+}
+// Tira do nome o que é documento (CPF/CNPJ mascarado, sequência longa de dígitos)
+function _limparNomeExtrato(s) {
+  return (s || '')
+    .replace(/\*{2,}[\d.\-*]*/g, ' ')
+    .replace(/\bdoc\.?:.*$/i, ' ')
+    .replace(/[\s\-–]*\d[\d.\-\/]{5,}\s*$/, ' ')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
+// ── SICOOB ────────────────────────────────────────────────
+// "24/08 PIX RECEB.OUTRA IF 30,00C" seguido das linhas de detalhe
+function _parseSicoob(texto) {
+  const txRe = new RegExp('^(\\d{2})\\/(\\d{2})\\s*(.*?)\\s*(' + _NUM_BR + ')\\s*([CD*])\\s*(.*)$');
   let anoFim = new Date().getFullYear(), mesFim = 12;
-  const periodoMatch = texto.match(/PER[IÍ]ODO:?\s*\d{2}\/\d{2}\/(\d{4})\s*-\s*\d{2}\/(\d{2})\/(\d{4})/i);
-  if(periodoMatch) { mesFim = parseInt(periodoMatch[2]); anoFim = parseInt(periodoMatch[3]); }
+  const pm = texto.match(/PER[IÍ]ODO:?\s*\d{2}\/\d{2}\/(\d{4})\s*-\s*\d{2}\/(\d{2})\/(\d{4})/i);
+  if(pm) { mesFim = parseInt(pm[2]); anoFim = parseInt(pm[3]); }
 
-  const registros = [];
+  const regs = [];
   let atual = null;
-  linhas.forEach(linhaBruta => {
-    const linha = linhaBruta.trim();
-    const m = linha.match(txRe);
+  texto.split('\n').forEach(lb => {
+    const l = lb.trim();
+    const m = l.match(txRe);
     if(m) {
-      if(atual) registros.push(atual);
-      atual = { dia: m[1], mes: m[2], hist: m[3].trim(), valor: m[4], tipoSinal: m[5], detalhes: [] };
+      if(atual) regs.push(atual);
+      const ano = parseInt(m[2]) > mesFim ? anoFim - 1 : anoFim;
+      atual = { data: `${ano}-${m[2]}-${m[1]}`, hist: m[3].trim(),
+                valor: parseValorBR(m[4]), sinal: m[5] === 'C' ? 'C' : 'D', detalhes: [], nf: '' };
       if(m[6] && m[6].trim()) atual.detalhes.push(m[6].trim());
-    } else if(atual && linha) {
-      atual.detalhes.push(linha);
+    } else if(atual && l) {
+      atual.detalhes.push(l);
     }
   });
-  if(atual) registros.push(atual);
+  if(atual) regs.push(atual);
+  regs.forEach(r => r.detalhes.forEach(d => {
+    const mn = d.match(/doc\.?:\s*(\S+)/i);
+    if(mn && !/^pix$/i.test(mn[1])) r.nf = mn[1];
+  }));
+  return regs;
+}
 
-  const HIST_PAGAR = ['DÉB.TIT.COMPE.EFETI', 'DÉB.PGTO.BOLETO INT', 'DÉB. TIT. COBRANÇA'];
-  const HIST_RECEBER = ['PIX RECEB.OUTRA IF', 'CRED.TR.CT.INTERCRE', 'TRANSF.RECEB-PIX SI',
-                        'CRÉD.TED-STR', 'DEP DIN AG', 'DEP DIN INTERAG', 'TRANSF.RECEB-PIX'];
-  const HIST_APORTE = ['DEP DIN AG', 'DEP DIN INTERAG'];
-  const alvo = tipo === 'pagar' ? HIST_PAGAR : HIST_RECEBER;
+// ── AILOS / VIACREDI ──────────────────────────────────────
+// "10/08/2026 CREDITO PIX - STEFANY BENTO 89,00 -29.911,00"
+// O valor é calculado pela DIFERENÇA entre o saldo da linha e o da linha anterior.
+// Isso é à prova de erro quando o nome do cliente contém números (CPF, telefone)
+// e ainda define sozinho se é entrada (crédito) ou saída (débito).
+function _parseAilos(texto) {
+  const dataRe = /^(\d{2})\/(\d{2})\/(\d{4})\s*(.*)$/;
+  const saldoRe = new RegExp('(-?' + _NUM_BR + ')\\s*$');
+  const valorRe = new RegExp('(' + _NUM_BR + ')\\s*$');
+  const regs = [];
+  let saldoAnt = null;
+  texto.split('\n').forEach(lb => {
+    const md = lb.trim().match(dataRe);
+    if(!md) return;
+    let resto = md[4];
+    const ms = resto.match(saldoRe);
+    if(!ms) return;
+    const saldo = parseValorBR(ms[1]);
+    resto = resto.slice(0, ms.index).trim();
+    let valorCap = null;
+    const mv = resto.match(valorRe);
+    if(mv) { valorCap = parseValorBR(mv[1]); resto = resto.slice(0, mv.index).trim(); }
+    const hist = resto.replace(/[-–\s]+$/, '').trim();
+    if(!hist || /s\s*a\s*l\s*d\s*o/i.test(hist)) { saldoAnt = saldo; return; }
 
-  const limparNome = (s) => s.replace(/(?:doc\.?:).*$/i, '').trim();
-  const linhasIgnoradas = ['recebimento pix','pagamento pix','transferência pix','transferencia pix'];
-
-  const resultado = [];
-  registros.forEach(r => {
-    if(!alvo.some(h => r.hist.startsWith(h))) return;
-    let nomeRaw = '';
-    if(tipo === 'pagar') {
-      for(const dl of r.detalhes) {
-        const limpo = limparNome(dl);
-        if(limpo) { nomeRaw = limpo; break; }
-      }
+    let valor, sinal;
+    const ehCred = /^cr[ée]d|^credito|receb/i.test(hist);
+    if(saldoAnt !== null) {
+      const dif = Math.round((saldo - saldoAnt) * 100) / 100;
+      valor = Math.abs(dif);
+      sinal = dif >= 0 ? 'C' : 'D';
+      if(valor === 0 && valorCap) { valor = valorCap; sinal = ehCred ? 'C' : 'D'; }
     } else {
-      for(const dl of r.detalhes) {
-        const low = dl.toLowerCase();
-        if(low.startsWith('rem.:')) { nomeRaw = limparNome(dl.split(':').slice(1).join(':')).trim(); continue; }
-        if(linhasIgnoradas.includes(low)) continue;
-        const limpo = limparNome(dl);
-        if(!limpo) continue;
-        const letras = limpo.replace(/[^A-Za-zÀ-ÿ]/g,'');
-        if(letras.length < 3) continue;
-        nomeRaw = limpo;
-        break;
-      }
+      valor = valorCap || 0;
+      sinal = ehCred ? 'C' : 'D';
     }
-    if(!nomeRaw) nomeRaw = '(sem identificação)';
+    saldoAnt = saldo;
+    if(!valor) return;
+    regs.push({ data: `${md[3]}-${md[2]}-${md[1]}`, hist, valor, sinal, detalhes: [], nf: '' });
+  });
+  return regs;
+}
 
-    let nf = '';
-    r.detalhes.forEach(dl => {
-      const mnf = dl.match(/doc\.?:\s*(\S+)/i);
-      if(mnf) nf = mnf[1];
-    });
+// ── BANCO DO BRASIL ───────────────────────────────────────
+// O lançamento vem quebrado em várias linhas; a linha do valor termina em "(+)"/"(-)"
+// e começa com lote/documento. A data pode estar na linha de cima.
+function _parseBB(texto) {
+  const valRe = new RegExp('(' + _NUM_BR + ')\\s*\\(([+-])\\)\\s*$');
+  const dataRe = /(\d{2})\/(\d{2})\/(\d{4})/;
+  const regs = [];
+  let dataPend = null, buffer = [], ultima = null;
 
-    const mesNum = parseInt(r.mes);
-    const ano = mesNum > mesFim ? anoFim - 1 : anoFim;
-    const dataRef = `${ano}-${r.mes}-${r.dia}`;
+  texto.split('\n').forEach(lb => {
+    const l = lb.trim();
+    if(!l) return;
+    const mv = l.match(valRe);
+    if(mv) {
+      let head = l.slice(0, mv.index).trim();
+      let data = dataPend;
+      const md = head.match(dataRe);
+      if(md) { data = `${md[3]}-${md[2]}-${md[1]}`; head = head.replace(md[0], ' ').trim(); }
+      head = head.replace(/^(?:\d+\s+)*\d*\s*/, '').replace(/^[^A-Za-zÀ-ÿ]+/, '').trim();
+      let hist = head;
+      if(!hist) {
+        for(let i = buffer.length - 1; i >= 0; i--) { if(_pareceNome(buffer[i])) { hist = buffer[i]; break; } }
+      }
+      buffer = [];
+      if(!hist || !data || data.indexOf('-00-') > -1) return;
+      ultima = { data, hist, valor: parseValorBR(mv[1]), sinal: mv[2] === '+' ? 'C' : 'D', detalhes: [], nf: '' };
+      regs.push(ultima);
+      return;
+    }
+    const md = l.match(/^(\d{2})\/(\d{2})\/(\d{4})\s*(.*)$/);
+    if(md) {
+      dataPend = `${md[3]}-${md[2]}-${md[1]}`;
+      if(md[4] && md[4].trim()) buffer.push(md[4].trim());
+      return;
+    }
+    if(_ehRuidoExtrato(l)) return;
+    if(_pareceNome(l)) { buffer.push(l); if(ultima) ultima.detalhes.push(l); }
+  });
+  return regs;
+}
+
+// Descobre o banco pelo resultado: roda os três leitores e usa o que reconheceu
+// mais lançamentos. Depois filtra pelo tipo da tela (pagar = saídas, receber = entradas).
+function parseExtratoBancario(texto, tipo) {
+  texto = (texto || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const candidatos = [
+    { nome: 'Sicoob',          regs: _parseSicoob(texto) },
+    { nome: 'Ailos/Viacredi',  regs: _parseAilos(texto) },
+    { nome: 'Banco do Brasil', regs: _parseBB(texto) }
+  ].sort((a, b) => b.regs.length - a.regs.length);
+  const escolhido = candidatos[0];
+  _extratoBancoDetectado = escolhido.regs.length ? escolhido.nome : '';
+
+  const querCredito = tipo !== 'pagar';
+  const resultado = [];
+  escolhido.regs.forEach(r => {
+    if(!r.valor) return;
+    if(_extratoIgnorar(r.hist) || _ehRuidoExtrato(r.hist)) return;
+    if(querCredito ? r.sinal !== 'C' : r.sinal !== 'D') return;
+
+    let nomeRaw = '';
+    for(const d of r.detalhes) {
+      const limpo = _limparNomeExtrato(d);
+      if(_pareceNome(limpo)) { nomeRaw = limpo; break; }
+    }
+    if(!nomeRaw) {
+      // "CREDITO PIX - FULANO DE TAL" => usa o que vem depois do travessão
+      const partes = r.hist.split(/\s+[-–]\s+/);
+      nomeRaw = _limparNomeExtrato(partes.length > 1 ? partes.slice(1).join(' - ') : r.hist);
+    }
+    if(!nomeRaw) nomeRaw = r.hist || '(sem identificação)';
+
+    const motivo = _extratoInterno(r.hist + ' ' + r.detalhes.join(' '));
     resultado.push({
-      nomeRaw, valor: parseValorBR(r.valor), dataRef, venc: dataRef,
-      nf, obs: r.hist, aporteSuspeito: HIST_APORTE.some(h => r.hist.startsWith(h))
+      nomeRaw, valor: r.valor, dataRef: r.data, venc: r.data, nf: r.nf || '',
+      obs: r.hist + (r.detalhes.length ? ' · ' + r.detalhes.join(' · ') : ''),
+      aporteSuspeito: !!motivo, motivoSuspeita: motivo || ''
     });
   });
   return resultado;
@@ -12206,7 +12359,12 @@ function processarImport() {
   if(formato === 'extrato') {
     const linhas = parseExtratoBancario(texto, tipo);
     if(!linhas.length) {
-      alert('Não encontrei, neste extrato, lançamentos do tipo esperado para esta tela (' + (tipo==='pagar' ? 'pagamentos de boleto/título a fornecedores' : 'recebimentos de Pix/TED/transferência/depósito') + '). Confira se o texto foi extraído corretamente.');
+      alert('Não encontrei, neste extrato, lançamentos do tipo esperado para esta tela ('
+        + (tipo==='pagar' ? 'saídas/débitos' : 'entradas/créditos') + ').\n\n'
+        + (_extratoBancoDetectado
+            ? 'O arquivo foi reconhecido como extrato ' + _extratoBancoDetectado + ', mas não há movimentações desse tipo no período.'
+            : 'Não consegui reconhecer o formato do extrato. Formatos aceitos: Sicoob, Banco do Brasil e Ailos/Viacredi.')
+        + '\n\nConfira o texto extraído na caixa abaixo.');
       return;
     }
     importPreviewRows = linhas.map(dados => montarLinhaImport(tipo, dados));
@@ -12284,7 +12442,7 @@ function renderImportPreview() {
   document.getElementById('import-resumo').innerHTML =
     `${importPreviewRows.length} linha(s) encontrada(s) · <b>${semMatch}</b> ${tipo==='pagar'?'fornecedor(es)':'cliente(s)'} novo(s) serão criados · <b>${semCategoria}</b> sem categoria identificada`
     + (duplicados ? ` · <b style="color:#c0392b">${duplicados}</b> possível(is) duplicata(s) já desmarcada(s)` : '')
-    + (aportes ? ` · <b style="color:#c2740c">${aportes}</b> possível(is) depósito(s)/aporte(s) próprio(s) já desmarcado(s)` : '')
+    + (aportes ? ` · <b style="color:#c2740c">${aportes}</b> movimentação(ões) interna(s) da conta já desmarcada(s)` : '')
     + (importados ? ` · <b style="color:#1a8a3c">${importados}</b> já importada(s)` : '');
 
   const tb = document.getElementById('tb-import-preview');
@@ -12300,7 +12458,7 @@ function renderImportPreview() {
     const catOptions = ['<option value="">— Selecione —</option>']
       .concat(catsDoTipo.map(c=>`<option value="${c.id}" ${r.catId===c.id?'selected':''}>${c.nome}</option>`));
     const dupBadge = r.duplicado ? '<span class="badge badge-red" style="margin-left:4px" title="Já existe um lançamento com mesmo fornecedor/cliente, data e valor">⚠️ Já existe</span>' : '';
-    const aporteBadge = r.aporteSuspeito ? '<span class="badge badge-yellow" style="margin-left:4px" title="Depósito em dinheiro/aporte, provavelmente feito pelo próprio titular da conta — não é um recebimento de cliente">💰 Possível aporte próprio</span>' : '';
+    const aporteBadge = r.aporteSuspeito ? '<span class="badge badge-yellow" style="margin-left:4px" title="'+((r.motivoSuspeita||'Movimentação interna da conta — provavelmente não é uma venda/compra').replace(/"/g,'&quot;'))+'">🔁 '+(r.motivoSuspeita ? 'Movimentação interna' : 'Possível aporte próprio')+'</span>' : '';
     return `<tr${r.duplicado?' style="background:#fff5f5"':(r.aporteSuspeito?' style="background:#fffaf0"':'')}>
       <td><input type="checkbox" ${r.incluir?'checked':''} onchange="importPreviewRows[${i}].incluir=this.checked" /></td>
       <td><input type="date" value="${r.dataRef}" style="padding:5px;font-size:12px;width:120px" onchange="importPreviewRows[${i}].dataRef=this.value; recalcDuplicadoLinha(${i})" /></td>
