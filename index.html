@@ -1128,7 +1128,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
     <!-- ══ LANÇAMENTOS ══ -->
     <div class="page" id="page-lancamentos">
       <div class="page-header">
-        <div><div class="page-title">Lançamentos</div><div class="page-sub" style="margin-bottom:0">Registro de compras de produtos</div></div>
+        <div><div class="page-title">Lançamentos — Contas a Pagar</div><div class="page-sub" style="margin-bottom:0">Registro de compras e despesas</div></div>
         <button class="btn-pdf" onclick="imprimirPagina('lancamentos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> PDF</button>
         <button class="btn btn-secondary" onclick="abrirModalCategoriaMassa('lancamentos')">🏷️ Categoria em Massa</button>
         <button class="btn btn-secondary" onclick="abrirModalImport('pagar')">📥 Importar Extrato</button>
@@ -1152,16 +1152,16 @@ th.ef-th { padding:8px 8px 8px 12px; }
             <select id="lf-ano" onchange="renderLancamentos()"><option value="">Todos</option></select>
           </div>
           <div class="form-group"><label>Despesas/Fornecedor</label>
-            <select id="lf-forn" onchange="renderLancamentos()"><option value="">Todos</option></select>
+            <select id="lf-forn" onchange="onFiltroVinculadoLanc()"><option value="">Todos</option></select>
           </div>
           <div class="form-group"><label>Grupo</label>
-            <select id="lf-grupo" onchange="popularSelectCategoriaFiltro('lf-cat','lf-grupo'); renderLancamentos()"><option value="">Todos</option></select>
+            <select id="lf-grupo" onchange="onFiltroVinculadoLanc()"><option value="">Todos</option></select>
           </div>
           <div class="form-group"><label>Categoria</label>
-            <select id="lf-cat" onchange="renderLancamentos()"><option value="">Todos</option></select>
+            <select id="lf-cat" onchange="onFiltroVinculadoLanc()"><option value="">Todos</option></select>
           </div>
           <div class="form-group"><label>Produto</label>
-            <select id="lf-prod" onchange="renderLancamentos()"><option value="">Todos</option></select>
+            <select id="lf-prod" onchange="onFiltroVinculadoLanc()"><option value="">Todos</option></select>
           </div>
           <div class="form-group"><label>Status Pagamento</label>
             <select id="lf-pago" onchange="renderLancamentos()">
@@ -4281,6 +4281,9 @@ function populateFornSelects() {
     const el = document.getElementById(id);
     if(el) el.innerHTML = filterOpts;
   });
+  // lf-forn faz parte dos filtros vinculados da tela de Lançamentos:
+  // reaplica o recorte para não voltar a listar fornecedores fora do filtro.
+  if (typeof atualizarFiltrosVinculadosLanc === 'function') atualizarFiltrosVinculadosLanc();
 }
 
 function populateProdSelects() {
@@ -4295,6 +4298,8 @@ function populateProdSelects() {
     const el = document.getElementById(id);
     if(el) el.innerHTML = filterOpts;
   });
+  // lf-prod faz parte dos filtros vinculados da tela de Lançamentos.
+  if (typeof atualizarFiltrosVinculadosLanc === 'function') atualizarFiltrosVinculadosLanc();
 }
 
 // ══════════════════════════════════════════
@@ -5247,6 +5252,91 @@ function clearLancamentoFiltros() {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
+  popularSelectCategoriaFiltro('lf-cat','lf-grupo');
+  atualizarFiltrosVinculadosLanc();
+  renderLancamentos();
+}
+
+// ── FILTROS VINCULADOS (Lançamentos a Pagar) ───────────────────────────
+// Grupo, Categoria, Despesas/Fornecedor e Produto passam a "conversar"
+// entre si: cada lista mostra apenas as opções que realmente existem nos
+// lançamentos, considerando o que já está selecionado nos outros três.
+// Ex.: ao escolher o grupo CPSV, a Categoria mostra só as categorias desse
+// grupo QUE TÊM lançamentos, e o Fornecedor só quem aparece nesses
+// lançamentos. Evita escolher combinações que resultariam em lista vazia.
+const _catDeLancamento = l => l.cat_dre || (l.prod ? ((db.produtos.find(x => x.id === l.prod) || {}).cat) : null);
+
+// Redesenha um <select> mantendo a opção escolhida quando ela ainda existe.
+// Se deixou de existir, limpa (volta para "Todos") e avisa quem chamou.
+function _repovoarSelectFiltro(el, itens, rotuloTodos, extras) {
+  if (!el) return false;
+  const anterior = el.value;
+  let html = `<option value="">${rotuloTodos}</option>`;
+  (extras || []).forEach(e => { html += `<option value="${e.id}">${e.nome}</option>`; });
+  html += itens.map(i => `<option value="${i.id}">${i.nome}</option>`).join('');
+  el.innerHTML = html;
+  const aindaExiste = !anterior
+    || (extras || []).some(e => e.id === anterior)
+    || itens.some(i => i.id === anterior);
+  el.value = aindaExiste ? anterior : '';
+  return !aindaExiste; // true => a seleção foi perdida
+}
+
+function atualizarFiltrosVinculadosLanc() {
+  const g = id => document.getElementById(id);
+  const fornEl = g('lf-forn'), grupoEl = g('lf-grupo'), catEl = g('lf-cat'), prodEl = g('lf-prod');
+  if (!fornEl || !grupoEl || !catEl || !prodEl) return;
+
+  const sel = { forn: fornEl.value, grupo: grupoEl.value, cat: catEl.value, prod: prodEl.value };
+
+  // Um lançamento "combina" com a seleção atual, ignorando o filtro que
+  // está sendo recalculado (senão ele limitaria as próprias opções a si mesmo).
+  const combina = (l, ignorar) => {
+    const catId = _catDeLancamento(l);
+    if (ignorar !== 'forn'  && sel.forn && l.forn !== sel.forn) return false;
+    if (ignorar !== 'prod'  && sel.prod && l.prod !== sel.prod) return false;
+    if (ignorar !== 'cat'   && sel.cat) {
+      if (sel.cat === '__sem_categoria__') { if (catId) return false; }
+      else if (catId !== sel.cat) return false;
+    }
+    if (ignorar !== 'grupo' && sel.grupo && getDfcCatGrupo(catId) !== sel.grupo) return false;
+    return true;
+  };
+
+  const coletar = (ignorar, extrair) => {
+    const ids = new Set();
+    db.lancamentos.forEach(l => { if (combina(l, ignorar)) { const v = extrair(l); if (v) ids.add(v); } });
+    return ids;
+  };
+  const temSemCategoria = () => db.lancamentos.some(l => combina(l, 'cat') && !_catDeLancamento(l));
+
+  const ordenar = arr => arr.sort((a, b) => a.nome.localeCompare(b.nome));
+
+  const fornIds  = coletar('forn',  l => l.forn);
+  const prodIds  = coletar('prod',  l => l.prod);
+  const catIds   = coletar('cat',   l => _catDeLancamento(l));
+  const grupoIds = coletar('grupo', l => getDfcCatGrupo(_catDeLancamento(l)));
+
+  let perdeu = false;
+  perdeu = _repovoarSelectFiltro(fornEl,
+    ordenar(db.fornecedores.filter(f => fornIds.has(f.id)).map(f => ({ id: f.id, nome: f.nome }))), 'Todos') || perdeu;
+  perdeu = _repovoarSelectFiltro(prodEl,
+    ordenar(db.produtos.filter(p => prodIds.has(p.id)).map(p => ({ id: p.id, nome: p.nome }))), 'Todos') || perdeu;
+  perdeu = _repovoarSelectFiltro(grupoEl,
+    (db.dre_grupos || [])
+      .filter(gr => (gr.tipo === 'entrada' || gr.tipo === 'saida') && grupoIds.has(gr.id))
+      .sort((a, b) => (a.ordem || 0) - (b.ordem || 0))
+      .map(gr => ({ id: gr.id, nome: gr.nome })), 'Todos') || perdeu;
+  perdeu = _repovoarSelectFiltro(catEl,
+    ordenar((db.dfc_cats || []).filter(c => catIds.has(c.id)).map(c => ({ id: c.id, nome: c.nome }))), 'Todos',
+    temSemCategoria() ? [{ id: '__sem_categoria__', nome: 'Sem categoria' }] : []) || perdeu;
+
+  return perdeu;
+}
+
+// Chamado pelos 4 filtros vinculados: recalcula as listas e redesenha a tabela.
+function onFiltroVinculadoLanc() {
+  atualizarFiltrosVinculadosLanc();
   renderLancamentos();
 }
 
@@ -10035,6 +10125,9 @@ function popularFiltrosGrupoCategoriaTodos() {
   popularSelectCategoriaFiltro('arf-categoria', null);
   popularSelectCategoriaFiltro('recf-categoria', null);
   popularSelectCategoriaFiltro('lrf-categoria', null);
+  // A tela de Lançamentos usa filtros vinculados entre si: depois de repovoar
+  // as listas base, reaplica o recorte conforme o que já está selecionado.
+  atualizarFiltrosVinculadosLanc();
 }
 
 // ── DIAGNÓSTICO: para onde vão as vendas no DRE ───────────────────
