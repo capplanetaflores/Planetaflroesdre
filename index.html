@@ -626,6 +626,162 @@ th.ef-th { padding:8px 8px 8px 12px; }
 }
 .btn-pdf:hover { background:#faf9f7; color:#ea580c; border-color:#ea580c; }
 .btn-pdf svg { width:13px; height:13px; flex-shrink:0; }
+
+/* ══════════════════════════════════════════════════════════
+   MOBILE / TABLET — layout profissional para celular
+   ══════════════════════════════════════════════════════════
+   Estrutura em telas pequenas:
+   · barra superior fixa (☰ + nome da tela)
+   · menu lateral vira gaveta deslizante com fundo escurecido
+   · barra inferior fixa com os 2 botões de destaque:
+     RECEITA (entrada) e DESPESA (saída)
+   · modais viram folha de tela cheia com rodapé fixo
+   Nada disso aparece no desktop (tudo dentro do @media). */
+
+/* Elementos exclusivos de mobile — escondidos por padrão */
+.mobile-topbar, .mobile-quickbar, .mobile-nav-backdrop, .mq-fechar { display:none; }
+
+@media (max-width: 860px) {
+
+  /* ── Base ── */
+  body { font-size:15px; -webkit-text-size-adjust:100%; }
+
+  /* Barra superior fixa */
+  .mobile-topbar {
+    display:flex; align-items:center; gap:10px;
+    position:fixed; top:0; left:0; right:0; height:56px; z-index:150;
+    background:#fff; border-bottom:1px solid var(--border);
+    padding:0 10px; box-shadow:0 2px 10px rgba(15,30,58,0.06);
+    padding-top:env(safe-area-inset-top);
+    height:calc(56px + env(safe-area-inset-top));
+  }
+  .mb-icon-btn {
+    width:40px; height:40px; flex-shrink:0; border:none; background:#f5f4f2;
+    color:#57534e; border-radius:10px; font-size:19px; line-height:1;
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    font-family:inherit;
+  }
+  .mb-icon-btn:active { background:var(--accent-light); color:var(--accent); }
+  .mb-title {
+    flex:1; min-width:0; font-size:15px; font-weight:700; color:#1f2937;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:center;
+  }
+
+  /* Menu lateral vira gaveta */
+  .sidebar {
+    width:280px; max-width:86vw; z-index:170;
+    transform:translateX(-100%); transition:transform .22s ease;
+    box-shadow:none;
+  }
+  body.nav-mobile-open .sidebar { transform:translateX(0); box-shadow:6px 0 30px rgba(15,30,58,0.3); }
+  /* Neutraliza o comportamento de "espiar com o mouse" do desktop */
+  body.menu-oculto .sidebar, body.menu-oculto .sidebar:hover,
+  body.menu-oculto.menu-espiando .sidebar { transform:translateX(-100%); }
+  body.menu-oculto.nav-mobile-open .sidebar,
+  body.nav-mobile-open .sidebar:hover { transform:translateX(0); }
+  .mobile-nav-backdrop {
+    display:block; position:fixed; inset:0; z-index:160;
+    background:rgba(15,30,58,0.45); opacity:0; pointer-events:none; transition:opacity .22s ease;
+  }
+  body.nav-mobile-open .mobile-nav-backdrop { opacity:1; pointer-events:auto; }
+  .menu-toggle, .menu-abrir, .menu-hotzone { display:none !important; }
+  .nav-item, .nav-sub-item { padding:12px 12px; font-size:14px; }
+  .nav { padding:10px 10px 20px; }
+
+  /* Conteúdo: sem margem lateral, espaço para as barras fixa e inferior */
+  .main, body.menu-oculto .main {
+    margin-left:0;
+    padding:calc(70px + env(safe-area-inset-top)) 14px calc(104px + env(safe-area-inset-bottom));
+  }
+  .page-title { font-size:18px; }
+  .page-sub { font-size:12px; margin-bottom:18px; }
+  .page-header { flex-direction:column; align-items:stretch; gap:12px; }
+  .btn-novo { width:100%; justify-content:center; padding:13px 18px; font-size:14px; }
+
+  /* Formulários em coluna única */
+  .grid2, .grid3, .grid4 { grid-template-columns:1fr; gap:0; }
+  .grid2 > *, .grid3 > *, .grid4 > * { grid-column:auto !important; }
+  .card { padding:16px 14px; border-radius:10px; margin-bottom:14px; }
+  .filter-row { gap:10px; }
+  .filter-row .form-group { min-width:calc(50% - 5px); flex:1 1 calc(50% - 5px); }
+  /* font-size 16px evita o zoom automático do iOS ao focar o campo */
+  input, select, textarea { font-size:16px; padding:12px 13px; }
+  .btn { padding:12px 18px; font-size:14px; }
+  .btn-sm { padding:8px 12px; font-size:13px; }
+  .btn-row { flex-wrap:wrap; }
+  .btn-row .btn { flex:1 1 auto; }
+  .actions { flex-wrap:wrap; }
+
+  /* Tabelas: rolagem horizontal com toque */
+  .table-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; max-height:none; }
+  .table-scroll table { min-width:660px; }
+  th { font-size:10px; padding:9px 10px; }
+  td { padding:10px; font-size:13px; }
+  .tab-row { width:100%; overflow-x:auto; }
+  .ef-colbar { justify-content:flex-start; }
+
+  /* KPIs em 2 colunas */
+  .kpi-grid-2col { grid-template-columns:1fr; gap:12px; }
+  .kpi-cards-grid { grid-template-columns:1fr 1fr; gap:10px; }
+  .kpi-val { font-size:22px; }
+
+  /* Modais viram folha de tela cheia com rodapé fixo */
+  .modal-overlay { align-items:flex-end; }
+  .modal {
+    width:100%; max-width:100%; max-height:92vh;
+    border-radius:14px 14px 0 0; padding:18px 15px 0;
+    display:flex; flex-direction:column;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .modal > *:not(.modal-footer) { flex-shrink:0; }
+  .modal-title { font-size:15px; margin-bottom:16px; }
+  .modal-footer {
+    position:sticky; bottom:0; margin-top:auto;
+    background:#fff; padding:14px 0 16px; gap:8px;
+    border-top:1px solid var(--border); flex-wrap:wrap;
+  }
+  .modal-footer .btn { flex:1 1 auto; min-width:calc(50% - 4px); }
+  /* Ação principal (Salvar) em destaque, na primeira linha e largura total */
+  .modal-footer .btn-primary { order:-1; flex-basis:100%; min-width:100%; padding:14px 18px; }
+
+  /* Gráficos e cartões diversos */
+  .chart-wrap { height:210px; }
+  .login-box { width:100%; max-width:400px; padding:36px 24px; margin:16px; }
+
+  /* ══ BARRA INFERIOR — ENTRADA RÁPIDA DE RECEITA / DESPESA ══ */
+  .mobile-quickbar {
+    display:flex; gap:10px; align-items:stretch;
+    position:fixed; left:0; right:0; bottom:0; z-index:150;
+    background:rgba(255,255,255,0.97); backdrop-filter:blur(8px);
+    border-top:1px solid var(--border);
+    padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+    box-shadow:0 -4px 20px rgba(15,30,58,0.10);
+  }
+  .mq-btn {
+    flex:1; display:flex; align-items:center; justify-content:center; gap:8px;
+    border:none; border-radius:12px; cursor:pointer;
+    font-family:inherit; font-size:15px; font-weight:700; color:#fff;
+    padding:15px 10px; line-height:1; letter-spacing:.2px;
+    transition:transform .12s ease, filter .12s ease;
+  }
+  .mq-btn:active { transform:scale(.97); filter:brightness(.94); }
+  .mq-ico {
+    width:24px; height:24px; border-radius:50%; flex-shrink:0;
+    background:rgba(255,255,255,0.24);
+    display:flex; align-items:center; justify-content:center;
+    font-size:17px; font-weight:800; line-height:1;
+  }
+  .mq-receita { background:linear-gradient(135deg,#16a34a,#15803d); box-shadow:0 4px 14px rgba(22,163,74,0.34); }
+  .mq-despesa { background:linear-gradient(135deg,#ea580c,#c2410c); box-shadow:0 4px 14px rgba(234,88,12,0.34); }
+}
+
+/* Telas bem estreitas: rótulos menores para os botões não quebrarem */
+@media (max-width: 360px) {
+  .mq-btn { font-size:13px; padding:14px 6px; gap:6px; }
+  .mq-ico { width:21px; height:21px; font-size:15px; }
+}
+
+@media print { .mobile-topbar, .mobile-quickbar, .mobile-nav-backdrop { display:none !important; } }
 </style>
 </head>
 <body>
@@ -662,6 +818,14 @@ th.ef-th { padding:8px 8px 8px 12px; }
   <!-- SIDEBAR -->
   <div class="menu-hotzone" onmouseenter="document.body.classList.add('menu-espiando')"></div>
   <button class="menu-abrir" onclick="alternarMenu()" title="Mostrar menu">☰</button>
+
+  <!-- ══ BARRA SUPERIOR (somente celular) ══ -->
+  <header class="mobile-topbar">
+    <button class="mb-icon-btn" onclick="toggleMenuMobile()" aria-label="Abrir menu">☰</button>
+    <div class="mb-title" id="mobile-page-title">Dashboard</div>
+    <button class="mb-icon-btn" onclick="showPage('dashboard')" aria-label="Ir para o Dashboard" title="Dashboard">⌂</button>
+  </header>
+  <div class="mobile-nav-backdrop" onclick="fecharMenuMobile()"></div>
   <div class="sidebar" onmouseleave="document.body.classList.remove('menu-espiando')">
     <div class="sidebar-logo" style="position:relative;">
       <img id="brand-logo-sidebar" alt="C@P Consultoria" style="max-width:150px;width:100%;height:auto;display:block;" />
@@ -2161,6 +2325,16 @@ th.ef-th { padding:8px 8px 8px 12px; }
 
 
   </div><!-- /main -->
+
+  <!-- ══ BARRA INFERIOR — ENTRADA RÁPIDA (somente celular) ══ -->
+  <nav class="mobile-quickbar" id="mobile-quickbar">
+    <button class="mq-btn mq-receita" onclick="novaEntradaRapida('receita')">
+      <span class="mq-ico">+</span> Receita
+    </button>
+    <button class="mq-btn mq-despesa" onclick="novaEntradaRapida('despesa')">
+      <span class="mq-ico">−</span> Despesa
+    </button>
+  </nav>
 </div><!-- /app -->
 
 
@@ -3731,6 +3905,8 @@ function showPage(p) {
   if (p === 'dre-analise-cat')   { popularCategoriasAnalise(); renderAnaliseCategoria(); }
   if (p === 'usuarios')          renderUsuariosAdmin();
   if (p === 'empresas')          renderEmpresas();
+  // No celular: fecha a gaveta do menu e atualiza o nome da tela no topo
+  aoTrocarPaginaMobile(p);
 }
 
 // Redesenha a tela em que o usuário está — usado depois de trocar de empresa,
@@ -3766,6 +3942,7 @@ function renderPaginaAtual() {
   if (p === 'dre-analise-cat')   { popularCategoriasAnalise(); renderAnaliseCategoria(); }
   if (p === 'usuarios')          renderUsuariosAdmin();
   if (p === 'empresas')          renderEmpresas();
+  atualizarTituloMobile(p);
 }
 
 // ══════════════════════════════════════════════════════════
@@ -3777,6 +3954,9 @@ function renderPaginaAtual() {
 const MENU_KEY = '477_menu_oculto';
 
 function alternarMenu() {
+  // No celular o menu funciona como gaveta deslizante, não como
+  // "fixo x oculto" (que só faz sentido quando há espaço lateral).
+  if (ehMobile()) { toggleMenuMobile(); return; }
   const oculto = !document.body.classList.contains('menu-oculto');
   aplicarModoMenu(oculto);
   try { localStorage.setItem(MENU_KEY, oculto ? '1' : '0'); } catch(e) {}
@@ -3799,6 +3979,54 @@ function carregarModoMenu() {
   try { oculto = localStorage.getItem(MENU_KEY) === '1'; } catch(e) {}
   aplicarModoMenu(oculto);
 }
+
+// ══════════════════════════════════════════════════════════
+// MOBILE — gaveta de menu, título da barra superior e
+// entrada rápida de Receita / Despesa
+// ══════════════════════════════════════════════════════════
+// O mesmo breakpoint usado no CSS (@media max-width:860px).
+function ehMobile() { return window.matchMedia('(max-width: 860px)').matches; }
+
+function abrirMenuMobile()  { document.body.classList.add('nav-mobile-open'); }
+function fecharMenuMobile() { document.body.classList.remove('nav-mobile-open'); }
+function toggleMenuMobile() { document.body.classList.toggle('nav-mobile-open'); }
+
+// Atualiza o nome da tela mostrado na barra superior do celular,
+// lendo o próprio título da página que acabou de ser aberta.
+function atualizarTituloMobile(p) {
+  const el = document.getElementById('mobile-page-title');
+  if (!el) return;
+  const tituloEl = document.querySelector('#page-' + p + ' .page-title');
+  if (tituloEl) {
+    // clona para descartar spans auxiliares (ex.: a tag de empresa)
+    const c = tituloEl.cloneNode(true);
+    c.querySelectorAll('span').forEach(s => s.remove());
+    el.textContent = (c.textContent || '').trim() || 'Sistema';
+  }
+}
+
+// Chamado ao final de showPage(): fecha a gaveta e sincroniza o título.
+function aoTrocarPaginaMobile(p) {
+  fecharMenuMobile();
+  atualizarTituloMobile(p);
+}
+
+// Botões em destaque da barra inferior. Abrem direto o modal de
+// lançamento correspondente, já limpo, para registro rápido no celular.
+function novaEntradaRapida(tipo) {
+  fecharMenuMobile();
+  if (tipo === 'receita') {
+    clearLancReceber();
+    abrirModalLancReceber();
+  } else {
+    clearLancamento();
+    abrirModalLanc();
+  }
+}
+
+// Fecha a gaveta com a tecla ESC e ao voltar para o tamanho desktop.
+document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharMenuMobile(); });
+window.addEventListener('resize', () => { if (!ehMobile()) fecharMenuMobile(); });
 
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
@@ -11264,6 +11492,7 @@ async function initApp() {
   populateMotivoSelects();
   populatePedidosCanceladosFiltros();
   carregarModoMenu();
+  atualizarTituloMobile('dashboard');
   populateDreYearSelects();
   populateDreGrupoSelects();
   populateDreCatSelects();
