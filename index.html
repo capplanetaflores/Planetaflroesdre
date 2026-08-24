@@ -710,7 +710,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
         </div>
         <div class="nav-sub-item" onclick="showPage('fornecedores')" id="nav-fornecedores">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          Fornecedores
+          Fornecedor/Despesa
         </div>
         <div class="nav-sub-item" onclick="showPage('produtos')" id="nav-produtos">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
@@ -819,14 +819,14 @@ th.ef-th { padding:8px 8px 8px 12px; }
     <!-- ══ FORNECEDORES ══ -->
     <div class="page" id="page-fornecedores">
       <div class="page-header">
-        <div><div class="page-title">Fornecedores</div><div class="page-sub" style="margin-bottom:0">Cadastro e gestão de fornecedores</div></div>
+        <div><div class="page-title">Fornecedor/Despesa</div><div class="page-sub" style="margin-bottom:0">Cadastro e gestão de fornecedores</div></div>
         <button class="btn-novo" id="btn-novo-forn" onclick="toggleFormPanel('form-forn',this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Novo
         </button>
       </div>
       <div class="form-panel" id="form-forn" style="margin-bottom:0">
       <div class="card">
-        <div class="card-title">Novo Fornecedor</div>
+        <div class="card-title">Novo(a) Fornecedor/Despesa</div>
         <div class="grid3">
           <div class="form-group"><label>Razão Social / Nome *</label><input id="f-nome" type="text" placeholder="Nome do fornecedor" /></div>
           <div class="form-group"><label>CNPJ / CPF</label><input id="f-cnpj" type="text" placeholder="00.000.000/0001-00" /></div>
@@ -851,7 +851,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
       </div>
       </div><!-- /form-panel forn -->
       <div class="card" style="margin-top:16px">
-        <div class="card-title">Fornecedores Cadastrados</div>
+        <div class="card-title">Fornecedor/Despesas Cadastradas</div>
         <div class="table-scroll"><table><thead><tr id="th-fornecedores-row">
           <th>Nome</th><th>CNPJ/CPF</th><th>Contato</th><th>Telefone</th><th>Categoria</th><th>Ações</th>
         </tr></thead><tbody id="tb-fornecedores"><tr><td colspan="6" class="empty-state">Nenhum fornecedor cadastrado.</td></tr></tbody></table></div>
@@ -2186,14 +2186,14 @@ th.ef-th { padding:8px 8px 8px 12px; }
   <div class="modal" style="width:720px;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
       <div class="modal-title" style="margin-bottom:0;">📦 Novo Lançamento — Pagamento</div>
-      <button onclick="closeModal('modal-novo-lanc')" style="background:none;border:none;cursor:pointer;color:#a8a29e;font-size:22px;line-height:1;padding:4px;" title="Fechar">✕</button>
+      <button onclick="fecharModalLanc()" style="background:none;border:none;cursor:pointer;color:#a8a29e;font-size:22px;line-height:1;padding:4px;" title="Fechar">✕</button>
     </div>
     <div class="grid3">
       <div class="form-group" style="display:none"><label>Empresa *</label><select id="l-empresa" class="sel-empresa"><option value="">Selecione...</option></select></div>
     </div>
     <div class="grid3">
-      <div class="form-group"><label>Data da Compra *</label><input id="l-dtcompra" type="date" /></div>
-      <div class="form-group"><label>Previsão de Pagamento</label><input id="l-dtprev" type="date" /></div>
+      <div class="form-group"><label>Data da Compra *</label><input id="l-dtcompra" type="date" onchange="toggleParcelaDates('l-parcelas','l-parcela-dates')" /></div>
+      <div class="form-group"><label>Previsão de Pagamento</label><input id="l-dtprev" type="date" onchange="toggleParcelaDates('l-parcelas','l-parcela-dates')" /></div>
       <div class="form-group"><label>Nº da Nota Fiscal</label><input id="l-nf" type="text" placeholder="000000" /></div>
     </div>
     <div class="grid3">
@@ -2264,7 +2264,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
     </div>
     <div class="form-group"><label>Observações</label><textarea id="l-obs" rows="2" placeholder="Informações adicionais..."></textarea></div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('modal-novo-lanc')">Cancelar</button>
+      <button class="btn btn-secondary" onclick="fecharModalLanc()">Cancelar</button>
       <button class="btn btn-secondary" onclick="clearLancamento()">Limpar</button>
       <button class="btn btn-primary" onclick="saveLancamento()">Salvar Lançamento</button>
     </div>
@@ -2276,18 +2276,18 @@ th.ef-th { padding:8px 8px 8px 12px; }
   <div class="modal" style="width:720px;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
       <div class="modal-title" style="margin-bottom:0;">💰 Novo Lançamento — Recebimento</div>
-      <button onclick="closeModal('modal-novo-lr')" style="background:none;border:none;cursor:pointer;color:#a8a29e;font-size:22px;line-height:1;padding:4px;" title="Fechar">✕</button>
+      <button onclick="fecharModalLancReceber()" style="background:none;border:none;cursor:pointer;color:#a8a29e;font-size:22px;line-height:1;padding:4px;" title="Fechar">✕</button>
     </div>
     <div class="grid3">
       <div class="form-group" style="display:none"><label>Empresa *</label><select id="lr-empresa" class="sel-empresa"><option value="">Selecione...</option></select></div>
     </div>
     <div class="grid3">
-      <div class="form-group"><label>Data da Venda *</label><input id="lr-dtvenda" type="date" /></div>
-      <div class="form-group"><label>Previsão de Recebimento</label><input id="lr-dtprev" type="date" /></div>
+      <div class="form-group"><label>Data da Venda *</label><input id="lr-dtvenda" type="date" onchange="toggleParcelaDates('lr-parcelas','lr-parcela-dates')" /></div>
+      <div class="form-group"><label>Previsão de Recebimento</label><input id="lr-dtprev" type="date" onchange="toggleParcelaDates('lr-parcelas','lr-parcela-dates')" /></div>
       <div class="form-group"><label>Nº da Nota Fiscal</label><input id="lr-nf" type="text" placeholder="000000" /></div>
     </div>
     <div class="grid3">
-      <div class="form-group"><label class="label-add">Cliente *<button type="button" class="btn-add-inline" title="Cadastrar novo cliente" onclick="abrirCadastroRapido('cliente','lr-cliente')">+</button></label><select id="lr-cliente"><option value="">Selecione...</option></select></div>
+      <div class="form-group"><label class="label-add">Cliente<button type="button" class="btn-add-inline" title="Cadastrar novo cliente" onclick="abrirCadastroRapido('cliente','lr-cliente')">+</button></label><select id="lr-cliente"><option value="">Selecione... (opcional)</option></select></div>
       <div class="form-group"><label class="label-add">Produto de Venda<button type="button" class="btn-add-inline" title="Cadastrar novo produto de venda" onclick="abrirCadastroRapido('prodvenda','lr-prod')">+</button></label><select id="lr-prod"><option value="">Selecione...</option></select></div>
       <div class="form-group"><label>Valor Total (R$) *</label><input id="lr-valor" type="number" step="0.01" placeholder="0,00" /></div>
     </div>
@@ -2342,7 +2342,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
     </div>
     <div class="form-group"><label>Observações</label><textarea id="lr-obs" rows="2" placeholder="Informações adicionais..."></textarea></div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('modal-novo-lr')">Cancelar</button>
+      <button class="btn btn-secondary" onclick="fecharModalLancReceber()">Cancelar</button>
       <button class="btn btn-secondary" onclick="clearLancReceber()">Limpar</button>
       <button class="btn btn-primary" onclick="saveLancReceber()">Salvar Lançamento</button>
     </div>
@@ -3117,7 +3117,7 @@ const PAGES_CONFIG = [
   { id:'bancos',            label:'Bancos / Caixas',     grupo:'pagar'   },
   { id:'transferencias',    label:'Transferência entre Contas', grupo:'pagar' },
   { id:'fluxo-futuro',      label:'Fluxo de Caixa Futuro',grupo:'pagar'  },
-  { id:'fornecedores',      label:'Fornecedores',        grupo:'pagar'   },
+  { id:'fornecedores',      label:'Fornecedor/Despesa',  grupo:'pagar'   },
   { id:'produtos',          label:'Produtos (Compra)',   grupo:'pagar'   },
   { id:'lancamentos',       label:'Lançamentos (Compra)',grupo:'pagar'   },
   { id:'apagar',            label:'Contas a Pagar',      grupo:'pagar'   },
@@ -3811,7 +3811,7 @@ function abrirModalLanc() {
   populateDreCatSelects();
   openModal('modal-novo-lanc');
 }
-function fecharModalLanc() { closeModal('modal-novo-lanc'); }
+function fecharModalLanc() { clearLancamento(); closeModal('modal-novo-lanc'); }
 
 function abrirModalLancReceber() {
   populateClienteSelects();
@@ -3821,7 +3821,7 @@ function abrirModalLancReceber() {
   populateDreCatSelects();
   openModal('modal-novo-lr');
 }
-function fecharModalLancReceber() { closeModal('modal-novo-lr'); }
+function fecharModalLancReceber() { clearLancReceber(); closeModal('modal-novo-lr'); }
 
 // ══════════════════════════════════════════
 // HELPERS
@@ -4754,6 +4754,9 @@ async function saveLancamento() {
 
 function clearLancamento() {
   ['l-dtcompra','l-dtprev','l-nf','l-obs'].forEach(id=>document.getElementById(id).value='');
+  // Mantém a Data da Compra pré-preenchida com hoje, como no primeiro
+  // carregamento da tela — evita reabrir o modal com a data em branco.
+  document.getElementById('l-dtcompra').value = today();
   document.getElementById('l-forn').value='';
   document.getElementById('l-prod').value='';
   document.getElementById('l-valor').value='';
@@ -7608,20 +7611,33 @@ function toggleParcelaDates(selectId, containerid) {
   }
   const valorSugerido = totalValor > 0 ? (totalValor / n).toFixed(2) : '';
 
+  // Data base para sugerir automaticamente o vencimento de cada parcela:
+  // usa a Previsão de Pagamento/Recebimento (é a mesma referência usada na
+  // geração automática mensal em getParcelas); se estiver vazia, cai para
+  // a Data da Compra/Venda (o cadastro inicial do lançamento). O usuário
+  // pode editar qualquer uma das datas sugeridas livremente depois.
+  const prefix = selectId.replace(/-parcelas$/, '');
+  const dtprevEl = document.getElementById(prefix + '-dtprev');
+  const dtiniEl = document.getElementById(prefix + '-dtcompra') || document.getElementById(prefix + '-dtvenda');
+  const dataBase = (dtprevEl && dtprevEl.value) ? dtprevEl.value : ((dtiniEl && dtiniEl.value) ? dtiniEl.value : '');
+
   container.style.display = '';
   // Rebuild grid with date + valor inputs per parcela
-  grid.innerHTML = Array.from({length: n}, (_, i) => `
+  grid.innerHTML = Array.from({length: n}, (_, i) => {
+    const vencSugerido = dataBase ? (parcelaVencimento(dataBase, i+1, n) || '') : '';
+    return `
     <div style="background:#faf9f8;border:1.5px solid #e7e5e4;border-radius:8px;padding:10px 12px;">
       <div style="font-size:11px;font-weight:700;color:#ea580c;margin-bottom:8px;">Parcela ${i+1}/${n}</div>
       <div style="margin-bottom:6px;">
         <label style="font-size:10px;font-weight:600;color:#57534e;margin-bottom:3px;display:block;">Vencimento</label>
-        <input type="date" id="${containerid}-p${i+1}" style="font-size:12px;padding:6px 9px;width:100%" />
+        <input type="date" id="${containerid}-p${i+1}" value="${vencSugerido}" style="font-size:12px;padding:6px 9px;width:100%" />
       </div>
       <div>
         <label style="font-size:10px;font-weight:600;color:#57534e;margin-bottom:3px;display:block;">Valor (R$)</label>
         <input type="number" step="0.01" min="0" id="${containerid}-v${i+1}" placeholder="0,00" value="${valorSugerido}" style="font-size:12px;padding:6px 9px;width:100%" oninput="syncTotalParcelaValores('${containerid}',${n},'${selectId}')" />
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 function syncTotalParcelaValores(containerid, n, selectId) {
@@ -8151,7 +8167,9 @@ async function saveLancReceber() {
   const dtvenda=document.getElementById('lr-dtvenda').value;
   const cliente=document.getElementById('lr-cliente').value;
   const valor=parseFloat(document.getElementById('lr-valor').value);
-  if(!dtvenda||!cliente||!valor){ alert('Preencha data, cliente e valor.'); return; }
+  if(!dtvenda||!valor){ alert('Preencha data e valor.'); return; }
+  // Cliente é opcional: nem todo recebimento tem um cliente cadastrado
+  // (ex.: vendas avulsas, receitas diversas).
   const recebido=document.getElementById('lr-recebido').value;
   const banco=document.getElementById('lr-banco').value;
   if (!validarBancoObrigatorio(recebido, banco)) return;
@@ -8179,6 +8197,9 @@ async function saveLancReceber() {
 }
 function clearLancReceber() {
   ['lr-dtvenda','lr-dtprev','lr-nf','lr-obs'].forEach(id=>document.getElementById(id).value='');
+  // Mantém a Data da Venda pré-preenchida com hoje, como no primeiro
+  // carregamento da tela — evita reabrir o modal com a data em branco.
+  document.getElementById('lr-dtvenda').value = today();
   document.getElementById('lr-cliente').value='';
   document.getElementById('lr-prod').value='';
   document.getElementById('lr-valor').value='';
@@ -12997,7 +13018,15 @@ window.APP_BUILD = '2026-08-10 · planeta-flores-empresa-unica';
 
 // Fechar modais clicando fora
 document.querySelectorAll('.modal-overlay').forEach(ov => {
-  ov.addEventListener('click', e => { if(e.target === ov) ov.classList.remove('open'); });
+  ov.addEventListener('click', e => {
+    if(e.target !== ov) return;
+    // Os modais de "Novo Lançamento" (pagamento/recebimento) precisam ser
+    // limpos ao fechar, senão os campos (ex.: número de parcelas) ficam
+    // com os valores do último preenchimento na próxima vez que abrirem.
+    if (ov.id === 'modal-novo-lanc') clearLancamento();
+    else if (ov.id === 'modal-novo-lr') clearLancReceber();
+    ov.classList.remove('open');
+  });
 });
 </script>
 </body>
