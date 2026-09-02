@@ -162,6 +162,61 @@ tr:hover td { background:#faf9f7; }
 .badge-yellow { background:#fef3c7; color:#92400e; }
 .badge-gray { background:#faf9f7; color:#57534e; border:1px solid #e7e5e4; }
 .badge-blue { background:#dbeafe; color:#1e40af; }
+/* ── PRÉVIA DE IMPORTAÇÃO DE EXTRATO (cards, um por lançamento) ── */
+.import-preview-toolbar {
+  display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius); padding:10px 14px; margin-bottom:12px;
+}
+.import-select-all { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:var(--text2); cursor:pointer; user-select:none; }
+.import-select-all input[type=checkbox] { width:17px; height:17px; accent-color:var(--accent); cursor:pointer; }
+.import-preview-count { font-size:12px; color:var(--text3); }
+
+.import-row-card {
+  border:1px solid var(--border); border-radius:var(--radius2); margin:0 4px 14px; background:var(--card);
+  box-shadow:0 1px 3px rgba(26,62,122,0.05); overflow:hidden;
+}
+.import-row-card.import-row-dup { border-color:#f0b8b8; }
+.import-row-card.import-row-interno { border-color:#e9c988; }
+.import-row-card.import-row-done { border-color:#bfe9cc; background:#f6fff9; color:#4b6b52; padding:13px 18px; font-size:13px; font-weight:500; }
+
+.import-row-select {
+  display:flex; align-items:flex-start; gap:12px; padding:14px 18px; background:var(--bg3);
+  border-bottom:1px solid var(--border); cursor:pointer;
+}
+.import-row-card.import-row-dup .import-row-select { background:#fdf3f3; }
+.import-row-card.import-row-interno .import-row-select { background:#fdf8ee; }
+.import-row-select input[type=checkbox] { width:19px; height:19px; margin-top:1px; accent-color:var(--accent); cursor:pointer; flex-shrink:0; }
+.import-row-select-main { display:flex; align-items:center; gap:9px; flex-wrap:wrap; flex:1; min-width:0; }
+.import-row-valor { font-family:'DM Mono',monospace; font-size:19px; font-weight:700; color:var(--text); letter-spacing:-.2px; }
+
+.import-row-body { padding:18px; }
+.import-row-fields { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:16px 18px; }
+.import-row-field { min-width:0; }
+.import-row-field.span2 { grid-column:span 2; }
+.import-row-field label {
+  display:block; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:.4px; margin-bottom:6px;
+}
+.import-row-field input[type=date], .import-row-field input[type=number], .import-row-field input[type=text], .import-row-field select {
+  width:100%; padding:9px 12px; font-size:13.5px; white-space:normal;
+}
+.import-row-field .import-row-static {
+  padding:9px 12px; font-size:13.5px; color:var(--text2); background:var(--bg3); border:1.5px solid var(--border);
+  border-radius:var(--radius); font-family:'DM Mono',monospace;
+}
+.import-row-nome-manual { margin-top:8px !important; }
+.import-row-obs-wrap { margin-top:18px; padding-top:16px; border-top:1px dashed var(--border); }
+.import-row-obs-wrap label {
+  display:block; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:.4px; margin-bottom:6px;
+}
+.import-row-obs { font-size:12.5px; color:var(--text2); line-height:1.55; word-break:break-word; }
+.import-row-footer {
+  display:flex; justify-content:flex-end; padding:12px 18px; background:var(--bg3); border-top:1px solid var(--border);
+}
+@media (max-width:700px) {
+  .import-row-field.span2 { grid-column:span 1; }
+  .import-row-body { padding:16px; }
+  .import-row-footer .btn { width:100%; text-align:center; }
+}
 /* ── FILTRO DE COLUNA ESTILO EXCEL ── */
 th.ef-th { padding:8px 8px 8px 12px; }
 .ef-th-inner { display:flex; align-items:center; justify-content:space-between; gap:6px; }
@@ -3252,7 +3307,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
 
 <!-- ══ MODAL IMPORTAR EXTRATO (CONCILIAÇÃO BANCÁRIA) ══ -->
 <div class="modal-overlay" id="modal-import">
-  <div class="modal" style="width:min(1100px,95vw);max-height:88vh;overflow:auto;">
+  <div class="modal" style="width:min(1180px,96vw);max-height:88vh;overflow:auto;">
     <div class="modal-title" id="import-title">📥 Importar Extrato — Conciliação Bancária</div>
     <input type="hidden" id="import-tipo" />
     <div class="form-group">
@@ -3266,7 +3321,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
       Cole abaixo o conteúdo do relatório (CSV, separado por ";" ou ",") ou selecione o arquivo. O sistema tenta identificar automaticamente o fornecedor/cliente e a categoria; o que não conseguir identificar fica em branco para você preencher.
     </p>
     <div id="import-step-1">
-      <div class="form-group"><label id="import-file-label">Arquivo CSV</label><input type="file" id="import-file" accept=".csv,text/csv" onchange="lerArquivoImport(event)" /></div>
+      <div class="form-group"><label id="import-file-label">Arquivo CSV</label><input type="file" id="import-file" accept=".csv,.pdf,.txt,text/csv,application/pdf,text/plain" onchange="lerArquivoImport(event)" /></div>
       <div id="import-pdf-status" style="display:none;font-size:12px;color:#57534e;margin:-8px 0 12px;"></div>
       <div class="form-group"><label>Ou cole o conteúdo aqui</label>
         <textarea id="import-textarea" rows="8" style="width:100%;font-family:DM Mono,monospace;font-size:12px;" placeholder="Cole aqui o conteúdo do CSV..."></textarea>
@@ -3287,12 +3342,14 @@ th.ef-th { padding:8px 8px 8px 12px; }
         <button class="btn btn-secondary btn-sm" onclick="aplicarCategoriaMassaImport()">Aplicar a todas as linhas</button>
         <span style="font-size:11px;color:#a8a29e;">(você ainda pode alterar linha a linha depois)</span>
       </div>
-      <div class="table-scroll" style="max-height:50vh;">
-        <table><thead><tr>
-          <th style="width:30px"><input type="checkbox" id="import-check-all" checked onchange="toggleAllImportRows(this)" /></th>
-          <th>Data</th><th>Vencimento</th><th>Fornecedor/Cliente</th><th>Valor</th><th>NF/Pedido</th><th>Categoria</th><th>Obs.</th><th>Ações</th>
-        </tr></thead><tbody id="tb-import-preview"></tbody></table>
+      <div class="import-preview-toolbar">
+        <label class="import-select-all">
+          <input type="checkbox" id="import-check-all" checked onchange="toggleAllImportRows(this)" />
+          Selecionar todas
+        </label>
+        <span class="import-preview-count" id="import-count-incluidas"></span>
       </div>
+      <div class="import-preview-list" id="tb-import-preview" style="max-height:56vh;overflow-y:auto;padding-right:4px;margin:0 -4px;"></div>
       <div id="import-progress-wrap" style="display:none;margin-top:14px;">
         <div style="display:flex;justify-content:space-between;font-size:12px;color:#57534e;margin-bottom:4px;">
           <span id="import-progress-label">Importando...</span>
@@ -3345,14 +3402,14 @@ th.ef-th { padding:8px 8px 8px 12px; }
 
 <!-- ══ MODAL DETALHE DE CONTA DO DRE ══ -->
 <div class="modal-overlay" id="modal-dre-detalhe">
-  <div class="modal" style="width:800px;">
+  <div class="modal" style="width:920px;max-width:96vw;">
     <div class="modal-title" id="dre-detalhe-title" style="margin-bottom:16px;">Detalhe da Conta</div>
     <div class="grid4" id="dre-detalhe-kpis" style="margin-bottom:16px;"></div>
     <div style="max-height:50vh;overflow-y:auto">
       <table class="dfc-table" style="width:100%">
         <thead><tr>
           <th style="text-align:left">Data</th><th style="text-align:left">Fornecedor / Cliente</th>
-          <th style="text-align:left">Produto</th><th>Situação</th><th>Valor</th>
+          <th style="text-align:left">Produto</th><th>Situação</th><th>Valor</th><th>Ações</th>
         </tr></thead>
         <tbody id="dre-detalhe-tbody"></tbody>
       </table>
@@ -10515,7 +10572,7 @@ function renderDre() {
       valoresMes[m][grupoId] += (l.valor || 0);
       if (catId && valoresCatMes[m][catId] !== undefined) valoresCatMes[m][catId] += (l.valor || 0);
       itensMes[m][grupoId].push({
-        tipo: 'receber', data: dtRef, nome: getClienteNome(l.cliente),
+        id: l.id, tipo: 'receber', data: dtRef, nome: getClienteNome(l.cliente),
         prod: l.prod ? getProdVendaNome(l.prod) : '', valor: l.valor || 0,
         status: l.recebido === 'sim' ? 'Recebido' : 'A Receber', catId: catId || null
       });
@@ -10537,7 +10594,7 @@ function renderDre() {
       valoresMes[m][grupoId] += (l.valor || 0);
       if (catId && valoresCatMes[m][catId] !== undefined) valoresCatMes[m][catId] += (l.valor || 0);
       itensMes[m][grupoId].push({
-        tipo: 'pagar', data: dtRef, nome: getFornNome(l.forn),
+        id: l.id, tipo: 'pagar', data: dtRef, nome: getFornNome(l.forn),
         prod: l.prod ? getProdNome(l.prod) : '', valor: l.valor || 0,
         status: l.pago === 'sim' ? 'Pago' : 'A Pagar', catId: catId || null
       });
@@ -10823,7 +10880,7 @@ function renderAnaliseCategoria() {
     if (!catId || !valoresMes[catId]) return;
     valoresMes[catId][m] += (l.valor || 0);
     itensMes[m][catId].push({
-      tipo: 'receber', data: dtRef, nome: getClienteNome(l.cliente),
+      id: l.id, tipo: 'receber', data: dtRef, nome: getClienteNome(l.cliente),
       prod: l.prod ? getProdVendaNome(l.prod) : '', valor: l.valor || 0,
       status: l.recebido === 'sim' ? 'Recebido' : 'A Receber'
     });
@@ -10839,7 +10896,7 @@ function renderAnaliseCategoria() {
     if (!catId || !valoresMes[catId]) return;
     valoresMes[catId][m] += (l.valor || 0);
     itensMes[m][catId].push({
-      tipo: 'pagar', data: dtRef, nome: getFornNome(l.forn),
+      id: l.id, tipo: 'pagar', data: dtRef, nome: getFornNome(l.forn),
       prod: l.prod ? getProdNome(l.prod) : '', valor: l.valor || 0,
       status: l.pago === 'sim' ? 'Pago' : 'A Pagar'
     });
@@ -10992,27 +11049,63 @@ function abrirDetalheAcCategoria(catId, mes) {
   }
 
   const tbody = document.getElementById('dre-detalhe-tbody');
-  if (tbody) {
-    if (!itens.length) {
-      tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Nenhum lançamento encontrado.</td></tr>';
-    } else {
-      tbody.innerHTML = itens.map(it => {
-        let badge;
-        if (it.status === 'Recebido' || it.status === 'Pago') badge = `<span class="badge badge-green">${it.status}</span>`;
-        else if (it.status === 'A Receber') badge = `<span class="badge" style="background:#dbeafe;color:#1e6fad;font-weight:600">${it.status}</span>`;
-        else badge = `<span class="badge badge-red">${it.status}</span>`;
-        return `<tr>
-          <td>${fmtDate(it.data)}</td>
-          <td>${it.nome || '—'}</td>
-          <td>${it.prod || '—'}</td>
-          <td>${badge}</td>
-          <td style="font-family:DM Mono,monospace;text-align:right">${fmtBRL(it.valor)}</td>
-        </tr>`;
-      }).join('');
-    }
-  }
+  if (tbody) _renderDreDetalheLinhas(itens);
 
   openModal('modal-dre-detalhe');
+}
+
+// Monta as linhas da tabela do modal de detalhe do DRE / Análise por
+// Categoria. Compartilhado pelos dois pontos de entrada (drill-down por
+// grupo do DRE e drill-down por categoria), já que o layout é idêntico.
+function _renderDreDetalheLinhas(itens) {
+  const tbody = document.getElementById('dre-detalhe-tbody');
+  if (!tbody) return;
+  if (!itens.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Nenhum lançamento encontrado.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = itens.map(it => {
+    let badge;
+    if (it.status === 'Recebido' || it.status === 'Pago') badge = `<span class="badge badge-green">${it.status}</span>`;
+    else if (it.status === 'A Receber') badge = `<span class="badge" style="background:#dbeafe;color:#1e6fad;font-weight:600">${it.status}</span>`;
+    else badge = `<span class="badge badge-red">${it.status}</span>`;
+    return `<tr>
+      <td>${fmtDate(it.data)}</td>
+      <td>${it.nome || '—'}</td>
+      <td>${it.prod || '—'}</td>
+      <td>${badge}</td>
+      <td style="font-family:DM Mono,monospace;text-align:right">${fmtBRL(it.valor)}</td>
+      <td>${_dreDetalheAcoesHtml(it)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// Botões de ação de cada linha do drill-down. Reaproveita as mesmas funções
+// já usadas em Contas a Pagar/Receber (editar, marcar pago/recebido,
+// estornar) — não duplica lógica de gravação, só decide qual delas chamar
+// conforme o tipo ('pagar' ou 'receber') e fecha o modal de detalhe antes,
+// para não empilhar dois modais abertos ao mesmo tempo.
+function _dreDetalheAcoesHtml(it) {
+  if (!it.id) return '<span style="color:#a8a29e;font-size:12px">—</span>';
+  const jaConfirmado = it.status === 'Recebido' || it.status === 'Pago';
+  const btnEditar = `<button class="btn btn-secondary btn-sm" onclick="dreDetalheEditar('${it.tipo}','${it.id}')">Editar</button>`;
+  const btnMarcarOuEstornar = jaConfirmado
+    ? `<button class="btn btn-danger btn-sm" onclick="dreDetalheEstornar('${it.tipo}','${it.id}')" title="Desfazer ${it.tipo==='pagar'?'pagamento':'recebimento'}">↩ Estornar</button>`
+    : `<button class="btn btn-primary btn-sm" onclick="dreDetalheMarcar('${it.tipo}','${it.id}')">${it.tipo==='pagar'?'Marcar Pago':'Marcar Recebido'}</button>`;
+  return `<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">${btnEditar}${btnMarcarOuEstornar}</div>`;
+}
+
+function dreDetalheEditar(tipo, id) {
+  closeModal('modal-dre-detalhe');
+  if (tipo === 'pagar') editLancamento(id); else editLancReceber(id);
+}
+function dreDetalheMarcar(tipo, id) {
+  closeModal('modal-dre-detalhe');
+  if (tipo === 'pagar') marcarPago(id, 1); else marcarRecebido(id, 1);
+}
+async function dreDetalheEstornar(tipo, id) {
+  closeModal('modal-dre-detalhe');
+  if (tipo === 'pagar') await estornarPago(id, 1); else await estornarRecebido(id, 1);
 }
 
 // Gera o PDF da Análise por Categoria (usa a tabela já renderizada em tela,
@@ -11125,25 +11218,7 @@ function abrirDetalheDreGrupo(grupoId, mes, catId) {
   }
 
   const tbody = document.getElementById('dre-detalhe-tbody');
-  if (tbody) {
-    if (!itens.length) {
-      tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Nenhum lançamento encontrado.</td></tr>';
-    } else {
-      tbody.innerHTML = itens.map(it => {
-        let badge;
-        if (it.status === 'Recebido' || it.status === 'Pago') badge = `<span class="badge badge-green">${it.status}</span>`;
-        else if (it.status === 'A Receber') badge = `<span class="badge" style="background:#dbeafe;color:#1e6fad;font-weight:600">${it.status}</span>`;
-        else badge = `<span class="badge badge-red">${it.status}</span>`;
-        return `<tr>
-          <td>${fmtDate(it.data)}</td>
-          <td>${it.nome || '—'}</td>
-          <td>${it.prod || '—'}</td>
-          <td>${badge}</td>
-          <td style="font-family:DM Mono,monospace;text-align:right">${fmtBRL(it.valor)}</td>
-        </tr>`;
-      }).join('');
-    }
-  }
+  if (tbody) _renderDreDetalheLinhas(itens);
 
   openModal('modal-dre-detalhe');
 }
@@ -12330,7 +12405,10 @@ function atualizarFormatoImport() {
     instrucao.textContent = 'Selecione o PDF do extrato bancário ou cole o texto abaixo. O sistema reconhece automaticamente os formatos do Sicoob, do Banco do Brasil e da Ailos/Viacredi, e traz as entradas (créditos) ou saídas (débitos) conforme a tela em que você abriu esta importação. Movimentações internas (empréstimo, aplicação, estorno, tarifa) aparecem na lista, porém já desmarcadas.';
     textarea.placeholder = 'Cole aqui o texto do extrato bancário...';
   } else {
-    fileInput.setAttribute('accept', '.csv,text/csv');
+    // Mantém PDF/TXT selecionáveis mesmo aqui: o modal abre neste modo por
+    // padrão, e lerArquivoImport() troca sozinho para "Extrato Bancário"
+    // se o arquivo escolhido for um PDF.
+    fileInput.setAttribute('accept', '.csv,.pdf,.txt,text/csv,application/pdf,text/plain');
     label.textContent = 'Arquivo CSV';
     instrucao.textContent = 'Cole abaixo o conteúdo do relatório (CSV, separado por ";" ou ",") ou selecione o arquivo. O sistema tenta identificar automaticamente o fornecedor/cliente e a categoria; o que não conseguir identificar fica em branco para você preencher.';
     textarea.placeholder = 'Cole aqui o conteúdo do CSV...';
@@ -12399,6 +12477,15 @@ function lerArquivoImport(ev) {
   const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
   const statusEl = document.getElementById('import-pdf-status');
   if(isPdf) {
+    // Um PDF só faz sentido como "Extrato Bancário". O modal sempre abre com
+    // o campo "Formato do arquivo" em CSV (padrão); se o usuário selecionar
+    // um PDF sem trocar esse campo manualmente, o texto era extraído certo
+    // mas depois analisado como planilha ao clicar em "Analisar Arquivo",
+    // fazendo a importação falhar sem deixar claro o motivo. Por isso o
+    // formato é ajustado automaticamente aqui.
+    const formatoSel = document.getElementById('import-formato');
+    if(formatoSel.value !== 'extrato') { formatoSel.value = 'extrato'; atualizarFormatoImport(); }
+
     statusEl.style.display = '';
     statusEl.textContent = '⏳ Carregando leitor de PDF...';
     extrairTextoPdf(file).then(texto => {
@@ -13052,38 +13139,77 @@ function renderImportPreview() {
     + (aportes ? ` · <b style="color:#c2740c">${aportes}</b> movimentação(ões) interna(s) da conta já desmarcada(s)` : '')
     + (importados ? ` · <b style="color:#1a8a3c">${importados}</b> já importada(s)` : '');
 
+  const naoImportadas = importPreviewRows.filter(r=>!r.importado);
+  const selecionadas = naoImportadas.filter(r=>r.incluir).length;
+  const countEl = document.getElementById('import-count-incluidas');
+  if(countEl) countEl.textContent = naoImportadas.length ? `${selecionadas} de ${naoImportadas.length} selecionada(s)` : '';
+  const checkAll = document.getElementById('import-check-all');
+  if(checkAll) checkAll.checked = naoImportadas.length > 0 && selecionadas === naoImportadas.length;
+
   const tb = document.getElementById('tb-import-preview');
   tb.innerHTML = importPreviewRows.map((r,i) => {
     if(r.importado) {
-      return `<tr style="background:#f0fff4;color:#7a8a7f">
-        <td colspan="8">✅ Importado — ${r.nomeRaw} · ${fmtBRL(r.valor)} · ${fmtDate(r.dataRef)}</td>
-        <td>—</td>
-      </tr>`;
+      return `<div class="import-row-card import-row-done">✅ Importado — ${r.nomeRaw} · ${fmtBRL(r.valor)} · ${fmtDate(r.dataRef)}</div>`;
     }
     const nomeOptions = ['<option value="__novo__">＋ Criar novo: "'+r.nomeRaw+'"</option>']
       .concat(nomesLista.map(n=>`<option value="${n.id}" ${!r.isNovo && r.matchId===n.id?'selected':''}>${n.nome}</option>`));
     const catOptions = ['<option value="">— Selecione —</option>']
       .concat(catsDoTipo.map(c=>`<option value="${c.id}" ${r.catId===c.id?'selected':''}>${c.nome}</option>`));
-    const dupBadge = r.duplicado ? '<span class="badge badge-red" style="margin-left:4px" title="Já existe um lançamento com mesmo fornecedor/cliente, data e valor">⚠️ Já existe</span>' : '';
-    const aporteBadge = r.aporteSuspeito ? '<span class="badge badge-yellow" style="margin-left:4px" title="'+((r.motivoSuspeita||'Movimentação interna da conta — provavelmente não é uma venda/compra').replace(/"/g,'&quot;'))+'">🔁 '+(r.motivoSuspeita ? 'Movimentação interna' : 'Possível aporte próprio')+'</span>' : '';
+    const dupBadge = r.duplicado ? '<span class="badge badge-red" title="Já existe um lançamento com mesmo fornecedor/cliente, data e valor">⚠️ Já existe</span>' : '';
+    const aporteBadge = r.aporteSuspeito ? '<span class="badge badge-yellow" title="'+((r.motivoSuspeita||'Movimentação interna da conta — provavelmente não é uma venda/compra').replace(/"/g,'&quot;'))+'">🔁 '+(r.motivoSuspeita ? 'Movimentação interna' : 'Possível aporte próprio')+'</span>' : '';
     // Quando a linha vai virar um cadastro novo, o nome extraído do PDF pode
     // vir sujo (documento colado, nome cortado etc.) — por isso, além de
     // escolher um fornecedor/cliente já existente no select, dá pra digitar
     // o nome manualmente antes de confirmar a importação.
     const nomeManual = r.isNovo
-      ? `<input type="text" value="${(r.nomeRaw||'').replace(/"/g,'&quot;')}" placeholder="Nome do ${tipo==='pagar'?'fornecedor':'cliente'}" style="font-size:12px;max-width:200px;margin-top:4px;display:block" onchange="importPreviewRows[${i}].nomeRaw=this.value; recalcDuplicadoLinha(${i})" />`
+      ? `<input class="import-row-nome-manual" type="text" value="${(r.nomeRaw||'').replace(/"/g,'&quot;')}" placeholder="Nome do ${tipo==='pagar'?'fornecedor':'cliente'}" onchange="importPreviewRows[${i}].nomeRaw=this.value; recalcDuplicadoLinha(${i})" />`
       : '';
-    return `<tr${r.duplicado?' style="background:#fff5f5"':(r.aporteSuspeito?' style="background:#fffaf0"':'')}>
-      <td><input type="checkbox" ${r.incluir?'checked':''} onchange="importPreviewRows[${i}].incluir=this.checked" /></td>
-      <td><input type="date" value="${r.dataRef}" style="padding:5px;font-size:12px;width:120px" onchange="importPreviewRows[${i}].dataRef=this.value; recalcDuplicadoLinha(${i})" /></td>
-      <td><input type="date" value="${r.venc}" style="padding:5px;font-size:12px;width:120px" onchange="importPreviewRows[${i}].venc=this.value" /></td>
-      <td><select style="font-size:12px;max-width:200px" onchange="importPreviewRows[${i}].matchId=(this.value==='__novo__'?null:this.value); importPreviewRows[${i}].isNovo=(this.value==='__novo__'); recalcDuplicadoLinha(${i})">${nomeOptions.join('')}</select>${nomeManual}${dupBadge}${aporteBadge}</td>
-      <td style="font-family:DM Mono,monospace;font-size:12px"><input type="number" step="0.01" value="${r.valor}" style="width:100px;padding:5px;font-size:12px" onchange="importPreviewRows[${i}].valor=parseFloat(this.value)||0; recalcDuplicadoLinha(${i})" /></td>
-      <td style="font-size:12px">${r.nf||'—'}</td>
-      <td><select style="font-size:12px;max-width:180px" onchange="importPreviewRows[${i}].catId=this.value">${catOptions.join('')}</select></td>
-      <td style="font-size:12px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(r.obs||'').replace(/"/g,'&quot;')}">${r.obs||'—'}</td>
-      <td><button class="btn btn-primary btn-sm" onclick="confirmarImportLinha(${i})">✅ Confirmar</button></td>
-    </tr>`;
+    const cardCls = r.duplicado ? ' import-row-dup' : (r.aporteSuspeito ? ' import-row-interno' : '');
+    return `<div class="import-row-card${cardCls}">
+      <label class="import-row-select">
+        <input type="checkbox" ${r.incluir?'checked':''} onchange="importPreviewRows[${i}].incluir=this.checked; renderImportPreview()" />
+        <div class="import-row-select-main">
+          <span class="import-row-valor">${fmtBRL(r.valor)}</span>
+          ${dupBadge}${aporteBadge}
+        </div>
+      </label>
+      <div class="import-row-body">
+        <div class="import-row-fields">
+          <div class="import-row-field">
+            <label>Data</label>
+            <input type="date" value="${r.dataRef}" onchange="importPreviewRows[${i}].dataRef=this.value; recalcDuplicadoLinha(${i})" />
+          </div>
+          <div class="import-row-field">
+            <label>Vencimento</label>
+            <input type="date" value="${r.venc}" onchange="importPreviewRows[${i}].venc=this.value" />
+          </div>
+          <div class="import-row-field span2">
+            <label>${tipo==='pagar'?'Fornecedor':'Cliente'}</label>
+            <select onchange="importPreviewRows[${i}].matchId=(this.value==='__novo__'?null:this.value); importPreviewRows[${i}].isNovo=(this.value==='__novo__'); recalcDuplicadoLinha(${i})">${nomeOptions.join('')}</select>
+            ${nomeManual}
+          </div>
+          <div class="import-row-field">
+            <label>Valor (R$)</label>
+            <input type="number" step="0.01" value="${r.valor}" onchange="importPreviewRows[${i}].valor=parseFloat(this.value)||0; recalcDuplicadoLinha(${i})" />
+          </div>
+          <div class="import-row-field">
+            <label>NF/Pedido</label>
+            <div class="import-row-static">${r.nf||'—'}</div>
+          </div>
+          <div class="import-row-field">
+            <label>Categoria</label>
+            <select onchange="importPreviewRows[${i}].catId=this.value">${catOptions.join('')}</select>
+          </div>
+        </div>
+        <div class="import-row-obs-wrap">
+          <label>Observação</label>
+          <div class="import-row-obs">${r.obs||'—'}</div>
+        </div>
+      </div>
+      <div class="import-row-footer">
+        <button class="btn btn-primary btn-sm" onclick="confirmarImportLinha(${i})">✅ Confirmar esta linha</button>
+      </div>
+    </div>`;
   }).join('');
 }
 
