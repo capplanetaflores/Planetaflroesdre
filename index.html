@@ -14024,13 +14024,16 @@ window.APP_BUILD = '2026-08-10 · planeta-flores-empresa-unica';
 
 // Fechar modais clicando fora
 document.querySelectorAll('.modal-overlay').forEach(ov => {
+  // O modal "Novo Lançamento — Pagamento" só deve fechar pelo botão X
+  // (fecharModalLanc), não ao clicar fora dele.
+  if (ov.id === 'modal-novo-lanc') return;
+
   ov.addEventListener('click', e => {
     if(e.target !== ov) return;
-    // Os modais de "Novo Lançamento" (pagamento/recebimento) precisam ser
-    // limpos ao fechar, senão os campos (ex.: número de parcelas) ficam
+    // O modal de "Novo Lançamento" (recebimento) precisa ser
+    // limpo ao fechar, senão os campos (ex.: número de parcelas) ficam
     // com os valores do último preenchimento na próxima vez que abrirem.
-    if (ov.id === 'modal-novo-lanc') clearLancamento();
-    else if (ov.id === 'modal-novo-lr') clearLancReceber();
+    if (ov.id === 'modal-novo-lr') clearLancReceber();
     ov.classList.remove('open');
   });
 });
