@@ -204,6 +204,21 @@ tr:hover td { background:#faf9f7; }
   border-radius:var(--radius); font-family:'DM Mono',monospace;
 }
 .import-row-nome-manual { margin-top:8px !important; }
+/* Forma de pagamento / banco / "já pago" na prévia da importação */
+.import-row-field label.import-row-pago-toggle {
+  display:flex; align-items:center; gap:8px; margin:0; padding:9px 12px; border:1.5px solid var(--border); border-radius:var(--radius);
+  background:var(--bg3); cursor:pointer; user-select:none; font-size:13px; font-weight:600; color:var(--text2); text-transform:none; letter-spacing:0;
+}
+.import-row-field label.import-row-pago-toggle input { width:17px; height:17px; margin:0; accent-color:#16a34a; flex-shrink:0; cursor:pointer; }
+.import-row-field label.import-row-pago-toggle.on { border-color:#86efac; background:#f0fdf4; color:#166534; }
+.import-row-pago-data { margin-top:8px; }
+.import-row-auto { font-size:10px; font-weight:600; color:#16a34a; text-transform:none; letter-spacing:0; margin-left:4px; }
+.import-massa-bar { display:flex; align-items:center; gap:8px; flex-wrap:wrap; background:#faf9f7; padding:10px 12px; border-radius:8px; margin-bottom:10px; }
+.import-massa-bar label { font-size:12px; font-weight:600; color:#57534e; margin:0; white-space:nowrap; }
+.import-massa-bar select { font-size:12px; max-width:220px; width:auto; padding:6px 8px; }
+.import-massa-sep { width:1px; align-self:stretch; background:#e7e5e4; margin:0 4px; }
+.import-banco-detectado { font-size:12px; color:#166534; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:8px 12px; margin-bottom:10px; }
+.import-banco-detectado.aviso { color:#92400e; background:#fffbeb; border-color:#fde68a; }
 .import-row-obs-wrap { margin-top:18px; padding-top:16px; border-top:1px dashed var(--border); }
 .import-row-obs-wrap label {
   display:block; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:.4px; margin-bottom:6px;
@@ -385,6 +400,21 @@ th.ef-th { padding:8px 8px 8px 12px; }
 .dre-lucro-tag.neg { background:#fee2e2; color:#991b1b; }
 .dre-mes-chip { display:inline-flex; align-items:center; gap:4px; font-size:12px; padding:3px 9px; border:1px solid #e7e5e4; border-radius:12px; cursor:pointer; user-select:none; color:#57534e; }
 .dre-mes-chip input { width:12px; height:12px; margin:0; accent-color:#ea580c; cursor:pointer; }
+/* Opções de exibição do DRE (Variação de Estoque, Acumulada, Empréstimos) */
+.dre-opcoes-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:12px; padding-top:12px; border-top:1px solid #f5f4f2; }
+.dre-mes-chip.dre-opt-chip { padding:4px 11px; margin:0; }
+/* Categoria editável direto no detalhe da DRE/DFC */
+.drill-cat-sel { width:100%; min-width:170px; max-width:240px; padding:5px 8px; font-size:12px; font-family:inherit; }
+.drill-cat-sel.drill-cat-vazia { border-color:#fdba74; background:#fff7ed; color:#9a3412; }
+.drill-cat-sel.drill-cat-salvando { opacity:.6; }
+#modal-dre-detalhe .dfc-table td { font-family:inherit; }
+.dre-mes-chip.dre-opt-chip:has(input:checked) { border-color:#fdba74; background:#fff7ed; color:#9a3412; }
+.dre-tag-venc { display:inline-block; font-size:9px; font-weight:600; font-style:normal; padding:1px 6px; border-radius:8px; background:#fff7ed; color:#c2410c; margin-left:6px; vertical-align:1px; }
+.dre-emprest-lista { max-height:52vh; overflow-y:auto; border:1px solid #e7e5e4; border-radius:8px; }
+.dre-emprest-grupo { padding:7px 12px; font-size:10.5px; font-weight:700; color:#a8a29e; text-transform:uppercase; letter-spacing:.5px; background:#faf9f7; border-bottom:1px solid #f5f4f2; }
+.dre-emprest-item { display:flex; align-items:center; gap:10px; padding:9px 12px; margin:0; border-bottom:1px solid #f5f4f2; cursor:pointer; font-size:13px; color:#1f2937; }
+.dre-emprest-item:hover { background:#fffaf5; }
+.dre-emprest-item input { width:16px; height:16px; margin:0; accent-color:#ea580c; flex-shrink:0; cursor:pointer; }
 #dre-tabela-wrap .dfc-table th { padding:5px 10px; font-size:10px; }
 #dre-tabela-wrap .dfc-table td { padding:3px 10px; font-size:11px; }
 /* Item 2: caixas do modal de detalhe do DRE — números não estouram */
@@ -681,6 +711,21 @@ th.ef-th { padding:8px 8px 8px 12px; }
 }
 .btn-pdf:hover { background:#faf9f7; color:#ea580c; border-color:#ea580c; }
 .btn-pdf svg { width:13px; height:13px; flex-shrink:0; }
+/* Orientação do PDF (Paisagem / Retrato) ao lado do botão PDF */
+/* Data do pagamento/recebimento (aparece quando Pago?/Recebido? = Sim) */
+.campo-quitacao label { color:#16a34a; }
+.campo-quitacao input { border-color:#86efac; background:#f0fdf4; }
+.campo-quitacao.faltando input { border-color:#dc2626; background:#fef2f2; box-shadow:0 0 0 3px rgba(220,38,38,.12); }
+.campo-quitacao.faltando label { color:#dc2626; }
+.pdf-acoes { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.pdf-orient { display:inline-flex; background:#faf9f7; border:1.5px solid #e7e5e4; border-radius:7px; padding:2px; gap:2px; }
+.pdf-orient button {
+  display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border:none; border-radius:5px;
+  background:transparent; color:#a8a29e; font-size:11px; font-weight:600; font-family:inherit; cursor:pointer; transition:.15s; white-space:nowrap;
+}
+.pdf-orient button:hover { color:#57534e; }
+.pdf-orient button.ativo { background:#fff; color:#ea580c; box-shadow:0 1px 2px rgba(0,0,0,.08); }
+.pdf-orient svg { flex-shrink:0; }
 
 /* ── Caixas e filtros compactos: Contas a Pagar e Contas Recebidas ──────
    Essas duas telas usam listas longas de parcelas, então os KPIs no topo
@@ -1950,7 +1995,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
             <option value="">Selecione</option>
           </select>
           <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;">
-            <input type="checkbox" id="dfc-incluir-pagar" checked onchange="renderDfc()" />
+            <input type="checkbox" id="dfc-incluir-pagar" checked onchange="renderDfc()" style="width:15px;height:15px;margin:0;accent-color:#ea580c;" />
             Incluir Contas a Pagar
           </label>
           <div style="display:flex;align-items:center;gap:4px;background:#faf9f7;border-radius:8px;padding:3px;">
@@ -1958,7 +2003,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
             <button id="btn-dfc-apagar" onclick="setDfcFiltro('apagar')" style="padding:5px 12px;font-size:12px;font-weight:600;border:none;border-radius:6px;cursor:pointer;background:transparent;color:#57534e;">Contas a Pagar</button>
           </div>
           <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;">
-            <input type="checkbox" id="dfc-incluir-receber" checked onchange="renderDfc()" />
+            <input type="checkbox" id="dfc-incluir-receber" checked onchange="renderDfc()" style="width:15px;height:15px;margin:0;accent-color:#ea580c;" />
             Incluir Contas a Receber
           </label>
           <div style="display:flex;align-items:center;gap:4px;background:#faf9f7;border-radius:8px;padding:3px;">
@@ -2038,7 +2083,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
 
     <!-- ══ DRE DEMONSTRATIVO ══ -->
     <div class="page" id="page-dre-demonstrativo">
-      <div class="page-header"><div><div class="page-title">Demonstração de Resultado do Exercício (DRE) <span class="empresa-tag"></span></div><div class="page-sub" style="margin-bottom:0">Visão mensal de Janeiro a Dezembro com acumulado do ano</div></div><button class="btn-pdf" onclick="imprimirDre()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> PDF</button></div>
+      <div class="page-header"><div><div class="page-title">Demonstração de Resultado do Exercício (DRE) <span class="empresa-tag"></span></div><div class="page-sub" style="margin-bottom:0">Visão mensal de Janeiro a Dezembro com acumulado do ano</div></div><div class="pdf-acoes"><div class="pdf-orient" role="group" title="Orientação da folha no PDF"><button type="button" id="dre-pdf-landscape" onclick="setDreOrientacaoPdf('landscape')"><svg width="14" height="10" viewBox="0 0 14 10"><rect x="0.75" y="0.75" width="12.5" height="8.5" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Paisagem</button><button type="button" id="dre-pdf-portrait" onclick="setDreOrientacaoPdf('portrait')"><svg width="10" height="13" viewBox="0 0 10 13"><rect x="0.75" y="0.75" width="8.5" height="11.5" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Retrato</button></div><button class="btn-pdf" onclick="imprimirDre()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> PDF</button></div></div>
 
       <!-- Filtro Ano -->
       <div class="card" style="padding:14px 20px;margin-bottom:16px;">
@@ -2047,10 +2092,6 @@ th.ef-th { padding:8px 8px 8px 12px; }
           <select id="dre-ano" onchange="renderDre()" style="width:110px;padding:6px 10px;font-size:13px;">
             <option value="">Selecione</option>
           </select>
-          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;">
-            <input type="checkbox" id="dre-somente-classificados" onchange="renderDre()" />
-            Considerar apenas lançamentos com Categoria definida
-          </label>
         </div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid #f5f4f2;">
           <span style="font-size:11px;color:#a8a29e;font-weight:600;text-transform:uppercase;letter-spacing:.6px;white-space:nowrap;">Meses visíveis:</span>
@@ -2068,6 +2109,15 @@ th.ef-th { padding:8px 8px 8px 12px; }
           <label class="dre-mes-chip"><input type="checkbox" id="dre-mes-12" checked onchange="renderDre()" />Dez</label>
           <button class="btn btn-secondary btn-sm" onclick="dreMesesTodos(true)">Marcar todos</button>
           <button class="btn btn-secondary btn-sm" onclick="dreMesesTodos(false)">Ocultar todos</button>
+        </div>
+        <div class="dre-opcoes-row">
+          <span style="font-size:11px;color:#a8a29e;font-weight:600;text-transform:uppercase;letter-spacing:.6px;white-space:nowrap;">Opções:</span>
+          <label class="dre-mes-chip dre-opt-chip"><input type="checkbox" id="dre-somente-classificados" onchange="renderDre()" />Apenas lançamentos com Categoria definida</label>
+          <label class="dre-mes-chip dre-opt-chip" title="Mostra/oculta a linha de digitação da Variação de Estoque. Os valores já digitados continuam somados ao CPV."><input type="checkbox" id="dre-mostrar-varest" checked onchange="salvarPrefsDre(); renderDre()" />Linha Variação de Estoque</label>
+          <label class="dre-mes-chip dre-opt-chip" title="Mostra/oculta a coluna DRE Acumulada (também vale para o PDF)"><input type="checkbox" id="dre-mostrar-acumulado" checked onchange="salvarPrefsDre(); renderDre()" />Coluna DRE Acumulada</label>
+          <label class="dre-mes-chip dre-opt-chip" title="Lançamentos das categorias de empréstimo entram no mês de VENCIMENTO de cada parcela (os demais continuam pela data da compra)"><input type="checkbox" id="dre-emprest-venc" onchange="salvarPrefsDre(); renderDre()" />Empréstimos pelo vencimento</label>
+          <button class="btn btn-secondary btn-sm" onclick="abrirModalCatsEmprestimo()">Categorias de empréstimo…</button>
+          <span id="dre-emprest-info" style="font-size:11px;color:#a8a29e;"></span>
         </div>
       </div>
 
@@ -2543,7 +2593,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
         <select id="l-financeiro"><option value="nao">Não</option><option value="sim">Sim</option></select>
       </div>
       <div class="form-group"><label>Pago?</label>
-        <select id="l-pago"><option value="nao">Não</option><option value="sim">Sim</option></select>
+        <select id="l-pago" onchange="toggleDataQuitacao('l-pago','l-dtpago-wrap','l-dtpago')"><option value="nao">Não</option><option value="sim">Sim</option></select>
       </div>
     </div>
     <div id="l-parcela-dates" style="display:none;margin-bottom:16px;">
@@ -2560,6 +2610,9 @@ th.ef-th { padding:8px 8px 8px 12px; }
       </div>
       <div class="form-group"><label>Banco / Conta</label>
         <select id="l-banco"><option value="">Não informado</option></select>
+      </div>
+      <div class="form-group campo-quitacao" id="l-dtpago-wrap" style="display:none"><label>Data do Pagamento *</label>
+        <input id="l-dtpago" type="date" />
       </div>
     </div>
     <div class="form-group"><label>Observações</label><textarea id="l-obs" rows="2" placeholder="Informações adicionais..."></textarea></div>
@@ -2616,7 +2669,7 @@ th.ef-th { padding:8px 8px 8px 12px; }
         <select id="lr-financeiro"><option value="nao">Não</option><option value="sim">Sim</option></select>
       </div>
       <div class="form-group"><label>Recebido?</label>
-        <select id="lr-recebido"><option value="nao">Não</option><option value="sim">Sim</option></select>
+        <select id="lr-recebido" onchange="toggleDataQuitacao('lr-recebido','lr-dtrecebido-wrap','lr-dtrecebido')"><option value="nao">Não</option><option value="sim">Sim</option></select>
       </div>
     </div>
     <div id="lr-parcela-dates" style="display:none;margin-bottom:16px;">
@@ -2633,6 +2686,9 @@ th.ef-th { padding:8px 8px 8px 12px; }
       </div>
       <div class="form-group"><label>Banco / Conta</label>
         <select id="lr-banco"><option value="">Não informado</option></select>
+      </div>
+      <div class="form-group campo-quitacao" id="lr-dtrecebido-wrap" style="display:none"><label>Data do Recebimento *</label>
+        <input id="lr-dtrecebido" type="date" />
       </div>
     </div>
     <div class="grid3">
@@ -3336,11 +3392,24 @@ th.ef-th { padding:8px 8px 8px 12px; }
         <div id="import-resumo" style="font-size:13px;color:#57534e;"></div>
         <button class="btn btn-secondary" onclick="voltarImportStep1()">← Voltar</button>
       </div>
+      <div id="import-banco-detectado" class="import-banco-detectado" style="display:none;"></div>
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;background:#faf9f7;padding:10px 12px;border-radius:8px;">
         <label style="font-size:12px;font-weight:600;color:#57534e;margin:0;">Categoria em massa:</label>
         <select id="import-cat-massa" style="font-size:12px;max-width:220px;padding:6px 8px;"><option value="">Selecione...</option></select>
         <button class="btn btn-secondary btn-sm" onclick="aplicarCategoriaMassaImport()">Aplicar a todas as linhas</button>
         <span style="font-size:11px;color:#a8a29e;">(você ainda pode alterar linha a linha depois)</span>
+      </div>
+      <div class="import-massa-bar">
+        <label>Banco em massa:</label>
+        <select id="import-banco-massa"><option value="">Selecione...</option></select>
+        <button class="btn btn-secondary btn-sm" onclick="aplicarBancoMassaImport()">Aplicar</button>
+        <span class="import-massa-sep"></span>
+        <label id="import-forma-massa-label">Forma de pagamento em massa:</label>
+        <select id="import-forma-massa"><option value="">Selecione...</option></select>
+        <button class="btn btn-secondary btn-sm" onclick="aplicarFormaMassaImport()">Aplicar</button>
+        <span class="import-massa-sep"></span>
+        <button class="btn btn-secondary btn-sm" id="import-pago-massa-sim" onclick="aplicarPagoMassaImport(true)">✔ Marcar todas como pagas</button>
+        <button class="btn btn-secondary btn-sm" id="import-pago-massa-nao" onclick="aplicarPagoMassaImport(false)">Desmarcar pagas</button>
       </div>
       <div class="import-preview-toolbar">
         <label class="import-select-all">
@@ -3400,16 +3469,29 @@ th.ef-th { padding:8px 8px 8px 12px; }
   </div>
 </div>
 
+<!-- ══ MODAL CATEGORIAS DE EMPRÉSTIMO (DRE) ══ -->
+<div class="modal-overlay" id="modal-cats-emprestimo">
+  <div class="modal" style="width:540px;max-width:96vw;">
+    <div class="modal-title">🏦 Categorias de Empréstimo</div>
+    <p style="font-size:13px;color:#57534e;margin-bottom:14px;line-height:1.5;">Marque as categorias que representam empréstimos ou financiamentos. Com a opção <b>Empréstimos pelo vencimento</b> ligada no DRE, os lançamentos dessas categorias entram no mês de <b>vencimento de cada parcela</b>, em vez do mês da data da compra. Todos os outros lançamentos continuam pela data da compra/venda.</p>
+    <div id="dre-emprest-lista" class="dre-emprest-lista"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-cats-emprestimo')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarCatsEmprestimo()">Salvar</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ MODAL DETALHE DE CONTA DO DRE ══ -->
 <div class="modal-overlay" id="modal-dre-detalhe">
-  <div class="modal" style="width:920px;max-width:96vw;">
+  <div class="modal" style="width:1080px;max-width:96vw;">
     <div class="modal-title" id="dre-detalhe-title" style="margin-bottom:16px;">Detalhe da Conta</div>
     <div class="grid4" id="dre-detalhe-kpis" style="margin-bottom:16px;"></div>
-    <div style="max-height:50vh;overflow-y:auto">
+    <div class="drill-scroll" style="max-height:50vh;overflow-y:auto">
       <table class="dfc-table" style="width:100%">
         <thead><tr>
           <th style="text-align:left">Data</th><th style="text-align:left">Fornecedor / Cliente</th>
-          <th style="text-align:left">Produto</th><th>Situação</th><th>Valor</th><th>Ações</th>
+          <th style="text-align:left">Produto</th><th style="text-align:left">Categoria</th><th>Situação</th><th>Valor</th><th>Ações</th>
         </tr></thead>
         <tbody id="dre-detalhe-tbody"></tbody>
       </table>
@@ -4069,7 +4151,7 @@ function showPage(p) {
   if (p === 'dfc-lancamentos')   renderDfcLancamentos();
   if (p === 'dfc-demonstrativo') renderDfc();
   if (p === 'dre-grupos')        { carregarDreGrupoClasses().then(renderDreGrupos); }
-  if (p === 'dre-demonstrativo') { carregarVarEstoque().then(carregarDreGrupoClasses).then(renderDre); }
+  if (p === 'dre-demonstrativo') { carregarVarEstoque().then(carregarDreGrupoClasses).then(carregarDreCatsEmprestimo).then(renderDre); }
   if (p === 'dre-analise-cat')   { popularCategoriasAnalise(); renderAnaliseCategoria(); }
   if (p === 'usuarios')          renderUsuariosAdmin();
   if (p === 'empresas')          renderEmpresas();
@@ -4106,7 +4188,7 @@ function renderPaginaAtual() {
   if (p === 'dfc-lancamentos')   renderDfcLancamentos();
   if (p === 'dfc-demonstrativo') renderDfc();
   if (p === 'dre-grupos')        { carregarDreGrupoClasses().then(renderDreGrupos); }
-  if (p === 'dre-demonstrativo') { carregarVarEstoque().then(carregarDreGrupoClasses).then(renderDre); }
+  if (p === 'dre-demonstrativo') { carregarVarEstoque().then(carregarDreGrupoClasses).then(carregarDreCatsEmprestimo).then(renderDre); }
   if (p === 'dre-analise-cat')   { popularCategoriasAnalise(); renderAnaliseCategoria(); }
   if (p === 'usuarios')          renderUsuariosAdmin();
   if (p === 'empresas')          renderEmpresas();
@@ -4311,6 +4393,58 @@ function situacaoParcela(venc) {
   const diff = diffDias(hoje, venc);
   if(diff <= 7) return {label:`Vence em ${diff}d`, cls:'badge-yellow'};
   return {label:'Em dia', cls:'badge-green'};
+}
+
+// ══════════════════════════════════════════
+// FILTROS DE PERÍODO — PADRÃO = MÊS E ANO ATUAIS
+// Ao abrir o sistema, todos os filtros de Mês/Ano das telas já vêm no mês
+// e ano correntes. O usuário pode trocar (inclusive para "Todos") e o botão
+// "Limpar" volta para o padrão (mês/ano atual).
+// ══════════════════════════════════════════
+const FILTROS_PERIODO = [
+  { mes:'kpi-mes',  ano:'kpi-ano'  },   // Dashboard — Filtrar quadros
+  { mes:'dash-mes', ano:'dash-ano' },   // Dashboard — Filtro dos gráficos
+  { mes:'lf-mes',   ano:'lf-ano'   },   // Lançamentos (pagamento)
+  { mes:'af-mes',   ano:'af-ano'   },   // Contas a Pagar
+  { mes:'pgf-mes',  ano:'pgf-ano'  },   // Contas Pagas
+  { mes:'lrf-mes',  ano:'lrf-ano'  },   // Lançamentos (recebimento)
+  { mes:'arf-mes',  ano:'arf-ano'  },   // Contas a Receber
+  { mes:'recf-mes', ano:'recf-ano' },   // Recebidos
+  { mes:'pcf-mes',  ano:'pcf-ano'  },   // Pedidos Cancelados
+  { mes:'rpf-mes',  ano:'rpf-ano'  },   // Reposição
+  { mes:'dfcl-mes', ano:'dfcl-ano' },   // DFC — Lançamentos
+  { mes:'ac-mes',   ano:'ac-ano'   },   // DRE — Análise por Categoria
+  { mes:'fb-mes',   ano:'fb-ano'   },   // Bancos — Fluxo diário
+  { mes:null,       ano:'dfc-ano'  },   // DFC — Demonstrativo (anual)
+  { mes:null,       ano:'dre-ano'  }    // DRE — Demonstrativo (anual)
+];
+// Seleciona um valor no <select>; se a opção ainda não existir (select ainda
+// não populado), cria — os populate* preservam o valor quando reconstroem.
+function _selecionarValorFiltro(el, valor) {
+  if (!el) return;
+  valor = String(valor);
+  if (![...el.options].some(o => o.value === valor)) {
+    const opt = document.createElement('option');
+    opt.value = valor; opt.textContent = valor;
+    el.appendChild(opt);
+  }
+  el.value = valor;
+}
+function aplicarPeriodoAtual(mesId, anoId) {
+  const hoje = new Date();
+  if (mesId) _selecionarValorFiltro(document.getElementById(mesId), hoje.getMonth() + 1);
+  if (anoId) _selecionarValorFiltro(document.getElementById(anoId), hoje.getFullYear());
+}
+function aplicarFiltrosPeriodoPadrao() {
+  FILTROS_PERIODO.forEach(f => aplicarPeriodoAtual(f.mes, f.ano));
+  // O Dashboard guarda os filtros no navegador e os reaplica sozinho; grava o
+  // padrão lá também para não voltar a um período antigo.
+  try {
+    const da = document.getElementById('dash-ano'), dm = document.getElementById('dash-mes');
+    if (da) localStorage.setItem('477_dash_ano', da.value);
+    if (dm) localStorage.setItem('477_dash_mes', dm.value);
+  } catch(e) {}
+  if (typeof salvarFiltrosDash === 'function') salvarFiltrosDash();
 }
 
 function populateYearSelects() {
@@ -4801,15 +4935,17 @@ function abrirCadastroRapido(tipo, destinoId) {
   document.getElementById('rapido-tipomov-wrap').style.display = ehCat ? '' : 'none';
   if (ehCat) {
     const sel = document.getElementById('rapido-grupo');
+    // Pelo contexto: Recebimento => grupos de Entrada; Pagamento => grupos de Saída
+    const dest = destinoId || '';
+    const tipoCtx = (dest.startsWith('lr-') || dest.startsWith('elr-')) ? 'entrada'
+                  : ((dest.startsWith('l-') || dest.startsWith('edit-')) ? 'saida' : '');
     const grupos = [...db.dre_grupos]
       .filter(g => g.tipo === 'entrada' || g.tipo === 'saida')
+      .filter(g => !tipoCtx || g.tipo === tipoCtx)
       .sort((a,b) => (a.ordem||0) - (b.ordem||0));
     sel.innerHTML = '<option value="">Selecione...</option>' +
       grupos.map(g => `<option value="${g.id}">${g.nome}</option>`).join('');
-    // Chute pelo contexto: campo de contas a receber => entrada
-    const dest = destinoId || '';
-    document.getElementById('rapido-tipomov').value =
-      (dest.startsWith('lr-') || dest.startsWith('elr-')) ? 'entrada' : 'saida';
+    document.getElementById('rapido-tipomov').value = tipoCtx || 'saida';
   }
   openModal('modal-rapido');
   setTimeout(() => document.getElementById('rapido-nome').focus(), 80);
@@ -5099,6 +5235,42 @@ function renderEmpresas() {
 // Regra de negócio: todo lançamento marcado como Pago/Recebido precisa ter
 // um banco/conta vinculado — nunca pode ficar "Não informado" nesse estado,
 // pois o saldo por conta (getBancoSaldo) depende disso para ficar correto.
+// ── Data do pagamento/recebimento no Novo Lançamento ──────────────────
+// Quando "Pago?"/"Recebido?" = Sim, abre o campo de data (obrigatório).
+function toggleDataQuitacao(selId, wrapId, inputId) {
+  const sel = document.getElementById(selId), wrap = document.getElementById(wrapId), inp = document.getElementById(inputId);
+  if (!sel || !wrap || !inp) return;
+  const on = sel.value === 'sim';
+  wrap.style.display = on ? '' : 'none';
+  wrap.classList.remove('faltando');
+  if (!on) inp.value = '';
+  else setTimeout(() => { if (!inp.value) inp.focus(); }, 60);
+  if (!inp.dataset.qtListener) {
+    inp.dataset.qtListener = '1';
+    inp.addEventListener('input', () => { if (inp.value) wrap.classList.remove('faltando'); });
+  }
+}
+// Exige a data quando o lançamento vai como pago/recebido. Devolve a data
+// (AAAA-MM-DD), '' quando não está quitado, ou null se faltou a data.
+function validarDataQuitacao(status, wrapId, inputId, rotulo) {
+  if (status !== 'sim') return '';
+  const inp = document.getElementById(inputId), wrap = document.getElementById(wrapId);
+  const val = inp ? inp.value : '';
+  if (!val) {
+    if (wrap) { wrap.style.display = ''; wrap.classList.add('faltando'); }
+    alert(`Informe a ${rotulo}: todo lançamento marcado como ${rotulo.includes('recebimento') ? 'recebido' : 'pago'} precisa ter a data.`);
+    if (inp) inp.focus();
+    return null;
+  }
+  return val;
+}
+// Lançamento parcelado criado já quitado: todas as parcelas ficam
+// pagas/recebidas na data informada (status por parcela em parcela_datas).
+function _parcelasTodasQuitadas(raw, n, data) {
+  const { datas, valores } = _parseParcelas(raw);
+  return JSON.stringify({ datas, valores, pagos: Array(n).fill(true), dtpagos: Array(n).fill(data) });
+}
+
 function validarBancoObrigatorio(status, banco) {
   if (status === 'sim' && !banco) {
     alert('Selecione o banco/conta antes de salvar: todo lançamento marcado como pago/recebido precisa ter um banco vinculado.');
@@ -5154,6 +5326,8 @@ async function saveLancamento() {
   // cadastrado (ex.: tarifas bancárias, impostos, taxas avulsas).
   const pago = document.getElementById('l-pago').value;
   const banco = document.getElementById('l-banco').value;
+  const dtpago = validarDataQuitacao(pago, 'l-dtpago-wrap', 'l-dtpago', 'data do pagamento');
+  if (dtpago === null) return;
   if (!validarBancoObrigatorio(pago, banco)) return;
   const empresa_id = empresaDoForm('l-empresa');
   if (empresa_id === null) return;
@@ -5164,6 +5338,7 @@ async function saveLancamento() {
     forn, prod, valor,
     financeiro: document.getElementById('l-financeiro').value,
     pago,
+    dtpago,
     tipo_pag: document.getElementById('l-tipo-pag').value,
     banco,
     cat_dre: document.getElementById('l-catdre') ? document.getElementById('l-catdre').value : '',
@@ -5193,6 +5368,9 @@ async function saveLancamento() {
       vigencia_inicio: vigInicio,
       vigencia_fim: vigFim
     }));
+    // "Pago = Sim" vale para a 1ª ocorrência; os meses seguintes ficam em aberto
+    // (não faz sentido marcar meses futuros como pagos na mesma data).
+    novos.forEach((l, i) => { if (i > 0) { l.pago = 'nao'; l.dtpago = ''; } });
     for (const l of novos) {
       const ok = await sbFetch('lancamentos', 'POST', l);
       if (!ok) { alert(`❌ Erro ao salvar a conta fixa (parou em ${fmtDate(l.dtcompra)}).` + sbErroDetalhe()); return; }
@@ -5212,6 +5390,7 @@ async function saveLancamento() {
     parcelas,
     parcela_datas: parcelas > 1 ? buildParcelaDatasPayload('l-parcela-dates', parcelas) : null
   };
+  if (parcelas > 1 && pago === 'sim') lanc.parcela_datas = _parcelasTodasQuitadas(lanc.parcela_datas, parcelas, dtpago);
   const rL = await sbFetch('lancamentos', 'POST', lanc);
   if(!rL) { alert('❌ Erro ao salvar lançamento.' + sbErroDetalhe()); return; }
   db.lancamentos.push(lanc);
@@ -5229,6 +5408,7 @@ function clearLancamento() {
   document.getElementById('l-parcelas').value='1';
   document.getElementById('l-financeiro').value='nao';
   document.getElementById('l-pago').value='nao';
+  toggleDataQuitacao('l-pago', 'l-dtpago-wrap', 'l-dtpago');
   // Reset parcela dates
   const container = document.getElementById('l-parcela-dates');
   const grid = document.getElementById('l-parcela-dates-grid');
@@ -5344,6 +5524,7 @@ function clearLancamentoFiltros() {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
+  aplicarPeriodoAtual('lf-mes','lf-ano');
   popularSelectCategoriaFiltro('lf-cat','lf-grupo');
   atualizarFiltrosVinculadosLanc();
   renderLancamentos();
@@ -5454,7 +5635,7 @@ function editLancamento(id) {
   ep.value = l.prod||'';
   populateDreCatSelects();
   const ecd = document.getElementById('edit-catdre');
-  if (ecd) ecd.value = l.cat_dre || '';
+  if (ecd) { ecd.innerHTML = _optsCategoriaLanc('saida', l.cat_dre || ''); ecd.value = l.cat_dre || ''; }
   // Datas manuais de parcelas no modal
   if (l.parcelas > 1) {
     toggleParcelaDates('edit-parcelas', 'edit-parcela-dates');
@@ -5537,6 +5718,10 @@ async function updateLancamento() {
   l.cat_dre  = document.getElementById('edit-catdre')   ? document.getElementById('edit-catdre').value   : (l.cat_dre||'');
   const manualDates = l.parcelas > 1 ? getManualParcelaDates('edit-parcela-dates', l.parcelas) : null;
   l.parcela_datas = l.parcelas > 1 ? buildParcelaDatasPayload('edit-parcela-dates', l.parcelas) : null;
+  // Atualização instantânea: fecha o formulário e redesenha DRE/DFC já com
+  // os dados novos; a gravação no Supabase segue logo abaixo.
+  closeModal('modal-lanc');
+  _aposEditarLancamento(l.id);
   await sbFetch('lancamentos', 'PATCH', {
     empresa_id: l.empresa_id,
     dtcompra: l.dtcompra, dtprev: l.dtprev, nf: l.nf,
@@ -5563,6 +5748,7 @@ async function updateLancamento() {
     }
     if (falhas) alert(`✅ Alterações aplicadas a ${ok+1} lançamento(s) desta conta fixa. ⚠️ ${falhas} não puderam ser atualizados — tente novamente.`);
     else alert(`✅ Alterações aplicadas a ${ok+1} lançamento(s) desta conta fixa (todas as ocorrências).`);
+    bumpDbVer(); _rerenderDemonstrativoAtual();
   }
 
   closeModal('modal-lanc'); renderLancamentos(); renderApagar(); renderPagas(); populateYearSelects();
@@ -6430,7 +6616,7 @@ async function confirmarPago() {
     l.dtpago = dtpago;
     await sbFetch('lancamentos', 'PATCH', {pago:'sim', dtpago, banco, tipo_pag: tipoPag}, `?id=eq.${id}`);
   }
-  closeModal('modal-pago'); renderApagar(); renderPagas();
+  closeModal('modal-pago'); _aposEditarLancamento(id); renderApagar(); renderPagas();
 }
 
 // ══════════════════════════════════════════
@@ -6882,6 +7068,7 @@ async function migrarRecebimentosAntigos() {
 
 function clearApagarFiltros() {
   ['af-mes','af-ano','af-forn','af-prod','af-grupo','af-categoria','af-data','af-data-de','af-data-ate','af-valor-min','af-valor-max','af-situacao','af-nf'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  aplicarPeriodoAtual('af-mes','af-ano');
   renderApagar();
 }
 
@@ -6993,6 +7180,7 @@ function renderPagas() {
 
 function clearPagasFiltros() {
   ['pgf-mes','pgf-ano','pgf-forn','pgf-prod','pgf-grupo','pgf-categoria','pgf-data-venc','pgf-data-pago','pgf-data-compra','pgf-tipo-pag','pgf-nf'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  aplicarPeriodoAtual('pgf-mes','pgf-ano');
   renderPagas();
 }
 
@@ -7884,7 +8072,8 @@ function limparFiltrosKpi() {
   const m = document.getElementById('kpi-mes');
   if(a) a.value = '';
   if(m) m.value = '';
-  localStorage.removeItem('477_dash_filtros');
+  aplicarPeriodoAtual('kpi-mes','kpi-ano');
+  salvarFiltrosDash();
   renderDashboard();
 }
 
@@ -8901,6 +9090,8 @@ async function saveLancReceber() {
   // (ex.: vendas avulsas, receitas diversas).
   const recebido=document.getElementById('lr-recebido').value;
   const banco=document.getElementById('lr-banco').value;
+  const dtrecebido = validarDataQuitacao(recebido, 'lr-dtrecebido-wrap', 'lr-dtrecebido', 'data do recebimento');
+  if (dtrecebido === null) return;
   if (!validarBancoObrigatorio(recebido, banco)) return;
   const empresa_id = empresaDoForm('lr-empresa');
   if (empresa_id === null) return;
@@ -8912,12 +9103,14 @@ async function saveLancReceber() {
     valor, parcelas,
     financeiro:document.getElementById('lr-financeiro').value,
     recebido,
+    dtrecebido,
     tipo_pag:document.getElementById('lr-tipo-pag').value,
     banco,
     cat_dre: document.getElementById('lr-catdre') ? document.getElementById('lr-catdre').value : '',
     juros:parseFloat(document.getElementById('lr-juros').value)||null,
     obs:document.getElementById('lr-obs').value,
     parcela_datas: parcelas > 1 ? buildParcelaDatasPayload('lr-parcela-dates', parcelas) : null };
+  if (parcelas > 1 && recebido === 'sim') lanc.parcela_datas = _parcelasTodasQuitadas(lanc.parcela_datas, parcelas, dtrecebido);
   const rLR = await sbFetch('lancreceber','POST',lanc);
   if(!rLR) { alert('❌ Erro ao salvar lançamento.' + sbErroDetalhe()); return; }
   db.lancreceber.push(lanc);
@@ -8935,6 +9128,7 @@ function clearLancReceber() {
   document.getElementById('lr-parcelas').value='1';
   document.getElementById('lr-financeiro').value='nao';
   document.getElementById('lr-recebido').value='nao';
+  toggleDataQuitacao('lr-recebido', 'lr-dtrecebido-wrap', 'lr-dtrecebido');
   document.getElementById('lr-tipo-pag').value='';
   document.getElementById('lr-banco').value='';
   document.getElementById('lr-juros').value='';
@@ -9025,6 +9219,7 @@ function renderLancReceber() {
 function clearLancReceberFiltros() {
   ['lrf-mes','lrf-ano','lrf-cliente','lrf-recebido','lrf-categoria','lrf-data','lrf-data-de','lrf-data-ate','lrf-valor-min','lrf-valor-max','lrf-nf'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   const tipoDataEl = document.getElementById('lrf-tipo-data'); if (tipoDataEl) tipoDataEl.value = 'venda';
+  aplicarPeriodoAtual('lrf-mes','lrf-ano');
   renderLancReceber();
 }
 function editLancReceber(id) {
@@ -9049,7 +9244,7 @@ function editLancReceber(id) {
   ep.value=l.prod||'';
   populateDreCatSelects();
   const ecd = document.getElementById('elr-catdre');
-  if (ecd) ecd.value = l.cat_dre || '';
+  if (ecd) { ecd.innerHTML = _optsCategoriaLanc('entrada', l.cat_dre || ''); ecd.value = l.cat_dre || ''; }
   // Populate manual parcela dates if present
   if (l.parcelas > 1) {
     toggleParcelaDates('elr-parcelas', 'elr-parcela-dates');
@@ -9086,6 +9281,9 @@ async function updateLancReceber() {
   l.cat_dre = document.getElementById('elr-catdre') ? document.getElementById('elr-catdre').value : (l.cat_dre||'');
   const manualDates = l.parcelas > 1 ? getManualParcelaDates('elr-parcela-dates', l.parcelas) : null;
   l.parcela_datas = l.parcelas > 1 ? buildParcelaDatasPayload('elr-parcela-dates', l.parcelas) : null;
+  // Atualização instantânea (igual ao lado Pagar)
+  closeModal('modal-lancreceber');
+  _aposEditarLancamento(l.id);
   await sbFetch('lancreceber','PATCH',{empresa_id:l.empresa_id,dtvenda:l.dtvenda,dtprev:l.dtprev,nf:l.nf,cliente:l.cliente,prod:l.prod,valor:l.valor,parcelas:l.parcelas,financeiro:l.financeiro,recebido:l.recebido,banco:l.banco,obs:l.obs,cat_dre:l.cat_dre,parcela_datas:l.parcela_datas},`?id=eq.${id}`);
   closeModal('modal-lancreceber'); renderLancReceber();
 }
@@ -9287,6 +9485,7 @@ function renderAReceber() {
 }
 function clearAReceberFiltros() {
   ['arf-mes','arf-ano','arf-cliente','arf-categoria','arf-data','arf-data-de','arf-data-ate','arf-valor-min','arf-valor-max','arf-situacao','arf-tipo-pag','arf-nf'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  aplicarPeriodoAtual('arf-mes','arf-ano');
   renderAReceber();
 }
 function marcarRecebido(id, parcIdx) {
@@ -9330,7 +9529,7 @@ async function confirmarRecebido() {
     l.recebido='sim'; l.dtrecebido=dtrecebido;
     await sbFetch('lancreceber','PATCH',{recebido:'sim',dtrecebido,banco,tipo_pag:tipoPag},`?id=eq.${id}`);
   }
-  closeModal('modal-recebido'); renderAReceber(); renderRecebido(); renderDashboard();
+  closeModal('modal-recebido'); _aposEditarLancamento(id); renderAReceber(); renderRecebido(); renderDashboard();
 }
 async function estornarRecebido(id, parcIdx) {
   if(!confirm('Desfazer o recebimento desta parcela?')) return;
@@ -9436,6 +9635,7 @@ function renderRecebido() {
 }
 function clearRecebidoFiltros() {
   ['recf-mes','recf-ano','recf-cliente','recf-categoria','recf-data-venc','recf-data-rec','recf-data-venda','recf-tipo-pag','recf-nf'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  aplicarPeriodoAtual('recf-mes','recf-ano');
   renderRecebido();
 }
 
@@ -9697,6 +9897,7 @@ function clearDfcLancamento() {
 }
 function clearDfcLancFiltros() {
   ['dfcl-mes','dfcl-ano','dfcl-cat'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  aplicarPeriodoAtual('dfcl-mes','dfcl-ano');
   renderDfcLancamentos();
 }
 function renderDfcLancamentos() {
@@ -9782,6 +9983,39 @@ function setDfcFiltroRec(modo) {
   renderDfc();
 }
 
+// Cache dos lançamentos de cada célula da DFC (drill-down)
+let _dfcItensCache = null;
+let _dfcAnoCache = null;
+function abrirDetalheDfc(grupoId, mes) {
+  if (!_dfcItensCache) return;
+  _drillCtx = { origem: 'dfc', grupoId, mes };
+  const grupo = db.dre_grupos.find(g => g.id === grupoId);
+  let itens = [], periodoTxt = '';
+  if (mes === 'total') {
+    for (let m = 1; m <= 12; m++) itens = itens.concat(_dfcItensCache[m][grupoId] || []);
+    periodoTxt = `Ano ${_dfcAnoCache}`;
+  } else {
+    itens = _dfcItensCache[mes][grupoId] || [];
+    periodoTxt = `${meses[mes]} / ${_dfcAnoCache}`;
+  }
+  itens = [...itens].sort((a, b) => (a.data || '').localeCompare(b.data || ''));
+  const titleEl = document.getElementById('dre-detalhe-title');
+  if (titleEl) titleEl.textContent = `${grupo ? grupo.nome : 'Conta'} — Fluxo de Caixa — ${periodoTxt}`;
+  const total = itens.reduce((s, it) => s + it.valor, 0);
+  const confirmado = itens.filter(it => it.status === 'Recebido' || it.status === 'Pago').reduce((s, it) => s + it.valor, 0);
+  const pendente = itens.filter(it => it.status === 'A Receber' || it.status === 'A Pagar').reduce((s, it) => s + it.valor, 0);
+  const kpisEl = document.getElementById('dre-detalhe-kpis');
+  if (kpisEl) {
+    kpisEl.innerHTML = `
+      <div class="card kpi"><div class="kpi-val">${itens.length}</div><div class="kpi-lbl">Lançamentos</div></div>
+      <div class="card kpi"><div class="kpi-val">${fmtBRL(total)}</div><div class="kpi-lbl">Total do período</div></div>
+      <div class="card kpi"><div class="kpi-val" style="color:#166534">${fmtBRL(confirmado)}</div><div class="kpi-lbl">Já confirmado</div></div>
+      <div class="card kpi"><div class="kpi-val" style="color:#d97706">${fmtBRL(pendente)}</div><div class="kpi-lbl">Ainda pendente</div></div>`;
+  }
+  _renderDreDetalheLinhas(itens);
+  openModal('modal-dre-detalhe');
+}
+
 function renderDfc() {
   const ano = parseInt(document.getElementById('dfc-ano').value);
   const inclPagar   = document.getElementById('dfc-incluir-pagar').checked;
@@ -9808,9 +10042,12 @@ function renderDfc() {
 
   // Montar dados por mês (1-12) e por grupo
   const dados = {}; // dados[mes][grupoId] = valor
+  // itensDfc[mes][grupoId] = lançamentos que compõem cada célula (drill-down)
+  const itensDfc = {};
   for (let m = 1; m <= 12; m++) {
     dados[m] = {};
-    grupos.forEach(g => dados[m][g.id] = 0);
+    itensDfc[m] = {};
+    grupos.forEach(g => { dados[m][g.id] = 0; itensDfc[m][g.id] = []; });
   }
 
   // 1. Contas a Receber → Categoria do lançamento, senão do produto de venda, senão Receitas
@@ -9828,7 +10065,14 @@ function renderDfc() {
       const catProd = !catLanc && prodObj && prodObj.cat ? db.dfc_cats.find(x => x.id === prodObj.cat) : null;
       const catObj  = catLanc || catProd;
       const grupoId = catObj ? catObj.grupo : (grupoPadraoReceita && grupoPadraoReceita.id);
-      if (grupoId && dados[m][grupoId] !== undefined) dados[m][grupoId] += valParc;
+      if (grupoId && dados[m][grupoId] !== undefined) {
+        dados[m][grupoId] += valParc;
+        itensDfc[m][grupoId].push({
+          id: l.id, tipo: 'receber', data: dtRef, nome: getClienteNome(l.cliente),
+          prod: l.prod ? getProdVendaNome(l.prod) : '', valor: valParc,
+          status: l.recebido === 'sim' ? 'Recebido' : 'A Receber', catId: catObj ? catObj.id : null
+        });
+      }
     });
   }
 
@@ -9843,13 +10087,24 @@ function renderDfc() {
       const catProd = !catLanc && prodObj && prodObj.cat ? db.dfc_cats.find(x => x.id === prodObj.cat) : null;
       const catObj  = catLanc || catProd;
       const grupoId = catObj ? catObj.grupo : (grupoPadraoCusto && grupoPadraoCusto.id);
+      let pagosParc = [];
+      if (n > 1) { try { pagosParc = _parseParcelas(l.parcela_datas).pagos || []; } catch(e) { pagosParc = []; } }
       for (let i = 1; i <= n; i++) {
         const venc = parcelaVencimento(l.dtprev, i, n) || l.dtcompra;
         if (!venc) continue;
         const parts = venc.split('-');
         if (parseInt(parts[0]) !== ano) continue;
         const m = parseInt(parts[1]);
-        if (grupoId && dados[m][grupoId] !== undefined) dados[m][grupoId] += valParc;
+        if (grupoId && dados[m][grupoId] !== undefined) {
+          dados[m][grupoId] += valParc;
+          const pagoParc = n > 1 ? (pagosParc[i-1] === true) : (l.pago === 'sim');
+          itensDfc[m][grupoId].push({
+            id: l.id, tipo: 'pagar', data: venc,
+            nome: getFornNome(l.forn) + (n > 1 ? ` (parc. ${i}/${n})` : ''),
+            prod: l.prod ? getProdNome(l.prod) : '', valor: valParc,
+            status: pagoParc ? 'Pago' : 'A Pagar', catId: catObj ? catObj.id : null, parc: i
+          });
+        }
       }
     });
   }
@@ -9865,8 +10120,14 @@ function renderDfc() {
     const key = catObj.grupo;
     if (dados[m][key] !== undefined) {
       dados[m][key] += (l.valor || 0);
+      itensDfc[m][key].push({
+        id: '', tipo: 'dfc', data: l.data, nome: catObj.nome + (l.desc ? ' — ' + l.desc : ''),
+        prod: '', valor: l.valor || 0, status: 'Lançamento DFC', catId: catObj.id
+      });
     }
   });
+  _dfcItensCache = itensDfc;
+  _dfcAnoCache = ano;
 
   // Calcular resultado líquido por mês (Entradas − todas as Saídas)
   const liquido = {};
@@ -9890,13 +10151,19 @@ function renderDfc() {
     `<th>${m}</th>`).join('') + '<th class="dfc-col-total">Total</th>';
 
   // Linha de um grupo
+  // Números clicáveis: abrem os lançamentos que compõem a célula (igual à DRE)
   const linha = (g) => {
     const cells = Array.from({length:12},(_,i)=>{
       const v = dados[i+1][g.id];
-      return `<td>${v>0?fmtDfcVal(v):'<span class="dfc-val-zero">—</span>'}</td>`;
+      return v > 0
+        ? `<td class="dre-cell-click" onclick="abrirDetalheDfc('${g.id}',${i+1})" title="Ver lançamentos">${fmtDfcVal(v)}</td>`
+        : `<td><span class="dfc-val-zero">—</span></td>`;
     }).join('');
     const tot = totais[g.id];
-    return `<tr class="dfc-row-sub"><td>${g.nome}</td>${cells}<td class="dfc-col-total">${tot>0?fmtDfcVal(tot):'<span class="dfc-val-zero">—</span>'}</td></tr>`;
+    const totCell = tot > 0
+      ? `<td class="dfc-col-total dre-cell-click" onclick="abrirDetalheDfc('${g.id}','total')" title="Ver lançamentos do ano">${fmtDfcVal(tot)}</td>`
+      : `<td class="dfc-col-total"><span class="dfc-val-zero">—</span></td>`;
+    return `<tr class="dfc-row-sub"><td>${g.nome}</td>${cells}${totCell}</tr>`;
   };
 
   // Linha de resultado
@@ -10119,6 +10386,83 @@ function renderDreGrupos() {
       </td></tr>`;
   }).join('');
 }
+// ── NOMENCLATURA DA DRE (ajuste único) ─────────────────────────────
+// Os nomes das linhas da DRE são os Grupos cadastrados (tabela dre_grupos).
+// Este ajuste roda UMA vez (marcado em config: dre_nomenclatura_v2):
+//   • Resultado Operacional   → EBITDA (Resultado Operacional)
+//   • Lucro Líquido           → GERAÇÃO DE CAIXA APÓS AS DÍVIDAS
+//   • Empréstimos — Saída     → Amortização de Empréstimos
+//   • Empréstimos — Entrada   → Contratação de Empréstimos
+//   • cria, logo depois de "Despesas Financeiras", as linhas
+//     RESULTADO ANTES DO IR (LAJIR) [subtotal] e RESULTADO ANTES DO IR (LAJIR) (%)
+// Só mexe em grupos com esses nomes exatos (sem diferenciar acento, maiúscula
+// ou tipo de traço). Depois disso, tudo continua editável em DRE → Grupos.
+const DRE_NOMENCLATURA_FLAG = 'dre_nomenclatura_v2';
+const DRE_LAJIR_NOME = 'RESULTADO ANTES DO IR (LAJIR)';
+const DRE_RENOMEAR = {
+  'resultado operacional':   'EBITDA (Resultado Operacional)',
+  'resultado operacional %': 'EBITDA (Resultado Operacional) (%)',
+  'lucro liquido':           'GERAÇÃO DE CAIXA APÓS AS DÍVIDAS',
+  'lucro liquido %':         'GERAÇÃO DE CAIXA APÓS AS DÍVIDAS (%)',
+  'emprestimos saida':       'Amortização de Empréstimos',
+  'emprestimos entrada':     'Contratação de Empréstimos'
+};
+function _chaveNomeDre(nome) {
+  return normText(nome).replace(/[^a-z0-9%]+/g, ' ').trim();
+}
+async function ajustarNomenclaturaDre() {
+  if (!db.dre_grupos || !db.dre_grupos.length) return false;
+  let flag;
+  try { flag = await sbFetch('config', 'GET', null, `?key=eq.${DRE_NOMENCLATURA_FLAG}&limit=1`); } catch(e) { return false; }
+  if (!Array.isArray(flag) || flag.length) return false;   // erro de leitura ou já aplicado
+
+  let falhas = 0, mudou = false;
+  // 1) Renomear
+  for (const g of db.dre_grupos) {
+    const novo = DRE_RENOMEAR[_chaveNomeDre(g.nome)];
+    if (!novo || g.nome === novo) continue;
+    const ok = await sbFetch('dre_grupos', 'PATCH', { nome: novo }, `?id=eq.${g.id}`);
+    if (ok) { g.nome = novo; mudou = true; } else falhas++;
+  }
+  // 2) LAJIR e LAJIR (%) depois de "Despesas Financeiras" (e depois de alguma
+  //    linha de % que já pertença a ela, para não quebrar esse percentual)
+  const ordenados = [...db.dre_grupos].sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
+  const jaTemLajir = ordenados.some(g => _chaveNomeDre(g.nome).includes('lajir'));
+  let idx = ordenados.findIndex(g => _chaveNomeDre(g.nome) === 'despesas financeiras');
+  if (!jaTemLajir && idx !== -1) {
+    while (idx + 1 < ordenados.length && ordenados[idx + 1].tipo === 'percentual') idx++;
+    const novos = [
+      { id: uid(), nome: DRE_LAJIR_NOME,          tipo: 'subtotal',   ordem: 0, obs: '' },
+      { id: uid(), nome: DRE_LAJIR_NOME + ' (%)', tipo: 'percentual', ordem: 0, obs: '' }
+    ];
+    const novaOrdem = ordenados.slice(0, idx + 1).concat(novos, ordenados.slice(idx + 1));
+    // Renumera em sequência e grava só quem mudou de posição
+    for (let i = 0; i < novaOrdem.length; i++) {
+      const g = novaOrdem[i];
+      const ordem = i + 1;
+      if (novos.includes(g)) { g.ordem = ordem; continue; }
+      if (g.ordem === ordem) continue;
+      const ok = await sbFetch('dre_grupos', 'PATCH', { ordem }, `?id=eq.${g.id}`);
+      if (ok) g.ordem = ordem; else falhas++;
+    }
+    for (const rec of novos) {
+      const ok = await sbFetch('dre_grupos', 'POST', rec);
+      if (ok) { db.dre_grupos.push(rec); mudou = true; } else falhas++;
+    }
+    db.dre_grupos.sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
+  }
+  // Só marca como aplicado se deu tudo certo (senão tenta de novo no próximo acesso)
+  if (!falhas) await sbFetch('config', 'POST', { id: uid(), key: DRE_NOMENCLATURA_FLAG, value: new Date().toISOString() });
+  else console.warn('[DRE] Ajuste de nomenclatura com ' + falhas + ' falha(s); será tentado novamente.');
+  if (mudou) {
+    bumpDbVer();
+    if (typeof renderDreGrupos === 'function') renderDreGrupos();
+    if (typeof populateDreGrupoSelects === 'function') populateDreGrupoSelects();
+    if (typeof _rerenderDemonstrativoAtual === 'function') _rerenderDemonstrativoAtual();
+  }
+  return mudou;
+}
+
 // Move um grupo para cima (-1) ou para baixo (+1) na sequência da DRE,
 // trocando o valor de "ordem" com o grupo vizinho e salvando ambos no Supabase.
 async function moveDreGrupo(id, dir) {
@@ -10172,14 +10516,40 @@ function getDreCatGrupo(id) { const c = db.dfc_cats.find(x => x.id === id); retu
 
 // Popula o select "Categoria" nos lançamentos a pagar/receber com as
 // Categorias já cadastradas em DFC → Categorias (mesma lista, sem duplicidade)
+// ── Tipo da categoria: 'entrada' (receita) ou 'saida' (conta a pagar) ──
+// Vale o tipo do GRUPO da DRE ao qual a categoria pertence (é ele que define
+// o sinal na DRE). Só se a categoria não tiver grupo de Entrada/Saída é que
+// se usa o tipo gravado na própria categoria. Sem nenhum dos dois = '' (a
+// categoria aparece nos dois lados, para não sumir de lugar nenhum).
+function tipoCategoria(c) {
+  if (!c) return '';
+  const g = db.dre_grupos.find(x => x.id === c.grupo);
+  if (g && (g.tipo === 'entrada' || g.tipo === 'saida')) return g.tipo;
+  return (c.tipo === 'entrada' || c.tipo === 'saida') ? c.tipo : '';
+}
+function categoriasDoTipo(tipoMov) {
+  return db.dfc_cats.filter(c => { const t = tipoCategoria(c); return !t || t === tipoMov; });
+}
+// Opções de categoria para os formulários de lançamento. Se o lançamento já
+// tiver uma categoria do outro tipo (dado antigo), ela é mantida na lista
+// para não ser apagada ao salvar.
+function _optsCategoriaLanc(tipoMov, valorAtual) {
+  let cats = categoriasDoTipo(tipoMov);
+  if (valorAtual && !cats.some(c => c.id === valorAtual)) {
+    const atual = db.dfc_cats.find(c => c.id === valorAtual);
+    if (atual) cats = cats.concat([atual]);
+  }
+  return '<option value="">Nenhuma</option>' +
+    cats.map(cat => `<option value="${cat.id}">${cat.nome} (${getDreGrupoNome(cat.grupo)})</option>`).join('');
+}
+
 function populateDreCatSelects() {
-  const opts = '<option value="">Nenhuma</option>' +
-    db.dfc_cats.map(cat => `<option value="${cat.id}">${cat.nome} (${getDreGrupoNome(cat.grupo)})</option>`).join('');
-  ['l-catdre','edit-catdre','lr-catdre','elr-catdre'].forEach(id => {
+  // Pagamento → só categorias de contas a pagar; Recebimento → só receitas
+  [['l-catdre','saida'], ['edit-catdre','saida'], ['lr-catdre','entrada'], ['elr-catdre','entrada']].forEach(([id, tipoMov]) => {
     const el = document.getElementById(id);
     if (!el) return;
     const val = el.value;
-    el.innerHTML = opts;
+    el.innerHTML = _optsCategoriaLanc(tipoMov, val);
     if (val) el.value = val;
   });
   // Filtros de Grupo/Categoria em Lançamentos, Contas a Pagar e Contas Pagas
@@ -10415,6 +10785,7 @@ function popularCategoriasAnalise() {
 
 function limparFiltrosAnaliseCategoria() {
   ['ac-mes','ac-grupo','ac-categoria'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  aplicarPeriodoAtual('ac-mes','ac-ano');
   for (let m = 1; m <= 12; m++) { const chk = document.getElementById('ac-mes-' + m); if (chk) chk.checked = true; }
   popularCategoriasAnalise();
   renderAnaliseCategoria();
@@ -10516,6 +10887,84 @@ function toggleDreCategorias(grupoId, el) {
   if (el) el.textContent = oculto ? '▾' : '▸';
 }
 
+// ── PREFERÊNCIAS DE EXIBIÇÃO DO DRE ────────────────────────────────
+// Linha de Variação de Estoque, coluna DRE Acumulada e "Empréstimos pelo
+// vencimento" ficam salvas no navegador (igual ao modo do menu).
+const DRE_PREFS_KEY = '477_dre_prefs';
+function carregarPrefsDre() {
+  let pr = {};
+  try { pr = JSON.parse(localStorage.getItem(DRE_PREFS_KEY) || '{}') || {}; } catch(e) {}
+  const set = (id, v) => { const el = document.getElementById(id); if (el && typeof v === 'boolean') el.checked = v; };
+  set('dre-mostrar-varest', pr.varEstoque);
+  set('dre-mostrar-acumulado', pr.acumulado);
+  set('dre-emprest-venc', pr.emprestVenc);
+}
+function salvarPrefsDre() {
+  const get = id => { const el = document.getElementById(id); return el ? el.checked : undefined; };
+  try {
+    localStorage.setItem(DRE_PREFS_KEY, JSON.stringify({
+      varEstoque: get('dre-mostrar-varest'), acumulado: get('dre-mostrar-acumulado'), emprestVenc: get('dre-emprest-venc')
+    }));
+  } catch(e) {}
+}
+
+// ── EMPRÉSTIMOS PELO VENCIMENTO ───────────────────────────────────
+// Quais categorias são "empréstimo" fica na tabela config
+// (key = dre_cats_emprestimo, value = JSON [catId, ...]).
+// null = o usuário ainda não escolheu: o sistema sugere pelo nome da
+// categoria/grupo (contém "empréstimo" ou "financiamento").
+let dreCatsEmprestimo = null;
+async function carregarDreCatsEmprestimo() {
+  try {
+    const rows = await sbFetch('config', 'GET', null, '?key=eq.dre_cats_emprestimo&limit=1');
+    dreCatsEmprestimo = (rows && rows[0]) ? (JSON.parse(rows[0].value) || []) : null;
+  } catch(e) { dreCatsEmprestimo = null; }
+}
+function _pareceCatEmprestimo(c) {
+  const g = db.dre_grupos.find(x => x.id === c.grupo);
+  const n = normText((c.nome || '') + ' ' + (g ? g.nome : ''));
+  return /emprest|financiament/.test(n);
+}
+function getCatsEmprestimoSet() {
+  if (Array.isArray(dreCatsEmprestimo)) return new Set(dreCatsEmprestimo.filter(id => db.dfc_cats.some(c => c.id === id)));
+  return new Set(db.dfc_cats.filter(_pareceCatEmprestimo).map(c => c.id));
+}
+function abrirModalCatsEmprestimo() {
+  const lista = document.getElementById('dre-emprest-lista');
+  if (!lista) return;
+  const marcadas = getCatsEmprestimoSet();
+  const cats = categoriasDoTipo('saida');
+  if (!cats.length) {
+    lista.innerHTML = '<div class="empty-state" style="padding:24px">Nenhuma categoria de saída cadastrada.</div>';
+  } else {
+    // Agrupa pelo grupo do DRE, na ordem cadastrada
+    const ordemGrupo = id => { const g = db.dre_grupos.find(x => x.id === id); return g ? (g.ordem || 0) : 99999; };
+    const porGrupo = {};
+    cats.forEach(c => { const k = c.grupo || ''; (porGrupo[k] = porGrupo[k] || []).push(c); });
+    lista.innerHTML = Object.keys(porGrupo).sort((a, b) => ordemGrupo(a) - ordemGrupo(b)).map(gid => {
+      const g = db.dre_grupos.find(x => x.id === gid);
+      const itens = porGrupo[gid].sort((a, b) => a.nome.localeCompare(b.nome)).map(c =>
+        `<label class="dre-emprest-item"><input type="checkbox" value="${c.id}" ${marcadas.has(c.id) ? 'checked' : ''} />${c.nome}</label>`
+      ).join('');
+      return `<div class="dre-emprest-grupo">${g ? g.nome : 'Sem grupo no DRE'}</div>${itens}`;
+    }).join('');
+  }
+  openModal('modal-cats-emprestimo');
+}
+async function salvarCatsEmprestimo() {
+  const ids = [...document.querySelectorAll('#dre-emprest-lista input[type=checkbox]:checked')].map(cb => cb.value);
+  dreCatsEmprestimo = ids;
+  try {
+    await sbFetch('config', 'DELETE', null, '?key=eq.dre_cats_emprestimo');
+    await sbFetch('config', 'POST', { id: uid(), key: 'dre_cats_emprestimo', value: JSON.stringify(ids) });
+  } catch(e) { console.error('Erro ao salvar categorias de empréstimo:', e); alert('❌ Não foi possível salvar. Verifique sua conexão.'); return; }
+  closeModal('modal-cats-emprestimo');
+  // Salvar a lista já liga a opção, que é o que o usuário quer ver em seguida
+  const chk = document.getElementById('dre-emprest-venc');
+  if (chk && ids.length && !chk.checked) { chk.checked = true; salvarPrefsDre(); }
+  renderDre();
+}
+
 function renderDre() {
   const ano = parseInt(document.getElementById('dre-ano').value);
   const somenteClassificados = document.getElementById('dre-somente-classificados').checked;
@@ -10555,6 +11004,29 @@ function renderDre() {
   // "somente classificados" está desmarcado), para o DRE bater com o total vendido.
   const grupoBaseId = (gruposValor.find(g => g.tipo === 'entrada') || gruposValor[0] || {}).id;
 
+  // Empréstimos pelo vencimento: os lançamentos a pagar das categorias de
+  // empréstimo entram parcela a parcela, no mês de VENCIMENTO de cada uma.
+  // Todo o resto continua por competência (data da compra/venda).
+  const emprestChk = document.getElementById('dre-emprest-venc');
+  const emprestAtivo = !!(emprestChk && emprestChk.checked);
+  const catsEmprest = emprestAtivo ? getCatsEmprestimoSet() : new Set();
+  let parcelasEmprest = null;
+  if (catsEmprest.size) {
+    parcelasEmprest = new Map();
+    getParcelas(false).concat(getParcelas(true)).forEach(pc => {
+      if (!catsEmprest.has(pc.catId)) return;
+      if (!parcelasEmprest.has(pc.lancId)) parcelasEmprest.set(pc.lancId, []);
+      parcelasEmprest.get(pc.lancId).push(pc);
+    });
+  }
+  const infoEmp = document.getElementById('dre-emprest-info');
+  if (infoEmp) {
+    infoEmp.textContent = !emprestAtivo ? ''
+      : (catsEmprest.size ? `${catsEmprest.size} categoria(s) de empréstimo pelo vencimento`
+                          : 'Nenhuma categoria de empréstimo marcada — clique em "Categorias de empréstimo…"');
+    infoEmp.style.color = (emprestAtivo && !catsEmprest.size) ? '#c2410c' : '#a8a29e';
+  }
+
   // 1. Lançamentos a Receber (competência = data da venda)
   db.lancreceber.forEach(l => {
     const dtRef = l.dtvenda || l.dtcompra;
@@ -10581,6 +11053,27 @@ function renderDre() {
 
   // 2. Lançamentos a Pagar (competência = data da compra)
   db.lancamentos.forEach(l => {
+    // Empréstimo com a opção ligada: cada parcela vai para o mês do seu vencimento
+    if (parcelasEmprest && parcelasEmprest.has(l.id)) {
+      parcelasEmprest.get(l.id).forEach(pc => {
+        if (!pc.venc) return;
+        const pv = pc.venc.split('-');
+        if (parseInt(pv[0]) !== ano) return;
+        const mv = parseInt(pv[1]);
+        const grupoIdE = getDreCatGrupo(pc.catId);
+        if (!grupoIdE || !valoresMes[mv] || valoresMes[mv][grupoIdE] === undefined) return;
+        const vParc = pc.valParc || 0;
+        valoresMes[mv][grupoIdE] += vParc;
+        if (valoresCatMes[mv][pc.catId] !== undefined) valoresCatMes[mv][pc.catId] += vParc;
+        itensMes[mv][grupoIdE].push({
+          id: l.id, tipo: 'pagar', data: pc.venc,
+          nome: getFornNome(l.forn) + (pc.totalParc > 1 ? ` (parc. ${pc.parcIdx}/${pc.totalParc})` : ''),
+          prod: l.prod ? getProdNome(l.prod) : '', valor: vParc,
+          status: pc.isPago ? 'Pago' : 'A Pagar', catId: pc.catId, parc: pc.parcIdx
+        });
+      });
+      return;
+    }
     const dtRef = l.dtcompra;
     if (!dtRef) return;
     const parts = dtRef.split('-');
@@ -10716,7 +11209,8 @@ function renderDre() {
     const totalCell = Math.abs(totalVal) >= 0.005
       ? `<td class="dfc-col-total dre-cell-click" onclick="abrirDetalheDreGrupo('${parentG.id}','total','${c.id}')" title="Ver lançamentos desta categoria">${fmtDreVal(totalVal)}</td>`
       : `<td class="dfc-col-total">${fmtDreVal(totalVal)}</td>`;
-    return `<tr class="dre-row-cat" data-cat-grupo="${parentG.id}"><td style="padding-left:26px;font-weight:400;color:#78716c;font-size:10.5px;">↳ ${c.nome}</td>${cells}${totalCell}</tr>`;
+    const tagVenc = catsEmprest.has(c.id) ? '<span class="dre-tag-venc" title="Valores pelo vencimento das parcelas">por vencimento</span>' : '';
+    return `<tr class="dre-row-cat" data-cat-grupo="${parentG.id}"><td style="padding-left:26px;font-weight:400;color:#78716c;font-size:10.5px;">↳ ${c.nome}${tagVenc}</td>${cells}${totalCell}</tr>`;
   };
 
   // Linha "(Sem categoria)" — sobra entre o total do grupo e a soma das
@@ -10771,8 +11265,10 @@ function renderDre() {
     return `<tr class="dfc-row-sub"><td>${g.nome}</td>${cells}${totalCell}</tr>`;
   };
 
+  const chkVarEst = document.getElementById('dre-mostrar-varest');
+  const mostrarVarEst = !chkVarEst || chkVarEst.checked;
   const linhasHtml = grupos.map(g => {
-    if (g.id === varEstGrupoId && (g.tipo === 'entrada' || g.tipo === 'saida')) return linhaVarEstoque(g);
+    if (g.id === varEstGrupoId && (g.tipo === 'entrada' || g.tipo === 'saida')) return mostrarVarEst ? linhaVarEstoque(g) : '';
     if (g.tipo === 'percentual') return linhaPercentual(g);
     if (g.tipo === 'subtotal') {
       if (g.id === ultimoSubtotalId) return linhaFinal(g, 'dre-row-final');
@@ -10824,6 +11320,10 @@ function renderDre() {
   </table>`;
 
   wrap.innerHTML = html;
+  // Coluna "DRE Acumulada" oculta: remove as células já montadas. Como o PDF
+  // clona a tabela da tela, ele também sai sem a coluna.
+  const chkAcum = document.getElementById('dre-mostrar-acumulado');
+  if (chkAcum && !chkAcum.checked) wrap.querySelectorAll('.dfc-col-total').forEach(el => el.remove());
   renderDreChart(grupos, gruposValor, linhaCalc, ultimoSubtotalId);
 }
 
@@ -11061,18 +11561,20 @@ function _renderDreDetalheLinhas(itens) {
   const tbody = document.getElementById('dre-detalhe-tbody');
   if (!tbody) return;
   if (!itens.length) {
-    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Nenhum lançamento encontrado.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Nenhum lançamento encontrado.</td></tr>';
     return;
   }
   tbody.innerHTML = itens.map(it => {
     let badge;
     if (it.status === 'Recebido' || it.status === 'Pago') badge = `<span class="badge badge-green">${it.status}</span>`;
     else if (it.status === 'A Receber') badge = `<span class="badge" style="background:#dbeafe;color:#1e6fad;font-weight:600">${it.status}</span>`;
+    else if (it.tipo === 'dfc') badge = `<span class="badge badge-gray">${it.status}</span>`;
     else badge = `<span class="badge badge-red">${it.status}</span>`;
     return `<tr>
       <td>${fmtDate(it.data)}</td>
-      <td>${it.nome || '—'}</td>
-      <td>${it.prod || '—'}</td>
+      <td style="text-align:left">${it.nome || '—'}</td>
+      <td style="text-align:left">${it.prod || '—'}</td>
+      <td style="text-align:left">${_drillCategoriaHtml(it)}</td>
       <td>${badge}</td>
       <td style="font-family:DM Mono,monospace;text-align:right">${fmtBRL(it.valor)}</td>
       <td>${_dreDetalheAcoesHtml(it)}</td>
@@ -11090,22 +11592,96 @@ function _dreDetalheAcoesHtml(it) {
   const jaConfirmado = it.status === 'Recebido' || it.status === 'Pago';
   const btnEditar = `<button class="btn btn-secondary btn-sm" onclick="dreDetalheEditar('${it.tipo}','${it.id}')">Editar</button>`;
   const btnMarcarOuEstornar = jaConfirmado
-    ? `<button class="btn btn-danger btn-sm" onclick="dreDetalheEstornar('${it.tipo}','${it.id}')" title="Desfazer ${it.tipo==='pagar'?'pagamento':'recebimento'}">↩ Estornar</button>`
-    : `<button class="btn btn-primary btn-sm" onclick="dreDetalheMarcar('${it.tipo}','${it.id}')">${it.tipo==='pagar'?'Marcar Pago':'Marcar Recebido'}</button>`;
+    ? `<button class="btn btn-danger btn-sm" onclick="dreDetalheEstornar('${it.tipo}','${it.id}',${it.parc||1})" title="Desfazer ${it.tipo==='pagar'?'pagamento':'recebimento'}">↩ Estornar</button>`
+    : `<button class="btn btn-primary btn-sm" onclick="dreDetalheMarcar('${it.tipo}','${it.id}',${it.parc||1})">${it.tipo==='pagar'?'Marcar Pago':'Marcar Recebido'}</button>`;
   return `<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">${btnEditar}${btnMarcarOuEstornar}</div>`;
 }
 
+// ── Detalhe (drill-down) da DRE e da DFC: estado e atualização instantânea ──
+// _drillCtx guarda qual célula está aberta, para redesenhar o detalhe depois
+// de uma alteração. _drillVoltar = id do lançamento que o usuário foi editar a
+// partir do detalhe: ao salvar, a tela e o detalhe reabrem já atualizados.
+let _drillCtx = null;      // { origem:'dre'|'dfc', grupoId, mes, catId }
+let _drillVoltar = null;
+
+function _rerenderDemonstrativoAtual() {
+  const pag = (typeof _paginaAtual !== 'undefined') ? _paginaAtual : '';
+  if (pag === 'dre-demonstrativo') renderDre();
+  else if (pag === 'dfc-demonstrativo') renderDfc();
+}
+function _reabrirDrillAtual(manterScroll) {
+  if (!_drillCtx) return;
+  const box = document.querySelector('#modal-dre-detalhe .drill-scroll');
+  const topo = box ? box.scrollTop : 0;
+  if (_drillCtx.origem === 'dfc') abrirDetalheDfc(_drillCtx.grupoId, _drillCtx.mes);
+  else abrirDetalheDreGrupo(_drillCtx.grupoId, _drillCtx.mes, _drillCtx.catId);
+  if (manterScroll && box) box.scrollTop = topo;
+}
+// Chamado logo que um lançamento é alterado na memória (antes de esperar o
+// Supabase): redesenha a DRE/DFC e reabre o detalhe de onde o usuário veio.
+function _aposEditarLancamento(id) {
+  bumpDbVer();
+  _rerenderDemonstrativoAtual();
+  if (_drillVoltar && _drillVoltar === id && _drillCtx) {
+    _drillVoltar = null;
+    // Só reabre se o usuário ainda estiver na tela de onde abriu o detalhe
+    const telaOrigem = _drillCtx.origem === 'dfc' ? 'dfc-demonstrativo' : 'dre-demonstrativo';
+    if (typeof _paginaAtual !== 'undefined' && _paginaAtual === telaOrigem) _reabrirDrillAtual(false);
+  }
+}
+
+// Categoria editável direto na linha do detalhe (sem abrir o formulário)
+function _drillCategoriaHtml(it) {
+  if (it.tipo !== 'pagar' && it.tipo !== 'receber') {
+    const c = it.catId ? db.dfc_cats.find(x => x.id === it.catId) : null;
+    return c ? c.nome : '—';
+  }
+  const lista = it.tipo === 'pagar' ? db.lancamentos : db.lancreceber;
+  const l = lista.find(x => x.id === it.id);
+  const atual = l ? (l.cat_dre || '') : '';
+  const opts = _optsCategoriaLanc(it.tipo === 'pagar' ? 'saida' : 'entrada', atual).replace('>Nenhuma<', '>(Sem categoria)<');
+  const selecionado = opts.replace(`value="${atual}"`, `value="${atual}" selected`);
+  const herdada = (!atual && it.catId) ? ` title="Categoria herdada do produto: ${(getDreCatNome(it.catId)||'').replace(/"/g,'&quot;')}"` : '';
+  return `<select class="drill-cat-sel${atual ? '' : ' drill-cat-vazia'}"${herdada} onchange="drillSetCategoria('${it.tipo}','${it.id}',this.value, this)">${selecionado}</select>`;
+}
+
+async function drillSetCategoria(tipo, id, catId, selEl) {
+  const lista = tipo === 'pagar' ? db.lancamentos : db.lancreceber;
+  const l = lista.find(x => x.id === id);
+  if (!l) return;
+  const anterior = l.cat_dre || '';
+  if (anterior === (catId || '')) return;
+  // 1) Atualiza na hora (memória + tela)
+  l.cat_dre = catId || '';
+  bumpDbVer();
+  _rerenderDemonstrativoAtual();
+  _reabrirDrillAtual(true);
+  // 2) Grava no Supabase em segundo plano; se falhar, desfaz e avisa
+  const ok = await sbFetch(tipo === 'pagar' ? 'lancamentos' : 'lancreceber', 'PATCH', { cat_dre: l.cat_dre }, `?id=eq.${id}`);
+  if (!ok) {
+    l.cat_dre = anterior;
+    bumpDbVer();
+    _rerenderDemonstrativoAtual();
+    _reabrirDrillAtual(true);
+    alert('❌ Não foi possível salvar a categoria. Verifique sua conexão e tente novamente.' + (typeof sbErroDetalhe === 'function' ? sbErroDetalhe() : ''));
+  }
+}
+
 function dreDetalheEditar(tipo, id) {
+  _drillVoltar = id;
   closeModal('modal-dre-detalhe');
   if (tipo === 'pagar') editLancamento(id); else editLancReceber(id);
 }
-function dreDetalheMarcar(tipo, id) {
+function dreDetalheMarcar(tipo, id, parc) {
+  _drillVoltar = id;
   closeModal('modal-dre-detalhe');
-  if (tipo === 'pagar') marcarPago(id, 1); else marcarRecebido(id, 1);
+  if (tipo === 'pagar') marcarPago(id, parc || 1); else marcarRecebido(id, parc || 1);
 }
-async function dreDetalheEstornar(tipo, id) {
+async function dreDetalheEstornar(tipo, id, parc) {
   closeModal('modal-dre-detalhe');
-  if (tipo === 'pagar') await estornarPago(id, 1); else await estornarRecebido(id, 1);
+  if (tipo === 'pagar') await estornarPago(id, parc || 1); else await estornarRecebido(id, parc || 1);
+  _drillVoltar = id;
+  _aposEditarLancamento(id);
 }
 
 // Gera o PDF da Análise por Categoria (usa a tabela já renderizada em tela,
@@ -11180,6 +11756,7 @@ function fmtDrePercent(v) {
 // que compõem aquele número (mes = 1..12 ou 'total' para o ano inteiro).
 function abrirDetalheDreGrupo(grupoId, mes, catId) {
   if (!_dreItensCache) return;
+  _drillCtx = { origem: 'dre', grupoId, mes, catId: catId || null };
   const grupo = db.dre_grupos.find(g => g.id === grupoId);
   let nomeGrupo = grupo ? grupo.nome : 'Conta';
   if (catId) {
@@ -11983,6 +12560,11 @@ async function initApp() {
   populateYearSelects();
   populateDfcYearSelects();
   restaurarFiltrosDash();
+  populateDreYearSelects();
+  aplicarFiltrosPeriodoPadrao();
+  carregarPrefsDre();
+  atualizarBotoesOrientacaoDre();
+  ajustarNomenclaturaDre().catch(e => console.warn('[DRE] ajuste de nomenclatura:', e));
   populateFornSelects();
   populateProdSelects();
   populateClienteSelects();
@@ -12311,6 +12893,22 @@ function imprimirPagina(pagina) {
 
 // Gera o PDF do DRE (usa a tabela já renderizada em tela, respeitando os
 // meses que estiverem visíveis/ocultos no momento).
+// ── Orientação do PDF da DRE (salva no navegador) ──
+const DRE_PDF_ORIENT_KEY = '477_dre_pdf_orient';
+function getDreOrientacaoPdf() {
+  try { return localStorage.getItem(DRE_PDF_ORIENT_KEY) === 'portrait' ? 'portrait' : 'landscape'; } catch(e) { return 'landscape'; }
+}
+function setDreOrientacaoPdf(o) {
+  try { localStorage.setItem(DRE_PDF_ORIENT_KEY, o === 'portrait' ? 'portrait' : 'landscape'); } catch(e) {}
+  atualizarBotoesOrientacaoDre();
+}
+function atualizarBotoesOrientacaoDre() {
+  const o = getDreOrientacaoPdf();
+  const bl = document.getElementById('dre-pdf-landscape'), bp = document.getElementById('dre-pdf-portrait');
+  if (bl) bl.classList.toggle('ativo', o === 'landscape');
+  if (bp) bp.classList.toggle('ativo', o === 'portrait');
+}
+
 function imprimirDre() {
   const wrap = document.getElementById('dre-tabela-wrap');
   const table = wrap ? wrap.querySelector('table') : null;
@@ -12324,14 +12922,43 @@ function imprimirDre() {
   const cloneTable = table.cloneNode(true);
   cloneTable.querySelectorAll('[onclick]').forEach(el => el.removeAttribute('onclick'));
   cloneTable.querySelectorAll('.dre-cell-click').forEach(el => el.classList.remove('dre-cell-click'));
+  cloneTable.querySelectorAll('.dre-cat-toggle').forEach(el => el.remove());
+  // No PDF os valores saem sem o "R$ " (indicado no cabeçalho) — cada coluna
+  // fica bem mais estreita e a tabela cabe maior na folha.
+  cloneTable.querySelectorAll('td:not(:first-child), th:not(:first-child)').forEach(td => {
+    const w = document.createTreeWalker(td, NodeFilter.SHOW_TEXT);
+    let n; while ((n = w.nextNode())) n.nodeValue = n.nodeValue.replace(/R\$[\s\u00a0]*/g, '');
+  });
 
   const dataHoje = new Date().toLocaleString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
   const tableHtml = '<table>' + cloneTable.innerHTML + '</table>';
 
+  // Paisagem: A4 deitado (273 mm úteis); Retrato: A4 em pé (186 mm úteis),
+  // com fonte e espaçamentos menores. Se ainda assim a tabela não couber na
+  // largura, ela é reduzida proporcionalmente (script no fim do HTML).
+  const retrato = getDreOrientacaoPdf() === 'portrait';
+  const larguraUtilMm = retrato ? 186 : 273;
+  const cssOrient = retrato ? [
+    'body { font-size:9.5px; }',
+    '.logo { font-size:16px; }',
+    '.titulo { font-size:11.5px; }',
+    'th { padding:4px 3px; font-size:7px; letter-spacing:0; }',
+    'td { padding:2.5px 3px; font-size:8px; }',
+    'td:first-child { font-size:8px; min-width:32mm; max-width:44mm; }',
+    '.dfc-row-sub td:first-child, .dre-row-percent td:first-child { padding-left:8px; }',
+    '.dre-row-percent td { font-size:7px; }',
+    '.dre-row-final td { font-size:8.5px; }',
+    '.dre-row-cat td, .dre-row-cat td:first-child { font-size:7.5px !important; }',
+    '.dre-row-cat td:first-child { padding-left:12px !important; }'
+  ] : [];
+
   const css = [
     '* { margin:0; padding:0; box-sizing:border-box; }',
-    '@page { size: A4 landscape; margin: 12mm; }',
-    'body { font-family:Arial,sans-serif; color:#1f2937; padding:20px 26px; font-size:11px; }',
+    '@page { size: A4 ' + (retrato ? 'portrait' : 'landscape') + '; margin: 12mm; }',
+    'body { font-family:Arial,sans-serif; color:#1f2937; padding:0; font-size:11px; }',
+    '.folha { width:' + larguraUtilMm + 'mm; margin:0 auto; }',
+    'thead { display:table-header-group; }',
+    'tr { page-break-inside:avoid; }',
     '.header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; padding-bottom:10px; border-bottom:2px solid #ea580c; }',
     '.logo { font-size:18px; font-weight:800; color:#ea580c; }',
     '.titulo { font-size:13px; font-weight:700; margin-top:3px; }',
@@ -12339,9 +12966,11 @@ function imprimirDre() {
     'table { width:100%; border-collapse:collapse; }',
     'th { background:#faf9f7; padding:5px 8px; text-align:right; font-size:9px; font-weight:700; color:#57534e; text-transform:uppercase; letter-spacing:.3px; white-space:nowrap; border-bottom:2px solid #e7e5e4; }',
     'th:first-child { text-align:left; }',
-    'td { padding:3px 8px; text-align:right; border-bottom:1px solid #faf9f7; font-family:"Courier New",monospace; font-size:10px; white-space:nowrap; }',
-    'td:first-child { text-align:left; font-family:Arial,sans-serif; font-size:10.5px; }',
+    'td { padding:3px 5px; text-align:right; border-bottom:1px solid #f5f4f2; font-family:Arial,sans-serif; font-variant-numeric:tabular-nums; font-size:9.5px; white-space:nowrap; }',
+    'td:first-child { text-align:left; font-size:10px; white-space:normal; min-width:48mm; max-width:72mm; }',
     '.dfc-col-total { background:#faf9f7; font-weight:700; }',
+    '.dre-row-cat td:first-child { font-size:9px !important; padding-left:22px !important; color:#78716c; }',
+    '.dre-row-cat td { font-size:9px; color:#57534e; }',
     '.dfc-row-sub td:first-child { padding-left:20px; color:#57534e; }',
     '.dre-row-subtotal td { font-weight:700; border-top:1px solid #d6d3d1; border-bottom:1px solid #d6d3d1; }',
     '.dre-row-subtotal td:first-child { text-transform:uppercase; letter-spacing:.3px; color:#ea580c; }',
@@ -12354,16 +12983,23 @@ function imprimirDre() {
     '.dfc-val-pos { color:#166534; }',
     '.dfc-val-neg { color:#dc2626; }',
     '.dfc-val-zero { color:#a8a29e; }',
-    '.footer { margin-top:16px; padding-top:8px; border-top:1px solid #f5f4f2; font-size:9px; color:#a8a29e; text-align:center; }'
-  ].join('\n');
+    '.footer { margin-top:16px; padding-top:8px; border-top:1px solid #f5f4f2; font-size:9px; color:#a8a29e; text-align:center; }',
+    '@media screen { body { background:#e7e5e4; padding:16px 0; } .folha { background:#fff; padding:12mm; width:' + (larguraUtilMm + 24) + 'mm; box-shadow:0 2px 12px rgba(0,0,0,.12); } }'
+  ].concat(cssOrient).join('\n');
 
   const fullHtml = '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>' + titulo + ' — C@P Consultoria</title>'
-    + '<style>' + css + '</style></head><body>'
+    + '<style>' + css + '</style></head><body><div class="folha">'
     + '<div class="header"><div><div class="logo">C@P</div><div class="titulo">' + titulo + '</div></div>'
-    + '<div class="meta"><div>Emitido em: ' + dataHoje + '</div><div>Sistema de Gestão C@P Consultoria</div></div></div>'
-    + tableHtml
+    + '<div class="meta"><div>Emitido em: ' + dataHoje + '</div><div>Valores em R$ · ' + (retrato ? 'Retrato' : 'Paisagem') + '</div><div>Sistema de Gestão C@P Consultoria</div></div></div>'
+    + '<div class="tabela-area">' + tableHtml + '</div>'
     + '<div class="footer">C@P Consultoria — Sistema de Gestão de Compras &middot; Gerado em ' + dataHoje + '</div>'
-    + '<' + 'script>window.onload=function(){window.print()}<' + '/script>'
+    + '</div>'
+    // Encolhe a tabela se ela for mais larga que a folha (muitos meses em retrato)
+    + '<' + 'script>window.onload=function(){'
+    +   'var a=document.querySelector(".tabela-area"),t=a&&a.querySelector("table");'
+    +   'if(t){var w=a.clientWidth,tw=t.scrollWidth;if(tw>w+1){t.style.zoom=(w/tw).toFixed(3);}}'
+    +   'setTimeout(function(){window.print()},60);'
+    + '}<' + '/script>'
     + '</body></html>';
 
   const win = window.open('', '_blank', 'width=1200,height=760');
@@ -12377,6 +13013,8 @@ function imprimirDre() {
 // IMPORTAR EXTRATO / CONCILIAÇÃO BANCÁRIA
 // ══════════════════════════════════════════
 let importPreviewRows = [];
+// Banco reconhecido no último extrato lido (mostrado no topo da prévia)
+let _importBancoInfo = null;
 
 function abrirModalImport(tipo) {
   document.getElementById('import-tipo').value = tipo;
@@ -12751,7 +13389,7 @@ function acharClientePorNome(nome) {
 // Tenta identificar a categoria: 1) histórico do fornecedor/cliente (categoria mais usada), 2) palavra-chave no texto
 function sugerirCategoria(tipo, fornecedorId, clienteId, textoLivre) {
   const tipoAlvo = tipo === 'pagar' ? 'saida' : 'entrada';
-  const catsDoTipo = db.dfc_cats.filter(c => !c.tipo || c.tipo === tipoAlvo);
+  const catsDoTipo = categoriasDoTipo(tipoAlvo);
 
   // 1) histórico
   if(tipo === 'pagar' && fornecedorId) {
@@ -12804,7 +13442,7 @@ function acharDuplicado(tipo, nomeRaw, matchId, isNovo, dataRef, valor) {
 // Monta uma linha de prévia a partir dos dados brutos já identificados (nome, valor, data etc),
 // reaproveitando o match de fornecedor/cliente, sugestão de categoria e checagem de duplicidade.
 function montarLinhaImport(tipo, dados) {
-  const { nomeRaw, valor, dataRef, venc, nf, obs, aporteSuspeito, motivoSuspeita } = dados;
+  const { nomeRaw, valor, dataRef, venc, nf, obs, aporteSuspeito, motivoSuspeita, banco, pago } = dados;
   let matchId = null, isNovo = true;
   if(tipo === 'pagar') {
     const f = acharFornecedorPorNome(nomeRaw);
@@ -12819,8 +13457,83 @@ function montarLinhaImport(tipo, dados) {
     incluir: !duplicado && !aporteSuspeito, nomeRaw, matchId, isNovo, duplicado, aporteSuspeito: !!aporteSuspeito,
     motivoSuspeita: motivoSuspeita || '',
     dataRef, venc, valor, nf: nf||'', obs: obs||'',
-    catId: catSugerida
+    catId: catSugerida,
+    // Forma de pagamento/recebimento e banco: identificados pelo histórico e
+    // pelo cabeçalho do extrato; ficam editáveis na prévia.
+    tipoPag: detectarFormaPagImport(tipo, `${obs||''} ${nomeRaw||''}`),
+    banco: banco || '',
+    bancoAuto: !!banco,
+    // Linha de extrato = dinheiro que já saiu/entrou na conta → vem como pago.
+    pago: !!pago,
+    dtpago: dataRef || ''
   };
+}
+
+// ── Identificação automática da FORMA de pagamento/recebimento ─────────
+// Procura, no histórico do extrato, palavras típicas de cada forma e só
+// devolve uma forma que exista na lista do sistema (padrão + cadastradas).
+const _REGRAS_FORMA_IMPORT = [
+  { re: /\bpix\b/,                                                          forma: 'pix' },
+  { re: /boleto|pagto?\.? ?tit|pag(amento)? (de )?tit|liq\.? ?tit|titulo|cobranca|\bcob\b/, forma: 'boleto' },
+  { re: /cheque|\bchq\b|\bch\.? comp/,                                        forma: 'cheque' },
+  { re: /cartao de credito|cart\.? ?cred|credito cartao|fatura/,                 forma: 'cartao de credito' },
+  { re: /cartao|debito visa|visa electron|maestro|elo debito|compra deb|deb\.? ?cartao|compra com cartao/, forma: 'cartao de debito' },
+  { re: /\bted\b|\bdoc\b|transf|tev\b/,                                       forma: 'transferencia' },
+  { re: /saque|dinheiro|dep\.? ?din|deposito em especie/,                       forma: 'dinheiro' }
+];
+function detectarFormaPagImport(tipo, texto) {
+  const lista = tipo === 'pagar' ? getFormasPagamento() : getFormasRecebimento();
+  const t = normText(texto);
+  if (!t) return '';
+  // 1) Formas cadastradas pelo usuário cujo nome aparece no histórico
+  //    (ex.: "Débito Automático") — a mais específica (nome mais longo) vence.
+  const extras = lista.filter(f => !FORMAS_PADRAO.includes(f) && normText(f).length >= 3 && t.includes(normText(f)))
+    .sort((a, b) => b.length - a.length);
+  if (extras.length) return extras[0];
+  if (/deb(ito)?\.? ?aut/.test(t)) {
+    const da = lista.find(f => /deb.*aut/.test(normText(f)));
+    if (da) return da;
+  }
+  // 2) Regras por palavra-chave, mapeadas para uma forma existente
+  for (const r of _REGRAS_FORMA_IMPORT) {
+    if (!r.re.test(t)) continue;
+    const f = lista.find(x => normText(x) === r.forma) || lista.find(x => normText(x).includes(r.forma));
+    if (f) return f;
+  }
+  return '';
+}
+
+// ── Identificação automática do BANCO a partir do extrato ─────────────
+// 1º pelo número da conta impresso no cabeçalho; 2º pelo nome do banco
+// (reconhecido pelo leitor ou escrito no próprio extrato) comparado com o
+// nome das contas cadastradas em Bancos/Caixas.
+const _BANCO_APELIDOS = {
+  'Sicoob':          ['sicoob'],
+  'Ailos/Viacredi':  ['ailos', 'viacredi'],
+  'Banco do Brasil': ['banco do brasil', 'bb ', 'brasil']
+};
+function detectarBancoExtrato(texto, bancoLeitor) {
+  if (!db.bancos || !db.bancos.length) return { id: '', motivo: '' };
+  const cab = (texto || '').split('\n').slice(0, 60).join('\n');
+  const cabNorm = ' ' + normText(cab) + ' ';
+  const soDig = v => String(v || '').replace(/\D/g, '').replace(/^0+/, '');
+  // Todas as sequências numéricas do cabeçalho (com . - / entre os dígitos)
+  const numerosCab = (cab.match(/\d[\d.\-\/ ]{2,}\d/g) || []).map(soDig).filter(n => n.length >= 4);
+  let melhor = null;
+  db.bancos.forEach(b => {
+    let pts = 0, motivo = '';
+    const conta = soDig(b.conta);
+    if (conta.length >= 4 && numerosCab.some(n => n === conta || n.endsWith(conta) || conta.endsWith(n))) {
+      pts += 10; motivo = 'número da conta';
+    }
+    const nomeB = ' ' + normText(b.nome) + ' ';
+    const apelidos = _BANCO_APELIDOS[bancoLeitor] || [];
+    if (apelidos.some(a => nomeB.includes(a))) { pts += 3; motivo = motivo || 'banco do extrato (' + bancoLeitor + ')'; }
+    const nomeLimpo = normText(b.nome).replace(/\b(conta|corrente|banco|cc|c\/c|pj|pf)\b/g, '').trim();
+    if (nomeLimpo.length >= 4 && cabNorm.includes(nomeLimpo)) { pts += 2; motivo = motivo || 'nome no extrato'; }
+    if (pts && (!melhor || pts > melhor.pts)) melhor = { id: b.id, pts, motivo };
+  });
+  return melhor ? { id: melhor.id, motivo: melhor.motivo } : { id: '', motivo: '' };
 }
 
 // ══════════════════════════════════════════════════════════
@@ -13061,7 +13774,9 @@ function processarImport() {
         + '\n\nConfira o texto extraído na caixa abaixo.');
       return;
     }
-    importPreviewRows = linhas.map(dados => montarLinhaImport(tipo, dados));
+    const bancoDet = detectarBancoExtrato(texto, _extratoBancoDetectado);
+    _importBancoInfo = { leitor: _extratoBancoDetectado, id: bancoDet.id, motivo: bancoDet.motivo };
+    importPreviewRows = linhas.map(dados => montarLinhaImport(tipo, { ...dados, banco: bancoDet.id, pago: true }));
     renderImportPreview();
     document.getElementById('import-step-1').style.display = 'none';
     document.getElementById('import-step-2').style.display = '';
@@ -13070,6 +13785,7 @@ function processarImport() {
 
   const { header, linhasDados } = parseCSV(texto);
   if(!header || !linhasDados.length) { alert('Não foi possível interpretar o arquivo.'); return; }
+  _importBancoInfo = null;
 
   let idxNome, idxValor, idxData, idxVenc, idxNf, idxObs;
   if(tipo === 'pagar') {
@@ -13118,13 +13834,44 @@ function processarImport() {
 function renderImportPreview() {
   const tipo = document.getElementById('import-tipo').value;
   const nomesLista = tipo === 'pagar' ? db.fornecedores : db.clientes;
-  const catsDoTipo = db.dfc_cats.filter(c => !c.tipo || c.tipo === (tipo==='pagar'?'saida':'entrada'));
+  const catsDoTipo = categoriasDoTipo(tipo==='pagar'?'saida':'entrada');
 
   const catMassaSel = document.getElementById('import-cat-massa');
   const catMassaValorAtual = catMassaSel.value;
   catMassaSel.innerHTML = '<option value="">Selecione...</option>' +
     catsDoTipo.map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
   if(catMassaValorAtual) catMassaSel.value = catMassaValorAtual;
+
+  const ehPagar = tipo === 'pagar';
+  const formasLista = ehPagar ? getFormasPagamento() : getFormasRecebimento();
+  const optsForma = (atual) => '<option value="">Não informado</option>' +
+    formasLista.concat(atual && !formasLista.includes(atual) ? [atual] : [])
+      .map(f => `<option value="${f}" ${f===atual?'selected':''}>${f}</option>`).join('');
+  const optsBanco = (atual) => '<option value="">Não informado</option>' +
+    db.bancos.map(b => `<option value="${b.id}" ${b.id===atual?'selected':''}>${b.nome}</option>`).join('');
+  const bancoMassaSel = document.getElementById('import-banco-massa');
+  if (bancoMassaSel) { const v = bancoMassaSel.value; bancoMassaSel.innerHTML = optsBanco('').replace('Não informado','Selecione...'); bancoMassaSel.value = v; }
+  const formaMassaSel = document.getElementById('import-forma-massa');
+  if (formaMassaSel) { const v = formaMassaSel.value; formaMassaSel.innerHTML = optsForma('').replace('Não informado','Selecione...'); formaMassaSel.value = v; }
+  const lblFormaMassa = document.getElementById('import-forma-massa-label');
+  if (lblFormaMassa) lblFormaMassa.textContent = ehPagar ? 'Forma de pagamento em massa:' : 'Forma de recebimento em massa:';
+  const btnPagoSim = document.getElementById('import-pago-massa-sim');
+  if (btnPagoSim) btnPagoSim.textContent = ehPagar ? '✔ Marcar todas como pagas' : '✔ Marcar todas como recebidas';
+  const btnPagoNao = document.getElementById('import-pago-massa-nao');
+  if (btnPagoNao) btnPagoNao.textContent = ehPagar ? 'Desmarcar pagas' : 'Desmarcar recebidas';
+  const avisoBanco = document.getElementById('import-banco-detectado');
+  if (avisoBanco) {
+    if (_importBancoInfo) {
+      avisoBanco.style.display = '';
+      if (_importBancoInfo.id) {
+        avisoBanco.className = 'import-banco-detectado';
+        avisoBanco.innerHTML = `🏦 Banco identificado: <b>${getBancoNome(_importBancoInfo.id)}</b> (pelo ${_importBancoInfo.motivo}). Já preenchido em todas as linhas — altere linha a linha ou em massa se precisar.`;
+      } else {
+        avisoBanco.className = 'import-banco-detectado aviso';
+        avisoBanco.innerHTML = `⚠️ ${_importBancoInfo.leitor ? 'Extrato ' + _importBancoInfo.leitor + ' reconhecido, mas' : 'Não'} não encontrei a conta correspondente em Bancos/Caixas. Escolha o banco em massa abaixo ou linha a linha.`;
+      }
+    } else avisoBanco.style.display = 'none';
+  }
 
   const semMatch = new Set(
     importPreviewRows.filter(r=>r.isNovo && !r.importado).map(r=>normText(r.nomeRaw))
@@ -13177,7 +13924,7 @@ function renderImportPreview() {
         <div class="import-row-fields">
           <div class="import-row-field">
             <label>Data</label>
-            <input type="date" value="${r.dataRef}" onchange="importPreviewRows[${i}].dataRef=this.value; recalcDuplicadoLinha(${i})" />
+            <input type="date" value="${r.dataRef}" onchange="if(importPreviewRows[${i}].dtpago===importPreviewRows[${i}].dataRef) importPreviewRows[${i}].dtpago=this.value; importPreviewRows[${i}].dataRef=this.value; recalcDuplicadoLinha(${i})" />
           </div>
           <div class="import-row-field">
             <label>Vencimento</label>
@@ -13200,6 +13947,22 @@ function renderImportPreview() {
             <label>Categoria</label>
             <select onchange="importPreviewRows[${i}].catId=this.value">${catOptions.join('')}</select>
           </div>
+          <div class="import-row-field">
+            <label>${ehPagar?'Forma de Pagamento':'Forma de Recebimento'}${r.tipoPag && r.tipoPagAuto!==false ? '<span class="import-row-auto" title="Identificada pelo histórico do extrato">• auto</span>' : ''}</label>
+            <select onchange="importPreviewRows[${i}].tipoPag=this.value; importPreviewRows[${i}].tipoPagAuto=false">${optsForma(r.tipoPag)}</select>
+          </div>
+          <div class="import-row-field">
+            <label>Banco / Conta${r.banco && r.bancoAuto ? '<span class="import-row-auto" title="Identificado pelo extrato">• auto</span>' : ''}</label>
+            <select onchange="importPreviewRows[${i}].banco=this.value; importPreviewRows[${i}].bancoAuto=false">${optsBanco(r.banco)}</select>
+          </div>
+          <div class="import-row-field">
+            <label>Situação</label>
+            <label class="import-row-pago-toggle${r.pago?' on':''}">
+              <input type="checkbox" ${r.pago?'checked':''} onchange="importPreviewRows[${i}].pago=this.checked; renderImportPreview()" />
+              ${ehPagar?'Já pago':'Já recebido'}
+            </label>
+            ${r.pago ? `<input class="import-row-pago-data" type="date" value="${r.dtpago||r.dataRef||''}" title="${ehPagar?'Data do pagamento':'Data do recebimento'}" onchange="importPreviewRows[${i}].dtpago=this.value" />` : ''}
+          </div>
         </div>
         <div class="import-row-obs-wrap">
           <label>Observação</label>
@@ -13211,6 +13974,34 @@ function renderImportPreview() {
       </div>
     </div>`;
   }).join('');
+}
+
+// Ações em massa da prévia (banco, forma, pago) — só nas linhas ainda não importadas
+function aplicarBancoMassaImport() {
+  const v = document.getElementById('import-banco-massa').value;
+  if(!v) { alert('Selecione um banco/conta antes de aplicar.'); return; }
+  importPreviewRows.forEach(r => { if(!r.importado) { r.banco = v; r.bancoAuto = false; } });
+  renderImportPreview();
+}
+function aplicarFormaMassaImport() {
+  const v = document.getElementById('import-forma-massa').value;
+  if(!v) { alert('Selecione uma forma antes de aplicar.'); return; }
+  importPreviewRows.forEach(r => { if(!r.importado) { r.tipoPag = v; r.tipoPagAuto = false; } });
+  renderImportPreview();
+}
+function aplicarPagoMassaImport(pago) {
+  importPreviewRows.forEach(r => { if(!r.importado) { r.pago = pago; if(pago && !r.dtpago) r.dtpago = r.dataRef; } });
+  renderImportPreview();
+}
+// Lançamento marcado como pago/recebido precisa de banco (mesma regra da
+// tela "Marcar como Pago"), senão o saldo da conta não fecha.
+function _validarLinhasPagasImport(linhas, tipo) {
+  const semBanco = linhas.filter(r => r.pago && !r.banco).length;
+  if (semBanco) {
+    alert(`${semBanco} linha(s) marcada(s) como ${tipo==='pagar'?'paga(s)':'recebida(s)'} sem Banco / Conta.\n\nEscolha o banco (linha a linha ou em "Banco em massa") ou desmarque "${tipo==='pagar'?'Já pago':'Já recebido'}".`);
+    return false;
+  }
+  return true;
 }
 
 function toggleAllImportRows(cb) {
@@ -13278,7 +14069,8 @@ async function importarLinha(tipo, r) {
       id: uid(), empresa_id: empresaAtual() || null,
       dtcompra: r.dataRef, dtprev: r.venc, nf: r.nf||'',
       forn: idAlvo, prod: '', valor: r.valor, parcelas: 1,
-      financeiro: 'sim', pago: 'nao', tipo_pag: '', banco: '',
+      financeiro: 'sim', pago: r.pago ? 'sim' : 'nao', dtpago: r.pago ? (r.dtpago || r.dataRef) : '',
+      tipo_pag: r.tipoPag || '', banco: r.banco || '',
       cat_dre: r.catId || '', obs: (r.obs||'') + ' (importado via conciliação bancária)',
       parcela_datas: null
     };
@@ -13290,7 +14082,8 @@ async function importarLinha(tipo, r) {
       id: uid(), empresa_id: empresaAtual() || null,
       dtvenda: r.dataRef, dtprev: r.venc, nf: r.nf||'',
       cliente: idAlvo, prod: '', valor: r.valor, parcelas: 1,
-      financeiro: 'sim', recebido: 'nao', tipo_pag: '', banco: '',
+      financeiro: 'sim', recebido: r.pago ? 'sim' : 'nao', dtrecebido: r.pago ? (r.dtpago || r.dataRef) : '',
+      tipo_pag: r.tipoPag || '', banco: r.banco || '',
       cat_dre: r.catId || '', juros: null, obs: (r.obs||'') + ' (importado via conciliação bancária)',
       parcela_datas: null
     };
@@ -13308,6 +14101,7 @@ function atualizarTelasAposImport(tipo) {
     populateClienteSelects(); renderLancReceber(); renderAReceber(); renderRecebido();
     populateYearSelectsReceber(); renderDashboard();
   }
+  if (typeof _paginaAtual !== 'undefined' && _paginaAtual === 'bancos' && typeof renderBancos === 'function') { renderBancos(); renderFluxoBancoDiario(); }
 }
 
 function atualizarProgressoImport(atual, total, label) {
@@ -13336,6 +14130,7 @@ async function confirmarImportLinha(i) {
   const tipo = document.getElementById('import-tipo').value;
   const r = importPreviewRows[i];
   if(!r || r.importado) return;
+  if(!_validarLinhasPagasImport([r], tipo)) return;
   definirBotoesImportDesabilitados(true);
   atualizarProgressoImport(0, 1, 'Importando linha...');
   const ok = await importarLinha(tipo, r);
@@ -13353,6 +14148,7 @@ async function confirmarImport() {
   const tipo = document.getElementById('import-tipo').value;
   const linhas = importPreviewRows.filter(r=>r.incluir && !r.importado);
   if(!linhas.length) { alert('Nenhuma linha selecionada para importar.'); return; }
+  if(!_validarLinhasPagasImport(linhas, tipo)) return;
 
   definirBotoesImportDesabilitados(true);
   let criados = 0, erros = 0;
@@ -13719,6 +14515,7 @@ function populatePedidosCanceladosFiltros() {
 
 function clearPedidosCanceladosFiltros() {
   ['pcf-mes','pcf-ano','pcf-cliente','pcf-motivo'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  aplicarPeriodoAtual('pcf-mes','pcf-ano');
   renderPedidosCancelados();
 }
 
@@ -14002,6 +14799,7 @@ function populateReposicoesFiltros() {
 
 function clearReposicoesFiltros() {
   ['rpf-mes','rpf-ano','rpf-cliente','rpf-motivo'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  aplicarPeriodoAtual('rpf-mes','rpf-ano');
   renderReposicoes();
 }
 
