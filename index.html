@@ -442,6 +442,49 @@ th.ef-th { padding:8px 8px 8px 12px; }
 .fb-dia-hoje td { background:#eef3fa; }
 .dre-cell-click { cursor:pointer; }
 .dre-cell-click:hover { background:#eef3fa; }
+
+/* ── FLUXO DE CAIXA DIÁRIO (tela própria, 3 blocos de dias lado a lado) ── */
+.fd-cols { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; align-items:start; }
+.fd-bloco table { width:100%; border-collapse:collapse; font-size:12px; }
+.fd-bloco thead th {
+  background:#f0efed; color:#57534e; font-size:10px; text-transform:uppercase;
+  letter-spacing:.5px; font-weight:700; padding:8px 10px; text-align:right; white-space:nowrap;
+}
+.fd-bloco thead th:first-child { text-align:left; width:44px; }
+.fd-bloco thead th.fd-h-rec { color:#166534; text-align:left; }
+.fd-bloco thead th.fd-h-desp { color:#dc2626; }
+.fd-bloco tbody td { padding:5px 10px; border-bottom:1px solid #f5f4f2; text-align:right; white-space:nowrap; font-family:'DM Mono',monospace; }
+.fd-bloco tbody td:first-child { text-align:left; font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; color:#57534e; }
+.fd-bloco tbody tr:nth-child(even) td { background:#faf9f8; }
+.fd-bloco tbody tr.fd-hoje td { background:#fff7ed; box-shadow:inset 0 0 0 1.5px #ea580c; }
+.fd-bloco tbody tr.fd-vazio td { color:#d6d3d1; }
+.fd-dia-btn {
+  display:inline-block; min-width:26px; padding:1px 6px; border-radius:6px;
+  cursor:pointer; text-align:center;
+}
+.fd-dia-btn:hover { background:#ea580c; color:#fff; }
+.fd-val { cursor:pointer; border-radius:4px; padding:1px 4px; }
+.fd-val:hover { background:#eef3fa; outline:1px solid #d6d3d1; }
+.fd-zero { color:#d6d3d1; }
+.fd-pill {
+  display:inline-block; min-width:92px; padding:3px 10px; border-radius:6px;
+  font-weight:700; color:#fff; text-align:right; cursor:pointer;
+}
+.fd-pill-pos { background:#16a34a; }
+.fd-pill-neg { background:#dc2626; }
+.fd-pill:hover { filter:brightness(1.12); }
+.fd-total-row td { background:#f0efed !important; font-weight:800; border-top:2px solid #d6d3d1; }
+.fd-analise {
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px 22px;
+  background:#faf9f7; border:1px solid #e7e5e4; border-radius:8px;
+  padding:10px 16px; margin-bottom:16px; font-size:12.5px;
+}
+.fd-analise b { font-weight:700; }
+.fd-analise .fd-analise-lbl {
+  font-size:10px; font-weight:700; color:#a8a29e;
+  text-transform:uppercase; letter-spacing:.6px;
+}
+@media (max-width:1100px) { .fd-cols { grid-template-columns:1fr; } }
 .fluxo-risco td { background:#fef2f2 !important; }
 
 
@@ -1015,6 +1058,10 @@ th.ef-th { padding:8px 8px 8px 12px; }
       <div class="nav-item" onclick="showPage('fluxo-futuro')" id="nav-fluxo-futuro">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg>
         Fluxo de Caixa Futuro
+      </div>
+      <div class="nav-item" onclick="showPage('fluxo-diario')" id="nav-fluxo-diario">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Fluxo de Caixa Diário
       </div>
       <div class="nav-item" onclick="showPage('dfc-demonstrativo')" id="nav-dfc-demonstrativo" style="margin-bottom:8px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -2321,6 +2368,58 @@ th.ef-th { padding:8px 8px 8px 12px; }
       <div id="fluxo-futuro-wrap"></div>
     </div>
 
+    <!-- ══ FLUXO DE CAIXA DIÁRIO ══ -->
+    <div class="page" id="page-fluxo-diario">
+      <div class="page-header">
+        <div>
+          <div class="page-title">
+            Fluxo de Caixa Diário
+            <span class="badge badge-gray" id="fd-escopo-tag" style="font-size:11px;vertical-align:middle;margin-left:6px;">📊 Consolidado</span>
+          </div>
+          <div class="page-sub" style="margin-bottom:0">Receita, despesa e resultado de cada dia do mês</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="imprimirFluxoDiario()">🖨️ PDF</button>
+      </div>
+
+      <div class="card" style="margin-bottom:16px;">
+        <div class="filter-row" style="align-items:flex-end;">
+          <div class="form-group" style="max-width:120px"><label>Ano</label>
+            <select id="fd-ano" onchange="renderFluxoDiario()"></select>
+          </div>
+          <div class="form-group" style="max-width:150px"><label>Mês</label>
+            <select id="fd-mes" onchange="renderFluxoDiario()">
+              <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
+              <option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option>
+              <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
+              <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+            </select>
+          </div>
+          <div class="form-group" style="max-width:230px">
+            <label>&nbsp;</label>
+            <div style="display:flex;gap:6px;">
+              <button class="btn btn-secondary btn-sm" onclick="fdNavegarMes(-1)" title="Mês anterior">◀</button>
+              <button class="btn btn-secondary btn-sm" onclick="fdMesAtual()">Mês atual</button>
+              <button class="btn btn-secondary btn-sm" onclick="fdNavegarMes(1)" title="Próximo mês">▶</button>
+            </div>
+          </div>
+          <div class="form-group" style="max-width:250px"><label>Base</label>
+            <select id="fd-base" onchange="renderFluxoDiario()">
+              <option value="realizado" selected>Realizado (o que entrou e saiu)</option>
+              <option value="previsto">Previsto (por vencimento)</option>
+              <option value="competencia">Competência (data da compra/venda)</option>
+            </select>
+          </div>
+          <div class="form-group" style="max-width:220px"><label>Conta / Banco</label>
+            <select id="fd-banco" onchange="renderFluxoDiario()"><option value="">Todas as Contas</option></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid4" id="fd-kpis" style="margin-bottom:16px;"></div>
+      <div id="fd-analise-wrap"></div>
+      <div id="fd-tabelas"></div>
+    </div>
+
     <!-- ══ DASHBOARD ══ -->
     <div class="page active" id="page-dashboard">
       <div class="page-title">Dashboard <span class="empresa-tag"></span></div>
@@ -3502,6 +3601,64 @@ th.ef-th { padding:8px 8px 8px 12px; }
   </div>
 </div>
 
+<!-- ══ MODAL EXCLUIR PARCELA ISOLADA ══ -->
+<div class="modal-overlay" id="modal-excluir-parcela">
+  <div class="modal" style="width:560px;max-width:96vw;">
+    <div class="modal-title" style="margin-bottom:4px;">Excluir parcela</div>
+    <div class="page-sub" id="xp-resumo" style="margin-bottom:14px;"></div>
+    <div id="xp-aviso"></div>
+    <div class="form-group" style="margin-bottom:6px;">
+      <label>O que fazer com o valor desta parcela?</label>
+    </div>
+    <label style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1.5px solid #e7e5e4;border-radius:8px;margin-bottom:8px;cursor:pointer;">
+      <input type="radio" name="xp-modo" value="reduzir" checked onchange="_xpAtualizarPreview()" style="margin-top:3px;width:16px;height:16px;" />
+      <span>
+        <b>Reduzir o total do lançamento</b>
+        <span style="display:block;font-size:12px;color:#57534e;margin-top:2px;">
+          As demais parcelas ficam exatamente como estão (mesmos valores e vencimentos) e o lançamento passa a valer menos.
+        </span>
+      </span>
+    </label>
+    <label style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1.5px solid #e7e5e4;border-radius:8px;margin-bottom:14px;cursor:pointer;">
+      <input type="radio" name="xp-modo" value="redistribuir" onchange="_xpAtualizarPreview()" style="margin-top:3px;width:16px;height:16px;" />
+      <span>
+        <b>Redistribuir o valor entre as parcelas restantes</b>
+        <span style="display:block;font-size:12px;color:#57534e;margin-top:2px;">
+          O total do lançamento não muda: o valor desta parcela é dividido entre as que sobram.
+        </span>
+      </span>
+    </label>
+    <div id="xp-preview" style="background:#faf9f7;border:1px solid #e7e5e4;border-radius:8px;padding:12px 14px;font-size:12.5px;"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-excluir-parcela')">Cancelar</button>
+      <button class="btn btn-danger" onclick="confirmarExcluirParcela()">Excluir parcela</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL LANÇAMENTOS DO DIA (Fluxo Diário e Fluxo Futuro) ══ -->
+<div class="modal-overlay" id="modal-dia-detalhe">
+  <div class="modal" style="width:1080px;max-width:96vw;">
+    <div class="modal-title" id="fd-detalhe-title" style="margin-bottom:4px;">Lançamentos do dia</div>
+    <div class="page-sub" id="fd-detalhe-sub" style="margin-bottom:14px;"></div>
+    <div class="grid4" id="fd-detalhe-kpis" style="margin-bottom:16px;"></div>
+    <div class="fd-drill-scroll" style="max-height:48vh;overflow-y:auto">
+      <table class="dfc-table" style="width:100%">
+        <thead><tr>
+          <th style="text-align:left">Data</th>
+          <th style="text-align:left">Fornecedor / Cliente</th>
+          <th style="text-align:left">Produto</th>
+          <th>Tipo</th><th>Situação</th><th>Valor</th><th>Ações</th>
+        </tr></thead>
+        <tbody id="fd-detalhe-tbody"></tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-dia-detalhe')">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ MODAL EDITAR CATEGORIA (Contas Pagas) ══ -->
 <div class="modal-overlay" id="modal-editar-categoria-pago">
   <div class="modal" style="width:420px;">
@@ -3541,6 +3698,7 @@ const PAGES_CONFIG = [
   { id:'bancos',            label:'Bancos / Caixas',     grupo:'pagar'   },
   { id:'transferencias',    label:'Transferência entre Contas', grupo:'pagar' },
   { id:'fluxo-futuro',      label:'Fluxo de Caixa Futuro',grupo:'pagar'  },
+  { id:'fluxo-diario',      label:'Fluxo de Caixa Diário',grupo:'pagar'  },
   { id:'fornecedores',      label:'Despesas/Fornecedor',  grupo:'pagar'   },
   { id:'produtos',          label:'Itens (Despesas)',    grupo:'pagar'   },
   { id:'lancamentos',       label:'Lançamentos (Compra)',grupo:'pagar'   },
@@ -4138,6 +4296,7 @@ function showPage(p) {
   if (p === 'bancos')         { renderBancos(); renderFluxoBancoDiario(); }
   if (p === 'transferencias') { populateTransfSelects(); renderTransferencias(); }
   if (p === 'fluxo-futuro')   renderFluxoFuturo();
+  if (p === 'fluxo-diario')   renderFluxoDiario();
   if (p === 'fornecedores')   renderFornecedores();
   if (p === 'produtos')       renderProdutos();
   if (p === 'clientes')       renderClientes();
@@ -4175,6 +4334,7 @@ function renderPaginaAtual() {
   if (p === 'bancos')         { renderBancos(); renderFluxoBancoDiario(); }
   if (p === 'transferencias') { populateTransfSelects(); renderTransferencias(); }
   if (p === 'fluxo-futuro')   renderFluxoFuturo();
+  if (p === 'fluxo-diario')   renderFluxoDiario();
   if (p === 'fornecedores')   renderFornecedores();
   if (p === 'produtos')       renderProdutos();
   if (p === 'clientes')       renderClientes();
@@ -4478,6 +4638,15 @@ function populateYearSelects() {
     fba.innerHTML = sorted.map(y=>`<option value="${y}">${y}</option>`).join('');
     fba.value = fbval || curYear;
   }
+  // Fluxo de Caixa Diário (tela própria)
+  const fda = document.getElementById('fd-ano');
+  if (fda) {
+    const fdval = fda.value;
+    fda.innerHTML = sorted.map(y=>`<option value="${y}">${y}</option>`).join('');
+    fda.value = fdval || curYear;
+  }
+  const fdm = document.getElementById('fd-mes');
+  if (fdm && !fdm.value) fdm.value = String(new Date().getMonth() + 1);
 }
 
 function populateFornSelects() {
@@ -8488,6 +8657,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const ov = document.getElementById('cal-detail-overlay');
   if (ov) ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('open'); });
 
+  const ovDia = document.getElementById('modal-dia-detalhe');
+  if (ovDia) ovDia.addEventListener('click', e => { if (e.target === ovDia) ovDia.classList.remove('open'); });
+
   // Event delegation para permissões de usuário
   document.addEventListener('click', e => {
     const label = e.target.closest('label.perm-toggle');
@@ -11622,6 +11794,14 @@ function _reabrirDrillAtual(manterScroll) {
 function _aposEditarLancamento(id) {
   bumpDbVer();
   _rerenderDemonstrativoAtual();
+  // Fluxo de Caixa Diário / Futuro: redesenha a tela e reabre o detalhe do
+  // dia de onde o usuário saiu, já com o valor atualizado.
+  if (typeof _fdRerenderOrigem === 'function') _fdRerenderOrigem();
+  if (typeof _fdDrillVoltar !== 'undefined' && _fdDrillVoltar === id && _fdDrillCtx) {
+    const telaOrigem = _fdDrillCtx.origem === 'futuro' ? 'fluxo-futuro' : 'fluxo-diario';
+    _fdDrillVoltar = null;
+    if (typeof _paginaAtual !== 'undefined' && _paginaAtual === telaOrigem) _fdReabrirDrill();
+  }
   if (_drillVoltar && _drillVoltar === id && _drillCtx) {
     _drillVoltar = null;
     // Só reabre se o usuário ainda estiver na tela de onde abriu o detalhe
@@ -11856,6 +12036,12 @@ function populateBancoSelects() {
     const val = fbEl.value;
     fbEl.innerHTML = '<option value="">Todas as Contas</option>' + db.bancos.map(b => `<option value="${b.id}">${b.nome}</option>`).join('');
     if (val) fbEl.value = val;
+  }
+  const fdEl = document.getElementById('fd-banco');
+  if (fdEl) {
+    const val = fdEl.value;
+    fdEl.innerHTML = '<option value="">Todas as Contas</option>' + db.bancos.map(b => `<option value="${b.id}">${b.nome}</option>`).join('');
+    if (val) fdEl.value = val;
   }
   populateTransfSelects();
 }
@@ -12406,12 +12592,26 @@ function renderFluxoFuturo() {
     const isRisco = saldoAcum < -0.005;
     const saldoCls = saldoAcum >= 0 ? 'dfc-val-pos' : 'dfc-val-neg';
     const rowCls = [isRisco ? 'fluxo-risco' : '', isHoje ? 'fb-dia-hoje' : ''].filter(Boolean).join(' ');
+    const temMov = (receber > 0.005 || pagar > 0.005);
+    // Cada número do dia abre a lista das parcelas que o compõem, para
+    // editar, dar baixa ou excluir sem sair da projeção.
+    const cRec = receber > 0.005
+      ? `<span class="fd-val dfc-val-pos" onclick="abrirDetalheDiaFluxo('${d}','receita','futuro')" title="Ver o que há a receber neste dia">+ ${fmtBRL(receber)}</span>`
+      : '<span class="dfc-val-zero">—</span>';
+    const cPag = pagar > 0.005
+      ? `<span class="fd-val dfc-val-neg" onclick="abrirDetalheDiaFluxo('${d}','despesa','futuro')" title="Ver o que há a pagar neste dia">− ${fmtBRL(pagar)}</span>`
+      : '<span class="dfc-val-zero">—</span>';
+    const cSaldoDia = temMov
+      ? `<span class="fd-val" onclick="abrirDetalheDiaFluxo('${d}','todos','futuro')" title="Ver todos os lançamentos deste dia">${fmtDreVal(receber - pagar)}</span>`
+      : '<span class="dfc-val-zero">—</span>';
     return `<tr class="${rowCls}">
-      <td style="font-weight:700;white-space:nowrap">${fmtDate(d)}${isHoje ? ' <span style="font-size:9px;color:#ea580c">HOJE</span>' : ''}</td>
+      <td style="font-weight:700;white-space:nowrap">${temMov
+        ? `<span class="fd-dia-btn" onclick="abrirDetalheDiaFluxo('${d}','todos','futuro')" title="Ver todos os lançamentos deste dia">${fmtDate(d)}</span>`
+        : fmtDate(d)}${isHoje ? ' <span style="font-size:9px;color:#ea580c">HOJE</span>' : ''}</td>
       <td>${diasSemana[dt.getDay()]}</td>
-      <td>${receber > 0.005 ? `<span class="dfc-val-pos">+ ${fmtBRL(receber)}</span>` : '<span class="dfc-val-zero">—</span>'}</td>
-      <td>${pagar > 0.005 ? `<span class="dfc-val-neg">− ${fmtBRL(pagar)}</span>` : '<span class="dfc-val-zero">—</span>'}</td>
-      <td>${Math.abs(receber - pagar) > 0.005 ? fmtDreVal(receber - pagar) : '<span class="dfc-val-zero">—</span>'}</td>
+      <td>${cRec}</td>
+      <td>${cPag}</td>
+      <td>${cSaldoDia}</td>
       <td class="${saldoCls}" style="font-weight:700">${fmtBRL(saldoAcum)}${isRisco ? ' ⚠️' : ''}</td>
     </tr>`;
   }).join('');
@@ -12434,6 +12634,7 @@ function renderFluxoFuturo() {
     </div>
     ${alertaHtml}
     <div class="card">
+      <div class="page-sub" style="margin-bottom:10px">Clique em qualquer valor do dia para ver, editar ou excluir os lançamentos que o compõem.</div>
       <div style="max-height:560px;overflow-y:auto">
         <table class="dfc-table" style="width:100%">
           <thead><tr><th style="text-align:left">Data</th><th>Dia</th><th>A Receber</th><th>A Pagar</th><th>Saldo do Dia</th><th>Saldo Projetado</th></tr></thead>
@@ -12554,6 +12755,644 @@ function renderAnaliseFluxo() {
   }
 }
 
+
+// ══════════════════════════════════════════════════════════════════
+// FLUXO DE CAIXA DIÁRIO — tela própria (mês fechado, dia a dia)
+// ------------------------------------------------------------------
+// Mostra RECEITA, DESPESA e RESULTADO de cada dia do mês em três blocos
+// (1–10, 11–20, 21–fim). Qualquer número é clicável e abre a lista dos
+// lançamentos que o compõem, onde dá para editar, quitar/estornar e excluir.
+//
+// A leitura muda conforme a "Base" escolhida:
+//   realizado   → o que de fato entrou/saiu (data de pagamento/recebimento)
+//   previsto    → o que vence no dia (parcelas em aberto + já quitadas)
+//   competência → data da compra/venda, independente de quando foi pago
+//
+// Transferências entre contas próprias NÃO entram aqui: elas não são
+// receita nem despesa, apenas trocam dinheiro de lugar. (O saldo por conta
+// continua sendo visto em Bancos / Caixas, que já as considera.)
+// ══════════════════════════════════════════════════════════════════
+
+// Coleta as parcelas de um intervalo de datas seguindo as regras da base
+// escolhida. É a ÚNICA fonte usada tanto pela tabela quanto pelo modal de
+// detalhe — assim o que está somado na tela é sempre igual ao que aparece
+// quando o usuário clica no número.
+function _fdItensDoPeriodo(deData, ateData, base, bancoSel, somenteAbertas) {
+  const itens = [];
+  const bancoOk = p => !bancoSel || p.banco === bancoSel;
+  const dentro = d => !!d && d >= deData && d <= ateData;
+
+  [...getParcelas(false), ...getParcelas(true)].forEach(p => {
+    if (somenteAbertas && p.isPago) return;
+    let dataRef;
+    if (base === 'realizado') { if (!p.isPago) return; dataRef = p.dtpago; }
+    else if (base === 'competencia') dataRef = p.dtcompra;
+    else dataRef = p.venc || p.dtcompra;
+    if (!dentro(dataRef) || !bancoOk(p)) return;
+    itens.push({
+      tipo: 'pagar', id: p.lancId, parc: p.parcIdx, totalParc: p.totalParc,
+      data: dataRef, venc: p.venc, nome: getFornNome(p.forn),
+      prod: p.prod ? getProdNome(p.prod) : '', valor: p.valParc || 0,
+      quitado: p.isPago, status: p.isPago ? 'Pago' : 'A Pagar', banco: p.banco
+    });
+  });
+
+  [...getParcelasReceber(false), ...getParcelasReceber(true)].forEach(p => {
+    if (somenteAbertas && p.isRecebido) return;
+    let dataRef;
+    if (base === 'realizado') { if (!p.isRecebido) return; dataRef = p.dtrecebido; }
+    else if (base === 'competencia') dataRef = p.dtvenda;
+    else dataRef = p.venc || p.dtvenda;
+    if (!dentro(dataRef) || !bancoOk(p)) return;
+    itens.push({
+      tipo: 'receber', id: p.lancId, parc: p.parcIdx, totalParc: p.totalParc,
+      data: dataRef, venc: p.venc, nome: getClienteNome(p.cliente),
+      prod: p.prod ? getProdVendaNome(p.prod) : '', valor: p.valParc || 0,
+      quitado: p.isRecebido, status: p.isRecebido ? 'Recebido' : 'A Receber', banco: p.banco
+    });
+  });
+
+  return itens.sort((a, b) => (a.data || '').localeCompare(b.data || ''));
+}
+
+function fdNavegarMes(delta) {
+  const mesEl = document.getElementById('fd-mes');
+  const anoEl = document.getElementById('fd-ano');
+  if (!mesEl || !anoEl) return;
+  let mes = (parseInt(mesEl.value) || (new Date().getMonth() + 1)) + delta;
+  let ano = parseInt(anoEl.value) || new Date().getFullYear();
+  if (mes < 1)  { mes = 12; ano--; }
+  if (mes > 12) { mes = 1;  ano++; }
+  // O select de ano só tem os anos já conhecidos; se o usuário passar do
+  // limite, acrescenta o ano novo em vez de deixar o campo vazio.
+  if (!Array.from(anoEl.options).some(o => o.value === String(ano))) {
+    const opt = document.createElement('option');
+    opt.value = String(ano); opt.textContent = String(ano);
+    anoEl.appendChild(opt);
+  }
+  mesEl.value = String(mes);
+  anoEl.value = String(ano);
+  renderFluxoDiario();
+}
+
+function fdMesAtual() {
+  const hoje = new Date();
+  const mesEl = document.getElementById('fd-mes');
+  const anoEl = document.getElementById('fd-ano');
+  if (mesEl) mesEl.value = String(hoje.getMonth() + 1);
+  if (anoEl) anoEl.value = String(hoje.getFullYear());
+  renderFluxoDiario();
+}
+
+function renderFluxoDiario() {
+  const wrapTab = document.getElementById('fd-tabelas');
+  const wrapKpi = document.getElementById('fd-kpis');
+  const wrapAna = document.getElementById('fd-analise-wrap');
+  if (!wrapTab || !wrapKpi) return;
+
+  const mesEl = document.getElementById('fd-mes');
+  const anoEl = document.getElementById('fd-ano');
+  if (!mesEl || !anoEl) return;
+  const mes  = parseInt(mesEl.value) || (new Date().getMonth() + 1);
+  const ano  = parseInt(anoEl.value) || new Date().getFullYear();
+  const base = (document.getElementById('fd-base') || {}).value || 'realizado';
+  const bancoSel = (document.getElementById('fd-banco') || {}).value || '';
+
+  const mesStr    = String(mes).padStart(2, '0');
+  const diasNoMes = new Date(ano, mes, 0).getDate();
+  const primeiro  = `${ano}-${mesStr}-01`;
+  const ultimo    = `${ano}-${mesStr}-${String(diasNoMes).padStart(2, '0')}`;
+
+  const itens = _fdItensDoPeriodo(primeiro, ultimo, base, bancoSel, false);
+
+  const porDia = {};
+  for (let d = 1; d <= diasNoMes; d++) porDia[d] = { receita: 0, despesa: 0 };
+  itens.forEach(it => {
+    const d = parseInt(it.data.slice(8, 10));
+    if (!porDia[d]) return;
+    if (it.tipo === 'receber') porDia[d].receita += it.valor;
+    else porDia[d].despesa += it.valor;
+  });
+
+  let totReceita = 0, totDespesa = 0, diasComMovimento = 0;
+  let melhorDia = null, piorDia = null;
+  for (let d = 1; d <= diasNoMes; d++) {
+    const { receita, despesa } = porDia[d];
+    totReceita += receita; totDespesa += despesa;
+    const temMov = (receita > 0.005 || despesa > 0.005);
+    if (temMov) diasComMovimento++;
+    const res = receita - despesa;
+    if (temMov) {
+      if (melhorDia === null || res > (porDia[melhorDia].receita - porDia[melhorDia].despesa)) melhorDia = d;
+      if (piorDia   === null || res < (porDia[piorDia].receita   - porDia[piorDia].despesa))   piorDia   = d;
+    }
+  }
+  const resultadoMes = totReceita - totDespesa;
+  const hojeStr = today();
+
+  // ── Blocos de dias (1–10, 11–20, 21–fim) ──
+  const linhaDia = d => {
+    const { receita, despesa } = porDia[d];
+    const dataStr = `${ano}-${mesStr}-${String(d).padStart(2, '0')}`;
+    const res     = receita - despesa;
+    const temMov  = (receita > 0.005 || despesa > 0.005);
+    const isHoje  = dataStr === hojeStr;
+
+    const cRec = receita > 0.005
+      ? `<span class="fd-val dfc-val-pos" onclick="abrirDetalheDiaFluxo('${dataStr}','receita')" title="Ver lançamentos de receita do dia ${d}">R$ ${fmtBRL(receita).replace('R$ ','')}</span>`
+      : '<span class="fd-zero">R$&nbsp;&nbsp;—</span>';
+    const cDesp = despesa > 0.005
+      ? `<span class="fd-val dfc-val-neg" onclick="abrirDetalheDiaFluxo('${dataStr}','despesa')" title="Ver lançamentos de despesa do dia ${d}">R$ ${fmtBRL(despesa).replace('R$ ','')}</span>`
+      : '<span class="fd-zero">R$&nbsp;&nbsp;—</span>';
+    const cRes = temMov
+      ? `<span class="fd-pill ${res >= 0 ? 'fd-pill-pos' : 'fd-pill-neg'}" onclick="abrirDetalheDiaFluxo('${dataStr}','todos')" title="Ver todos os lançamentos do dia ${d}">${res >= 0 ? fmtBRL(res) : '(' + fmtBRL(Math.abs(res)) + ')'}</span>`
+      : '<span class="fd-zero">—</span>';
+
+    return `<tr class="${isHoje ? 'fd-hoje' : ''}${temMov ? '' : ' fd-vazio'}">
+      <td><span class="fd-dia-btn" onclick="abrirDetalheDiaFluxo('${dataStr}','todos')" title="Ver todos os lançamentos do dia ${d}">${String(d).padStart(2, '0')}</span></td>
+      <td>${cRec}</td><td>${cDesp}</td><td>${cRes}</td>
+    </tr>`;
+  };
+
+  const cabecalho = `<thead><tr>
+      <th>Dia</th><th class="fd-h-rec">Receita</th><th class="fd-h-desp">Despesa</th><th>Resultado do dia</th>
+    </tr></thead>`;
+
+  const blocos = [[1, 10], [11, 20], [21, diasNoMes]].map(([ini, fim], idx) => {
+    let linhas = '';
+    for (let d = ini; d <= fim; d++) linhas += linhaDia(d);
+    // A linha de TOTAL fica no último bloco, como fechamento da leitura.
+    if (idx === 2) {
+      linhas += `<tr class="fd-total-row">
+        <td>Total</td>
+        <td><span class="dfc-val-pos">${fmtBRL(totReceita)}</span></td>
+        <td><span class="dfc-val-neg">${fmtBRL(totDespesa)}</span></td>
+        <td><span class="${resultadoMes >= 0 ? 'dfc-val-pos' : 'dfc-val-neg'}">${resultadoMes >= 0 ? fmtBRL(resultadoMes) : '(' + fmtBRL(Math.abs(resultadoMes)) + ')'}</span></td>
+      </tr>`;
+    }
+    return `<div class="fd-bloco"><table>${cabecalho}<tbody>${linhas}</tbody></table></div>`;
+  }).join('');
+
+  wrapTab.innerHTML = `<div class="card"><div class="fd-cols">${blocos}</div></div>`;
+
+  // ── KPIs do mês ──
+  const corRes = resultadoMes >= 0 ? '#166534' : '#dc2626';
+  wrapKpi.innerHTML = `
+    <div class="card kpi"><div class="kpi-val" style="color:#166534">${fmtBRL(totReceita)}</div><div class="kpi-lbl">Receita do mês</div></div>
+    <div class="card kpi"><div class="kpi-val" style="color:#dc2626">${fmtBRL(totDespesa)}</div><div class="kpi-lbl">Despesa do mês</div></div>
+    <div class="card kpi"><div class="kpi-val" style="color:${corRes}">${resultadoMes >= 0 ? '' : '−'}${fmtBRL(Math.abs(resultadoMes))}</div><div class="kpi-lbl">Resultado do mês</div></div>
+    <div class="card kpi"><div class="kpi-val">${diasComMovimento} <span style="font-size:14px;color:#a8a29e">/ ${diasNoMes}</span></div><div class="kpi-lbl">Dias com movimento</div></div>`;
+
+  // ── Faixa de análise: melhor e pior dia ──
+  if (wrapAna) {
+    const nomeMes = meses[mes];
+    const txtDia = (d, cor) => {
+      if (d === null) return '<span class="fd-zero">—</span>';
+      const v = porDia[d].receita - porDia[d].despesa;
+      return `<b>dia ${String(d).padStart(2, '0')}</b> <span style="color:${cor}">(${v >= 0 ? '' : '−'}${fmtBRL(Math.abs(v))})</span>`;
+    };
+    const avisoBanco = (bancoSel && base !== 'realizado')
+      ? `<span style="color:#92400e">⚠️ Com uma conta selecionada, lançamentos ainda sem banco definido ficam de fora.</span>`
+      : '';
+    wrapAna.innerHTML = diasComMovimento === 0
+      ? `<div class="fd-analise"><span class="fd-analise-lbl">Análise do resultado</span><span class="fd-zero">Nenhum movimento registrado neste mês com os filtros atuais.</span></div>`
+      : `<div class="fd-analise">
+          <span class="fd-analise-lbl">Análise do resultado</span>
+          <span>Melhor dia de ${nomeMes}: ${txtDia(melhorDia, '#166534')}</span>
+          <span>Pior dia: ${txtDia(piorDia, '#dc2626')}</span>
+          ${avisoBanco}
+        </div>`;
+  }
+
+  const tag = document.getElementById('fd-escopo-tag');
+  if (tag) tag.textContent = bancoSel ? '🏦 ' + getBancoNome(bancoSel) : '📊 Consolidado';
+}
+
+// ══════════════════════════════════════════════════════════════════
+// DETALHE DO DIA — lista os lançamentos que formam o número clicado,
+// com edição, baixa/estorno e exclusão. Usado pelo Fluxo de Caixa Diário
+// e pelo Fluxo de Caixa Futuro.
+// ══════════════════════════════════════════════════════════════════
+let _fdDrillCtx = null;    // { data, filtro, origem }
+let _fdDrillVoltar = null; // id do lançamento aberto para edição
+
+function _fdRerenderOrigem() {
+  const p = (typeof _paginaAtual !== 'undefined') ? _paginaAtual : '';
+  if (p === 'fluxo-diario') renderFluxoDiario();
+  else if (p === 'fluxo-futuro') renderFluxoFuturo();
+  else if (p === 'bancos') { renderBancos(); renderFluxoBancoDiario(); }
+}
+
+function _fdReabrirDrill() {
+  if (!_fdDrillCtx) return;
+  const box = document.querySelector('#modal-dia-detalhe .fd-drill-scroll');
+  const topo = box ? box.scrollTop : 0;
+  abrirDetalheDiaFluxo(_fdDrillCtx.data, _fdDrillCtx.filtro, _fdDrillCtx.origem);
+  const box2 = document.querySelector('#modal-dia-detalhe .fd-drill-scroll');
+  if (box2) box2.scrollTop = topo;
+}
+
+// origem: 'diario' (usa a Base escolhida na tela) ou 'futuro' (por vencimento,
+// só o que ainda está em aberto — que é exatamente o que a projeção soma).
+function abrirDetalheDiaFluxo(dateStr, filtro, origem) {
+  origem = origem || 'diario';
+  filtro = filtro || 'todos';
+  _fdDrillCtx = { data: dateStr, filtro, origem };
+
+  let base, bancoSel, somenteAbertas;
+  if (origem === 'futuro') {
+    base = 'previsto'; bancoSel = ''; somenteAbertas = true;
+  } else {
+    base = (document.getElementById('fd-base') || {}).value || 'realizado';
+    bancoSel = (document.getElementById('fd-banco') || {}).value || '';
+    somenteAbertas = false;
+  }
+
+  let itens = _fdItensDoPeriodo(dateStr, dateStr, base, bancoSel, somenteAbertas);
+  if (filtro === 'receita') itens = itens.filter(it => it.tipo === 'receber');
+  if (filtro === 'despesa') itens = itens.filter(it => it.tipo === 'pagar');
+
+  const diasSemana = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+  const dow = new Date(dateStr + 'T00:00:00').getDay();
+  const titulo = document.getElementById('fd-detalhe-title');
+  if (titulo) {
+    const rotuloFiltro = filtro === 'receita' ? ' — Receitas' : filtro === 'despesa' ? ' — Despesas' : '';
+    titulo.textContent = `${diasSemana[dow]}, ${fmtDate(dateStr)}${rotuloFiltro}`;
+  }
+
+  const rotulosBase = {
+    realizado:   'valores efetivamente pagos/recebidos nesta data',
+    previsto:    'parcelas com vencimento nesta data',
+    competencia: 'lançamentos com data de compra/venda nesta data'
+  };
+  const sub = document.getElementById('fd-detalhe-sub');
+  if (sub) {
+    sub.innerHTML = origem === 'futuro'
+      ? 'Projeção por vencimento — somente parcelas em aberto (as já quitadas não entram no cálculo).'
+      : rotulosBase[base] + (bancoSel ? ` · Conta: <b>${getBancoNome(bancoSel)}</b>` : '');
+  }
+
+  const totalRec  = itens.filter(i => i.tipo === 'receber').reduce((s, i) => s + i.valor, 0);
+  const totalDesp = itens.filter(i => i.tipo === 'pagar').reduce((s, i) => s + i.valor, 0);
+  const saldo = totalRec - totalDesp;
+  const kpis = document.getElementById('fd-detalhe-kpis');
+  if (kpis) {
+    kpis.innerHTML = `
+      <div class="card kpi"><div class="kpi-val">${itens.length}</div><div class="kpi-lbl">Lançamentos</div></div>
+      <div class="card kpi"><div class="kpi-val" style="color:#166534">${fmtBRL(totalRec)}</div><div class="kpi-lbl">Receitas</div></div>
+      <div class="card kpi"><div class="kpi-val" style="color:#dc2626">${fmtBRL(totalDesp)}</div><div class="kpi-lbl">Despesas</div></div>
+      <div class="card kpi"><div class="kpi-val" style="color:${saldo >= 0 ? '#166534' : '#dc2626'}">${saldo >= 0 ? '' : '−'}${fmtBRL(Math.abs(saldo))}</div><div class="kpi-lbl">Resultado do dia</div></div>`;
+  }
+
+  const tbody = document.getElementById('fd-detalhe-tbody');
+  if (tbody) {
+    if (!itens.length) {
+      tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Nenhum lançamento neste dia.</td></tr>';
+    } else {
+      tbody.innerHTML = itens.map(it => {
+        const tipoBadge = it.tipo === 'receber'
+          ? '<span class="badge badge-green">Entrada</span>'
+          : '<span class="badge badge-red">Saída</span>';
+        let statusBadge;
+        if (it.quitado) statusBadge = `<span class="badge badge-green">${it.status}</span>`;
+        else if (it.tipo === 'receber') statusBadge = `<span class="badge" style="background:#dbeafe;color:#1e6fad;font-weight:600">${it.status}</span>`;
+        else statusBadge = `<span class="badge badge-red">${it.status}</span>`;
+        const parcTxt = it.totalParc > 1
+          ? ` <span style="font-size:11px;color:#a8a29e">(parc. ${it.parc}/${it.totalParc})</span>` : '';
+        return `<tr>
+          <td>${fmtDate(it.data)}</td>
+          <td style="text-align:left"><b>${it.nome}</b>${parcTxt}</td>
+          <td style="text-align:left">${it.prod || '—'}</td>
+          <td>${tipoBadge}</td>
+          <td>${statusBadge}</td>
+          <td style="font-family:DM Mono,monospace;text-align:right">${fmtBRL(it.valor)}</td>
+          <td>${_fdDetalheAcoesHtml(it)}</td>
+        </tr>`;
+      }).join('');
+    }
+  }
+
+  openModal('modal-dia-detalhe');
+}
+
+function _fdDetalheAcoesHtml(it) {
+  const btnEditar = `<button class="btn btn-secondary btn-sm" onclick="fdDetalheEditar('${it.tipo}','${it.id}')">Editar</button>`;
+  const btnBaixa = it.quitado
+    ? `<button class="btn btn-secondary btn-sm" onclick="fdDetalheEstornar('${it.tipo}','${it.id}',${it.parc || 1})" title="Desfazer ${it.tipo === 'pagar' ? 'pagamento' : 'recebimento'}">↩ Estornar</button>`
+    : `<button class="btn btn-primary btn-sm" onclick="fdDetalheMarcar('${it.tipo}','${it.id}',${it.parc || 1})">${it.tipo === 'pagar' ? 'Marcar Pago' : 'Marcar Recebido'}</button>`;
+  const btnExcluirParc = it.totalParc > 1
+    ? `<button class="btn btn-danger btn-sm" onclick="fdExcluirParcela('${it.tipo}','${it.id}',${it.parc || 1})" title="Excluir somente esta parcela (${it.parc}/${it.totalParc})">🗑 Parcela</button>`
+    : '';
+  const btnExcluir = `<button class="btn btn-danger btn-sm" onclick="fdDetalheExcluir('${it.tipo}','${it.id}')" title="${it.totalParc > 1 ? 'Excluir o lançamento inteiro, com as ' + it.totalParc + ' parcelas' : 'Excluir o lançamento'}">🗑 ${it.totalParc > 1 ? 'Lançamento' : 'Excluir'}</button>`;
+  return `<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">${btnEditar}${btnBaixa}${btnExcluirParc}${btnExcluir}</div>`;
+}
+
+function fdDetalheEditar(tipo, id) {
+  _fdDrillVoltar = id;
+  closeModal('modal-dia-detalhe');
+  if (tipo === 'pagar') editLancamento(id); else editLancReceber(id);
+}
+
+function fdDetalheMarcar(tipo, id, parc) {
+  _fdDrillVoltar = id;
+  closeModal('modal-dia-detalhe');
+  if (tipo === 'pagar') marcarPago(id, parc || 1); else marcarRecebido(id, parc || 1);
+}
+
+async function fdDetalheEstornar(tipo, id, parc) {
+  closeModal('modal-dia-detalhe');
+  if (tipo === 'pagar') await estornarPago(id, parc || 1); else await estornarRecebido(id, parc || 1);
+  _fdDrillVoltar = id;
+  _aposEditarLancamento(id);
+}
+
+// Exclui o lançamento inteiro (todas as parcelas). Avisa claramente quando o
+// lançamento é parcelado ou já tem baixa registrada, porque nesses casos a
+// exclusão também some com o histórico de pagamento/recebimento.
+async function fdDetalheExcluir(tipo, id) {
+  const lista = tipo === 'pagar' ? db.lancamentos : db.lancreceber;
+  const l = lista.find(x => x.id === id);
+  if (!l) { alert('Lançamento não encontrado — a tela pode estar desatualizada.'); return; }
+
+  const n = l.parcelas || 1;
+  const nome = tipo === 'pagar' ? getFornNome(l.forn) : getClienteNome(l.cliente);
+  const jaBaixado = tipo === 'pagar'
+    ? [...getParcelas(true)].some(p => p.lancId === id)
+    : [...getParcelasReceber(true)].some(p => p.lancId === id);
+
+  let msg = `Excluir o lançamento de ${nome} — ${fmtBRL(l.valor)}?`;
+  if (n > 1) msg += `\n\nAtenção: o lançamento é excluído por inteiro, com as ${n} parcelas. Não dá para apagar só uma parcela por aqui.`;
+  if (jaBaixado) msg += `\n\nEste lançamento já tem ${tipo === 'pagar' ? 'pagamento' : 'recebimento'} registrado — excluí-lo altera o saldo da conta vinculada.`;
+  msg += '\n\nEsta ação não pode ser desfeita.';
+  if (!confirm(msg)) return;
+
+  const tabela = tipo === 'pagar' ? 'lancamentos' : 'lancreceber';
+  const ok = await sbFetch(tabela, 'DELETE', null, `?id=eq.${id}`);
+  if (!ok) {
+    alert('❌ Não foi possível excluir o lançamento.' + (typeof sbErroDetalhe === 'function' ? sbErroDetalhe() : ''));
+    return;
+  }
+
+  if (tipo === 'pagar') db.lancamentos = db.lancamentos.filter(x => x.id !== id);
+  else                  db.lancreceber = db.lancreceber.filter(x => x.id !== id);
+  bumpDbVer();
+
+  // Redesenha as telas afetadas e reabre o detalhe do dia já sem a linha.
+  _fdRerenderOrigem();
+  if (tipo === 'pagar') { renderLancamentos(); renderApagar(); renderPagas(); }
+  else                  { renderLancReceber(); renderAReceber(); renderRecebido(); }
+  _fdReabrirDrill();
+}
+
+// Gera o PDF do Fluxo de Caixa Diário a partir do que já está na tela,
+// respeitando mês, base e conta selecionados.
+function imprimirFluxoDiario() {
+  const wrap = document.getElementById('fd-tabelas');
+  const cols = wrap ? wrap.querySelector('.fd-cols') : null;
+  if (!cols) { alert('Nada para imprimir — selecione um mês.'); return; }
+
+  const mes  = parseInt((document.getElementById('fd-mes') || {}).value) || (new Date().getMonth() + 1);
+  const ano  = parseInt((document.getElementById('fd-ano') || {}).value) || new Date().getFullYear();
+  const baseEl = document.getElementById('fd-base');
+  const baseTxt = baseEl ? baseEl.options[baseEl.selectedIndex].text : '';
+  const bancoSel = (document.getElementById('fd-banco') || {}).value || '';
+  const contaTxt = bancoSel ? getBancoNome(bancoSel) : 'Todas as Contas';
+
+  const clone = cols.cloneNode(true);
+  clone.querySelectorAll('[onclick]').forEach(el => el.removeAttribute('onclick'));
+  clone.querySelectorAll('[title]').forEach(el => el.removeAttribute('title'));
+  clone.querySelectorAll('.fd-val, .fd-dia-btn, .fd-pill').forEach(el => el.classList.remove('fd-val', 'fd-dia-btn', 'fd-pill'));
+
+  const kpiEl = document.getElementById('fd-kpis');
+  const anaEl = document.querySelector('#fd-analise-wrap .fd-analise');
+  const dataHoje = new Date().toLocaleString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+
+  const css = [
+    '* { margin:0; padding:0; box-sizing:border-box; }',
+    'body { font-family:Arial,sans-serif; color:#1f2937; padding:22px 26px; font-size:11px; }',
+    '.header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; padding-bottom:10px; border-bottom:2px solid #ea580c; }',
+    '.logo { font-size:20px; font-weight:800; color:#ea580c; }',
+    '.titulo { font-size:15px; font-weight:700; margin-top:3px; }',
+    '.meta { text-align:right; font-size:9px; color:#78716c; line-height:1.6; }',
+    '.kpis { display:flex; gap:10px; margin-bottom:12px; }',
+    '.kpi { flex:1; background:#faf9f7; border:1px solid #e7e5e4; border-radius:6px; padding:8px 12px; text-align:center; }',
+    '.kpi-val { font-size:15px; font-weight:800; }',
+    '.kpi-lbl { font-size:8px; color:#78716c; text-transform:uppercase; letter-spacing:.4px; margin-top:2px; }',
+    '.analise { background:#faf9f7; border:1px solid #e7e5e4; border-radius:6px; padding:8px 12px; margin-bottom:12px; font-size:10px; display:flex; gap:20px; flex-wrap:wrap; }',
+    '.analise-lbl { font-weight:700; color:#78716c; text-transform:uppercase; font-size:8px; letter-spacing:.5px; }',
+    '.fd-cols { display:flex; gap:10px; align-items:flex-start; }',
+    '.fd-bloco { flex:1; }',
+    'table { width:100%; border-collapse:collapse; font-size:9.5px; }',
+    'thead th { background:#ea580c; color:#fff; padding:5px 6px; text-align:right; font-size:8px; text-transform:uppercase; letter-spacing:.3px; }',
+    'thead th:first-child { text-align:left; }',
+    'tbody td { padding:3.5px 6px; border-bottom:1px solid #f0efed; text-align:right; white-space:nowrap; }',
+    'tbody td:first-child { text-align:left; font-weight:700; }',
+    'tbody tr:nth-child(even) td { background:#faf9f8; }',
+    '.fd-total-row td { background:#f0efed !important; font-weight:800; border-top:1.5px solid #d6d3d1; }',
+    '.dfc-val-pos { color:#166534; } .dfc-val-neg { color:#dc2626; } .fd-zero { color:#d6d3d1; }',
+    '.fd-pill-pos, .fd-pill-neg { display:inline-block; padding:1px 6px; border-radius:4px; color:#fff; font-weight:700; }',
+    '.fd-pill-pos { background:#16a34a; } .fd-pill-neg { background:#dc2626; }',
+    '.footer { margin-top:16px; padding-top:8px; border-top:1px solid #f5f4f2; font-size:8px; color:#a8a29e; text-align:center; }',
+    '@page { size:A4 landscape; margin:10mm; }'
+  ].join('\n');
+
+  const subtitulo = `${meses[mes]} / ${ano} · Base: ${baseTxt} · Conta: ${contaTxt}`;
+  const fullHtml = '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">'
+    + '<title>Fluxo de Caixa Diário — C@P Consultoria</title><style>' + css + '</style></head><body>'
+    + '<div class="header"><div><div class="logo">C@P</div><div class="titulo">Fluxo de Caixa Diário</div>'
+    + '<div style="font-size:10px;color:#78716c;margin-top:2px">' + subtitulo + '</div></div>'
+    + '<div class="meta"><div>Emitido em: ' + dataHoje + '</div><div>Sistema de Gestão C@P Consultoria</div></div></div>'
+    + (kpiEl ? '<div class="kpis">' + kpiEl.innerHTML.replace(/class="card kpi"/g, 'class="kpi"') + '</div>' : '')
+    + (anaEl ? '<div class="analise">' + anaEl.innerHTML + '</div>' : '')
+    + '<div class="fd-cols">' + clone.innerHTML + '</div>'
+    + '<div class="footer">C@P Consultoria — Fluxo de Caixa Diário &middot; Gerado em ' + dataHoje + '</div>'
+    + '<' + 'script>window.onload=function(){window.print()}<' + '/script></body></html>';
+
+  const win = window.open('', '_blank', 'width=1100,height=760');
+  if (!win) { alert('Permita pop-ups para este site para gerar o PDF.'); return; }
+  win.document.write(fullHtml);
+  win.document.close();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// EXCLUIR UMA PARCELA ISOLADA
+// ------------------------------------------------------------------
+// Apagar uma parcela do meio de um lançamento parcelado exige decidir o que
+// fazer com o valor dela — por isso o usuário escolhe entre duas regras:
+//   reduzir      → o total do lançamento cai; as outras parcelas ficam iguais
+//   redistribuir → o total continua o mesmo; o valor é dividido entre as que sobram
+// Em ambos os casos as parcelas restantes passam a ter datas e valores
+// gravados explicitamente, para que nada "escorregue" depois da exclusão.
+// ══════════════════════════════════════════════════════════════════
+let _xpAlvo = null; // { tipo, id, parc }
+
+const _xpR2 = v => Math.round((v + Number.EPSILON) * 100) / 100;
+
+// Transforma o lançamento na lista completa de parcelas (datas, valores,
+// status), preenchendo o que estava implícito. É a base para recalcular.
+function _fdSnapshotParcelas(tipo, l) {
+  const n = l.parcelas || 1;
+  const { datas, valores, pagos, dtpagos } = _parseParcelas(l.parcela_datas);
+  const quitadoLanc = (tipo === 'pagar' ? l.pago : l.recebido) === 'sim';
+  const dtQuitadoLanc = (tipo === 'pagar' ? l.dtpago : l.dtrecebido) || '';
+  const out = { datas: [], valores: [], pagos: [], dtpagos: [] };
+  for (let i = 0; i < n; i++) {
+    const vencPadrao = tipo === 'pagar'
+      ? parcelaVencimento(l.dtprev, i + 1, n)
+      : parcelaVencimentoReceber(l.dtprev, i + 1);
+    out.datas.push(datas[i] || vencPadrao || '');
+    out.valores.push(valores[i] != null ? valores[i] : ((l.valor || 0) / n));
+    out.pagos.push(n > 1 ? (pagos[i] === true) : quitadoLanc);
+    out.dtpagos.push(n > 1 ? (dtpagos[i] || '') : dtQuitadoLanc);
+  }
+  return out;
+}
+
+// Calcula como o lançamento fica depois de remover a parcela indicada.
+function _xpCalcular(tipo, l, parc, modo) {
+  const n = l.parcelas || 1;
+  const snap = _fdSnapshotParcelas(tipo, l);
+  const idx = parc - 1;
+  const valorRemovido = snap.valores[idx] || 0;
+  const totalAntes = snap.valores.reduce((s, v) => s + v, 0);
+
+  const datas   = snap.datas.filter((_, i) => i !== idx);
+  const pagos   = snap.pagos.filter((_, i) => i !== idx);
+  const dtpagos = snap.dtpagos.filter((_, i) => i !== idx);
+  // Arredonda as parcelas que sobram para centavos fechados. Sem isso, uma
+  // divisão como 100/3 deixaria o total (66,67) diferente da soma exibida
+  // parcela a parcela (33,33 + 33,33 = 66,66).
+  let valores = snap.valores.filter((_, i) => i !== idx).map(_xpR2);
+
+  if (modo === 'redistribuir' && valores.length) {
+    const extra = valorRemovido / valores.length;
+    valores = valores.map(v => _xpR2(v + extra));
+    // A divisão pode sobrar/faltar centavos: a diferença vai para a última
+    // parcela, para o total bater exatamente com o valor original.
+    const soma = valores.reduce((s, v) => s + v, 0);
+    valores[valores.length - 1] = _xpR2(valores[valores.length - 1] + (_xpR2(totalAntes) - soma));
+  }
+
+  const novoValor = _xpR2(valores.reduce((s, v) => s + v, 0));
+  return { novoN: n - 1, datas, valores, pagos, dtpagos, valorRemovido, totalAntes, novoValor };
+}
+
+function fdExcluirParcela(tipo, id, parc) {
+  const lista = tipo === 'pagar' ? db.lancamentos : db.lancreceber;
+  const l = lista.find(x => x.id === id);
+  if (!l) { alert('Lançamento não encontrado — a tela pode estar desatualizada.'); return; }
+  const n = l.parcelas || 1;
+  // Com uma parcela só, excluir a parcela é excluir o lançamento.
+  if (n <= 1) { fdDetalheExcluir(tipo, id); return; }
+
+  _xpAlvo = { tipo, id, parc };
+  closeModal('modal-dia-detalhe');
+
+  const snap = _fdSnapshotParcelas(tipo, l);
+  const nome = tipo === 'pagar' ? getFornNome(l.forn) : getClienteNome(l.cliente);
+  const quitada = snap.pagos[parc - 1];
+  const rotuloQuitada = tipo === 'pagar' ? 'paga' : 'recebida';
+
+  const resumo = document.getElementById('xp-resumo');
+  if (resumo) {
+    resumo.innerHTML = `<b>${nome}</b> · parcela <b>${parc} de ${n}</b> · `
+      + `${fmtBRL(snap.valores[parc - 1] || 0)} · vencimento ${snap.datas[parc - 1] ? fmtDate(snap.datas[parc - 1]) : '—'}`;
+  }
+
+  const aviso = document.getElementById('xp-aviso');
+  if (aviso) {
+    aviso.innerHTML = quitada
+      ? `<div style="background:#fef2f2;border:1px solid #fecaca;color:#991b1b;padding:10px 14px;border-radius:8px;margin-bottom:14px;font-size:12.5px;">
+           ⚠️ Esta parcela já está <b>${rotuloQuitada}</b>${snap.dtpagos[parc - 1] ? ' em ' + fmtDate(snap.dtpagos[parc - 1]) : ''}.
+           Excluí-la altera o saldo da conta vinculada. Se foi só um engano na baixa, o correto é <b>estornar</b>, não excluir.
+         </div>`
+      : '';
+  }
+
+  const primeiro = document.querySelector('input[name="xp-modo"][value="reduzir"]');
+  if (primeiro) primeiro.checked = true;
+  _xpAtualizarPreview();
+  openModal('modal-excluir-parcela');
+}
+
+function _xpAtualizarPreview() {
+  const box = document.getElementById('xp-preview');
+  if (!box || !_xpAlvo) return;
+  const { tipo, id, parc } = _xpAlvo;
+  const lista = tipo === 'pagar' ? db.lancamentos : db.lancreceber;
+  const l = lista.find(x => x.id === id);
+  if (!l) return;
+  const modoEl = document.querySelector('input[name="xp-modo"]:checked');
+  const modo = modoEl ? modoEl.value : 'reduzir';
+  const r = _xpCalcular(tipo, l, parc, modo);
+
+  const listaParcelas = r.valores.map((v, i) =>
+    `<div style="display:flex;justify-content:space-between;gap:12px;padding:2px 0;">
+       <span>Parcela ${i + 1}/${r.novoN} · ${r.datas[i] ? fmtDate(r.datas[i]) : '—'}${r.pagos[i] ? ' <span class="badge badge-green" style="font-size:10px">quitada</span>' : ''}</span>
+       <span style="font-family:DM Mono,monospace">${fmtBRL(v)}</span>
+     </div>`).join('');
+
+  box.innerHTML = `
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+      <span>Total do lançamento</span>
+      <span><span style="color:#a8a29e;text-decoration:line-through">${fmtBRL(r.totalAntes)}</span>
+      &nbsp;→&nbsp; <b>${fmtBRL(r.novoValor)}</b></span>
+    </div>
+    <div style="border-top:1px solid #e7e5e4;margin:8px 0;"></div>
+    <div style="font-size:10px;color:#a8a29e;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:4px;">Como ficam as parcelas</div>
+    ${listaParcelas}`;
+}
+
+async function confirmarExcluirParcela() {
+  if (!_xpAlvo) return;
+  const { tipo, id, parc } = _xpAlvo;
+  const lista = tipo === 'pagar' ? db.lancamentos : db.lancreceber;
+  const l = lista.find(x => x.id === id);
+  if (!l) { alert('Lançamento não encontrado.'); return; }
+  const modoEl = document.querySelector('input[name="xp-modo"]:checked');
+  const modo = modoEl ? modoEl.value : 'reduzir';
+  const r = _xpCalcular(tipo, l, parc, modo);
+
+  // Guarda o estado atual para desfazer se o Supabase recusar a gravação.
+  const antes = {
+    valor: l.valor, parcelas: l.parcelas, parcela_datas: l.parcela_datas,
+    pago: l.pago, dtpago: l.dtpago, recebido: l.recebido, dtrecebido: l.dtrecebido
+  };
+
+  const todasQuitadas = r.pagos.length > 0 && r.pagos.every(p => p === true);
+  const ultimaData = r.dtpagos.filter(Boolean).slice(-1)[0] || '';
+  const payload = {
+    valor: r.novoValor,
+    parcelas: r.novoN,
+    parcela_datas: JSON.stringify({ datas: r.datas, valores: r.valores, pagos: r.pagos, dtpagos: r.dtpagos })
+  };
+  if (tipo === 'pagar') {
+    payload.pago   = todasQuitadas ? 'sim' : 'nao';
+    payload.dtpago = todasQuitadas ? ultimaData : '';
+  } else {
+    payload.recebido   = todasQuitadas ? 'sim' : 'nao';
+    payload.dtrecebido = todasQuitadas ? ultimaData : '';
+  }
+
+  Object.assign(l, payload);
+  bumpDbVer();
+
+  const tabela = tipo === 'pagar' ? 'lancamentos' : 'lancreceber';
+  const ok = await sbFetch(tabela, 'PATCH', payload, `?id=eq.${id}`);
+  if (!ok) {
+    Object.assign(l, antes);
+    bumpDbVer();
+    alert('❌ Não foi possível excluir a parcela.' + (typeof sbErroDetalhe === 'function' ? sbErroDetalhe() : ''));
+    return;
+  }
+
+  closeModal('modal-excluir-parcela');
+  _xpAlvo = null;
+  _fdRerenderOrigem();
+  if (tipo === 'pagar') { renderLancamentos(); renderApagar(); renderPagas(); }
+  else                  { renderLancReceber(); renderAReceber(); renderRecebido(); }
+  _fdReabrirDrill();
+}
 
 async function initApp() {
   await loadAllData();
