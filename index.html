@@ -931,6 +931,60 @@ table.ls.imp td input[type=checkbox],table.ls.imp th input[type=checkbox]{width:
 .ab-v{font-variant-numeric:tabular-nums;font-size:13px}
 .ab-l .selo{justify-content:center}
 .ab-vazio{padding:28px;text-align:center;color:var(--muted)}
+/* ---------- dashboard: ícones, raio-x, R$ 100 e saúde ---------- */
+.ic{display:inline-block;width:18px;height:18px;flex:none;vertical-align:-3px}
+.ic svg{width:100%;height:100%;display:block}
+.kp .l{display:flex;align-items:center;gap:7px}
+.kp .l .ic{width:16px;height:16px;color:var(--teal)}
+.kp.rec .l .ic{color:#2a78d6}.kp.desp .l .ic{color:#eb6834}.kp.hero .l .ic{color:#f8a66d}
+.tema-ic{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;border-radius:11px;background:color-mix(in srgb,var(--tc) 13%,#fff);color:var(--tc)}
+.tema-ic svg{width:21px;height:21px}
+.tema-ic.sm{width:30px;height:30px;border-radius:9px}.tema-ic.sm svg{width:16px;height:16px}
+.rx-h{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.rx-h .rx-tot{text-align:right}
+.rx-h .rx-tot small{display:block;font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted)}
+.rx-h .rx-tot b{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;color:#c2410c}
+.rx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-top:12px}
+.rx{position:relative;display:flex;flex-direction:column;gap:8px;text-align:left;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px 12px;cursor:pointer;transition:box-shadow .15s,transform .15s,border-color .15s;font:inherit;color:inherit}
+.rx:hover,.rx:focus-visible{border-color:var(--tc);box-shadow:0 6px 18px rgba(0,0,0,.08);transform:translateY(-1px);outline:none}
+.rx-t{display:flex;align-items:center;gap:10px;min-width:0}
+.rx-t b{font-size:13px;line-height:1.2;flex:1;min-width:0}
+.rx-t .rk{font-size:10.5px;font-weight:800;color:var(--muted);background:#f3f3f5;border-radius:10px;padding:2px 7px}
+.rx-v{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.rx-v b{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.3px}
+.rx-v .dl{font-size:11.5px;font-weight:700;white-space:nowrap}
+.rx-v .dl.ruim{color:var(--neg)}.rx-v .dl.bom{color:var(--pos)}.rx-v .dl.nt{color:var(--muted);font-weight:500}
+.rx-m{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted)}
+.rx-m b{color:var(--text);font-variant-numeric:tabular-nums}
+.rx-bar{height:6px;background:#f0f0f2;border-radius:3px;overflow:hidden}
+.rx-bar i{display:block;height:100%;border-radius:3px;background:#eb6834}
+.rx-f{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.rx-top{font-size:11px;color:var(--muted);line-height:1.45;min-width:0}
+.rx-top div{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rx-top span{font-variant-numeric:tabular-nums;color:var(--text);font-weight:600;margin-left:4px}
+.rx-sp{width:86px;height:28px;flex:none}
+.rx-mais{margin-top:10px}
+.c100{display:flex;flex-direction:column;gap:7px;margin-top:12px}
+.c100-l{display:grid;grid-template-columns:30px minmax(0,1fr) 92px;align-items:center;gap:10px}
+.c100-l .n{font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c100-l .b{height:7px;background:#f0f0f2;border-radius:4px;overflow:hidden;margin-top:4px}
+.c100-l .b i{display:block;height:100%;border-radius:4px;background:#eb6834}
+.c100-l .v{text-align:right;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums}
+.c100-l .v small{display:block;font-size:10.5px;font-weight:500;color:var(--muted)}
+.c100-l.fim{border-top:1px dashed var(--line);padding-top:8px;margin-top:2px}
+.c100-l.fim .b i{background:#1baf7a}.c100-l.fim.neg .b i{background:var(--neg)}
+.c100-hero{display:flex;align-items:baseline;gap:8px;margin-top:6px;font-size:13px;color:var(--muted)}
+.c100-hero b{font-size:26px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
+.sd{display:flex;flex-direction:column;gap:2px;margin-top:10px}
+.sd-l{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px solid #f0f0f2}
+.sd-l:last-child{border-bottom:0}
+.sd-l .n b{display:block;font-size:13px}.sd-l .n small{font-size:11px;color:var(--muted)}
+.sd-l .v{text-align:right}.sd-l .v b{display:block;font-size:16px;font-weight:800;font-variant-numeric:tabular-nums}
+.st{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;border-radius:10px;padding:2px 8px}
+.st.bom{background:#e7f6ec;color:#1e7b3c}.st.at{background:#fff4e0;color:#94580a}.st.cr{background:#fdecea;color:#b3261e}.st.nd{background:#f1f1f3;color:var(--muted)}
+.sd-nota{font-size:11px;color:var(--muted);margin-top:8px}
+@media (max-width:760px){ .rx-grid{grid-template-columns:1fr 1fr} .rx{padding:10px} .rx-v b{font-size:16px} .rx-sp,.rx-top{display:none} .c100-l{grid-template-columns:30px minmax(0,1fr) 78px} }
+@media (max-width:420px){ .rx-grid{grid-template-columns:1fr} }
 
 @media (max-width:1640px){ .atu-btn .t{display:none} .atu-btn{padding:6px 9px} }
 @media (max-width:1350px){
@@ -3113,6 +3167,70 @@ function agregarDash(lancs, ini, fim) {
   return r;
 }
 
+/* ---------- temas de despesa/receita (ícone + agrupamento por palavras do plano de contas) ---------- */
+const ICO = {
+  rh: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  flores: '<circle cx="12" cy="8" r="2"/><path d="M12 5a3 3 0 1 1 3 3m-3-3a3 3 0 1 0-3 3m3-3v1M9 8a3 3 0 1 0 3 3M9 8h1m5 0a3 3 0 1 1-3 3m3-3h-1m-2 3v-1"/><path d="M12 10v12"/><path d="M12 22c4.2 0 7-1.7 7-5-4.2 0-7 1.7-7 5z"/><path d="M12 22c-4.2 0-7-1.7-7-5 4.2 0 7 1.7 7 5z"/>',
+  ocupacao: '<path d="m2 7 4.4-4.4A2 2 0 0 1 7.8 2h8.4a2 2 0 0 1 1.4.6L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20v3a2 2 0 0 1-2 2 2.5 2.5 0 0 1-2-1 2.5 2.5 0 0 1-4 0 2.5 2.5 0 0 1-4 0 2.5 2.5 0 0 1-4 0 2.5 2.5 0 0 1-2 1 2 2 0 0 1-2-2z"/>',
+  logistica: '<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>',
+  marketing: '<path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>',
+  taxas: '<rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/>',
+  impostos: '<path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/>',
+  financeiro: '<path d="M3 22h18"/><path d="M6 18v-7M10 18v-7M14 18v-7M18 18v-7"/><path d="m12 2 8 5H4z"/>',
+  emprestimos: '<circle cx="8" cy="8" r="6"/><path d="M18.1 10.4A6 6 0 1 1 10.3 18"/><path d="M7 6h1v4"/><path d="m16.7 13.9.7.7-2.8 2.8"/>',
+  tecnologia: '<rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8M12 17v4"/>',
+  seguros: '<path d="M20 13c0 5-3.5 7.5-7.7 9a1 1 0 0 1-.6 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.2-2.7a1.2 1.2 0 0 1 1.6 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+  servicos: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9l-3.8 3.8z"/>',
+  invest: '<path d="M22 7 13.5 15.5 8.5 10.5 2 17"/><path d="M16 7h6v6"/>',
+  gerais: '<path d="M11 21.7a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7z"/><path d="M12 22V12M3.3 7 12 12l8.7-5"/>',
+  outros: '<circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/><circle cx="5" cy="12" r="1.2"/>',
+  vendas: '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
+  rservicos: '<path d="M9.9 15.5A2 2 0 0 0 8.5 14.1L2.4 12.5a.5.5 0 0 1 0-1l6.1-1.6a2 2 0 0 0 1.4-1.4l1.6-6.1a.5.5 0 0 1 1 0l1.6 6.1a2 2 0 0 0 1.4 1.4l6.1 1.6a.5.5 0 0 1 0 1l-6.1 1.6a2 2 0 0 0-1.4 1.4l-1.6 6.1a.5.5 0 0 1-1 0z"/>',
+  sobe: '<path d="M22 7 13.5 15.5 8.5 10.5 2 17"/><path d="M16 7h6v6"/>',
+  desce: '<path d="M22 17 13.5 8.5 8.5 13.5 2 7"/><path d="M16 17h6v-6"/>',
+  alvo: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+  pct: '<path d="M19 5 5 19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/>',
+  carteira: '<path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>',
+  balanca: '<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10M12 3v18M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>',
+  relogio: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+};
+const icone = (k, cls = 'ic') => `<span class="${cls}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICO[k] || ICO.outros}</svg></span>`;
+const TEMAS_D = [
+  ['emprestimos', 'Empréstimos e financiamentos', /EMPRESTIM|FINANCIAMENT|AMORTIZ/, '#6250d6'],
+  ['impostos', 'Impostos e deduções', /IMPOST|SIMPLES NAC|\bDAS\b|DARF|TRIBUT|DEDUC|DEVOLU|ICMS|\bISS\b/, '#c2410c'],
+  ['rh', 'Salários e RH', /SALARI|FOLHA|PRO ?LABORE|FGTS|ENCARGO|FERIAS|RESCIS|BENEFICI|\bRH\b|VALE (TRANSP|ALIM|REFEI)|INSS/, '#2a78d6'],
+  ['logistica', 'Entregas e fretes', /FRETE|MOTOBOY|ENTREGA|COMBUST|TRANSPORT|VEICUL/, '#eda100'],
+  ['financeiro', 'Tarifas e juros bancários', /TARIFA|JUROS|\bPIX\b|\bIOF\b|BANCAR|CHEQUE|ANUIDADE|COTAS/, '#58595e'],
+  ['marketing', 'Marketing', /MARKETING|PROPAGANDA|ANUNCI|INSTAGRAM|PANFLET|PUBLICID/, '#e87ba4'],
+  ['taxas', 'Taxas, comissões e royalties', /MAQUININHA|COMISS|ROYALT|VARIAV|GRATIFIC|\bTAXA/, '#d95926'],
+  ['flores', 'Flores, plantas e insumos', /FLOR|PLANTA|ESTOQUE|INSUMO|PRODUTO|MERCADORIA|FORNECEDOR|VASO|EMBALAG|SACOLA|PRESENTE|\bFITA|ETIQUET|CAIXAS/, '#1baf7a'],
+  ['ocupacao', 'Aluguel, água e energia', /ALUGUEL|IPTU|\bAGUA|ENERGIA|OCUPAC|CONDOMIN|SAMAE|CELESC/, '#008300'],
+  ['tecnologia', 'Tecnologia e comunicação', /TECNOLOG|SISTEMA|SOFTWARE|\bERP\b|INTERNET|TELEF|COMUNICAC|WHATSAPP|CELULAR|LINX/, '#3987e5'],
+  ['seguros', 'Seguros', /SEGURO/, '#256abf'],
+  ['servicos', 'Serviços e manutenção', /SERVICO|CONTAB|LIMPEZA|MANUTEN|CONSULT|ADVOG|HONORAR|SEGURANCA/, '#9a6a00'],
+  ['invest', 'Investimentos', /INVESTIM|EQUIPAMENTO|COMPRA DE/, '#104281'],
+  ['gerais', 'Despesas gerais e escritório', /MATERIAL|ESCRITORIO|GERAIS|EXPEDIENTE|CORREIO|FARMACIA|CARTORIO|ALVARA/, '#74757b'],
+];
+const TEMAS_R = [
+  ['emprestimos', 'Entrada de empréstimos', /EMPRESTIM|FINANCIAMENT|CAPTAC/, '#6250d6'],
+  ['rservicos', 'Serviços e eventos', /SERVIC|DECORA|PAISAG|EVENTO|ASSINAT/, '#e87ba4'],
+  ['financeiro', 'Receitas financeiras', /FINANCEIR|RENDIMENT|APLICAC/, '#58595e'],
+  ['vendas', 'Vendas de flores e presentes', /VENDA|FLOR|MERCADORIA|PRODUTO|COBRANC/, '#1baf7a'],
+];
+const TEMA_INFO = {};
+for (const [k, n, , c] of TEMAS_D) TEMA_INFO['d:' + k] = { k, n, c };
+for (const [k, n, , c] of TEMAS_R) TEMA_INFO['r:' + k] = { k, n, c };
+TEMA_INFO['d:outros'] = { k: 'outros', n: 'Outras despesas', c: '#9a9ba0' };
+TEMA_INFO['r:outros'] = { k: 'outros', n: 'Outras receitas', c: '#9a9ba0' };
+const normT = t => String(t ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase();
+function temaDe(planoId) {
+  const p = M.plano[planoId], g = M.grupo[p?.grupo_id], rec = g?.tipo === 'RECEITA', L = rec ? TEMAS_R : TEMAS_D;
+  const pre = rec ? 'r:' : 'd:';
+  for (const txt of [normT(p?.nome), normT(g?.nome)]) { const t = L.find(([, , re]) => re.test(txt)); if (t) return pre + t[0]; }
+  return pre + 'outros';
+}
+const temaIc = (id, cls = 'tema-ic') => `<span class="${cls}" style="--tc:${esc(TEMA_INFO[id]?.c || '#9a9ba0')}">${icone(TEMA_INFO[id]?.k || 'outros', 'ic')}</span>`;
+
 function renderDash() {
   const { lancs, saldo, saldosB, abertos = [], nBancos, P } = S.dash.dados;
   const at = agregarDash(lancs, P.ini, P.fim), an = agregarDash(lancs, P.pini, P.pfim);
@@ -3145,12 +3263,12 @@ function renderDash() {
   };
   const resM12 = recM.map((r, m) => r - despM[m]);
   const kpis = `<div class="kpis kpis-d">
-    <div class="kp rec"><div class="l">Receitas</div><div class="v">${brl(at.rec)}</div>${delta(at.rec, an.rec, true)}${spark(recM, CORD.rec)}</div>
-    <div class="kp desp"><div class="l">Despesas</div><div class="v">${brl(at.desp)}</div>${delta(at.desp, an.desp, false)}${spark(despM, CORD.desp)}</div>
-    <div class="kp hero"><div class="l">Resultado</div><div class="v ${res < 0 ? 'neg' : ''}">${brl(res)}</div>${delta(res, resA, true)}${spark(resM12, '#f8a66d')}</div>
-    <div class="kp"><div class="l">Margem líquida</div><div class="v ${margem < 0 ? 'neg' : ''}">${Number.isFinite(margem) ? pct(margem) : '–'}</div>${delta(margem, margemA, true, true)}
+    <div class="kp rec"><div class="l">${icone('sobe')}Receitas</div><div class="v">${brl(at.rec)}</div>${delta(at.rec, an.rec, true)}${spark(recM, CORD.rec)}</div>
+    <div class="kp desp"><div class="l">${icone('desce')}Despesas</div><div class="v">${brl(at.desp)}</div>${delta(at.desp, an.desp, false)}${spark(despM, CORD.desp)}</div>
+    <div class="kp hero"><div class="l">${icone('alvo')}Resultado</div><div class="v ${res < 0 ? 'neg' : ''}">${brl(res)}</div>${delta(res, resA, true)}${spark(resM12, '#f8a66d')}</div>
+    <div class="kp"><div class="l">${icone('pct')}Margem líquida</div><div class="v ${margem < 0 ? 'neg' : ''}">${Number.isFinite(margem) ? pct(margem) : '–'}</div>${delta(margem, margemA, true, true)}
       <div class="barra-m"><i style="width:${Number.isFinite(margem) ? Math.max(0, Math.min(100, margem * 100)) : 0}%"></i></div></div>
-    <div class="kp caixa"><div class="l">Saldo em bancos</div><div class="v ${saldo < 0 ? 'neg' : ''}">${brl(saldo)}</div><div class="d">em ${fmtData(P.fim)}${nBancos ? ` · ${nBancos} conta(s)` : ''}</div></div>
+    <div class="kp caixa"><div class="l">${icone('carteira')}Saldo em bancos</div><div class="v ${saldo < 0 ? 'neg' : ''}">${brl(saldo)}</div><div class="d">em ${fmtData(P.fim)}${nBancos ? ` · ${nBancos} conta(s)` : ''}</div></div>
   </div>`;
 
   // ---------- contas em aberto (pagar / receber depois) ----------
@@ -3177,6 +3295,85 @@ function renderDash() {
       }).join('') : '<div class="ab-vazio">✓ Nenhuma conta em aberto. Lançamentos feitos sem banco aparecem aqui até serem pagos ou recebidos.</div>'}</div>
     </div><div class="tip" hidden></div></section>`;
 
+
+  // ---------- raio-x das despesas por tema ----------
+  const vD = calcularLinhas({ ...at.pos });
+  const temaPer = (ini, fim) => { const o = {}; for (const l of lancs) if (l.data_lancamento >= ini && l.data_lancamento <= fim) { const t = temaDe(l.plano_conta_id); (o[t] ||= { v: 0, contas: {} }).v += Number(l.valor); o[t].contas[l.plano_conta_id] = (o[t].contas[l.plano_conta_id] || 0) + Number(l.valor); } return o; };
+  const tAt = temaPer(P.ini, P.fim), tAn = temaPer(P.pini, P.pfim), tMes = {};
+  for (const l of lancs) if (l.data_lancamento.startsWith(String(S.ano))) { const t = temaDe(l.plano_conta_id); (tMes[t] ||= Array(12).fill(0))[Number(l.data_lancamento.slice(5, 7)) - 1] += Number(l.valor); }
+  const recEmp = tAt['r:emprestimos']?.v || 0, recOper = at.rec - recEmp;   // base: o que entrou com a operação (sem empréstimos)
+  const baseRec = vD.ROB > 0 ? vD.ROB : recOper;
+  const despT = Object.keys(tAt).filter(k => k.startsWith('d:')).map(k => ({ id: k, ...TEMA_INFO[k], ...tAt[k], ant: tAn[k]?.v || 0 })).sort((a, b) => b.v - a.v);
+  const sparkT = (arr, cor) => {
+    const W = 86, H = 28, a = arr || Array(12).fill(0), ult = Math.max(...a.map((x, i) => x ? i : -1));
+    if (ult < 1) return '';
+    const vs = a.slice(0, ult + 1), hi = Math.max(...vs, 1), x = i => 2 + (W - 6) * i / Math.max(ult, 1), y = q => 3 + (H - 7) * (1 - q / hi);
+    return `<svg class="rx-sp" viewBox="0 0 ${W} ${H}" aria-hidden="true"><polyline points="${vs.map((q, i) => `${x(i).toFixed(1)},${y(q).toFixed(1)}`).join(' ')}" fill="none" stroke="${cor}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${x(ult)}" cy="${y(vs[ult])}" r="3" fill="${cor}" stroke="#fff" stroke-width="1.5"/></svg>`;
+  };
+  const verTodos = S.dash.rxTodos, rxLista = verTodos ? despT : despT.slice(0, 8);
+  const cardRaioX = `<section class="graf dcard s12" id="rx">
+    <div class="rx-h"><div><div class="graf-t">Raio-X das despesas · para onde vai o dinheiro</div>
+      <div class="dsub">${esc(P.rot)} de ${S.ano} · agrupado pelo plano de contas · comparado com ${esc(P.antRot)} · clique num cartão para ver os lançamentos</div></div>
+      <div class="rx-tot"><small>Total de despesas</small><b>${brl(at.desp)}</b></div></div>
+    ${despT.length ? `<div class="rx-grid">${rxLista.map((t, i) => {
+      const dv = t.ant ? (t.v - t.ant) / t.ant : null;
+      const top = Object.entries(t.contas).sort((a, b) => b[1] - a[1]).slice(0, 2);
+      return `<button type="button" class="rx" style="--tc:${esc(t.c)}" data-act="rxTema" data-t="${t.id}" title="Ver os lançamentos de ${esc(t.n)}">
+        <div class="rx-t">${temaIc(t.id)}<b>${esc(t.n)}</b><span class="rk">#${i + 1}</span></div>
+        <div class="rx-v"><b>${brl(t.v)}</b>${dv == null ? '<span class="dl nt">novo no período</span>' : Math.abs(dv) < 0.005 ? '<span class="dl nt">= estável</span>' : `<span class="dl ${dv > 0 ? 'ruim' : 'bom'}" title="vs ${esc(P.antRot)}">${dv > 0 ? '▲' : '▼'} ${Math.abs(dv * 100).toLocaleString('pt-BR', { maximumFractionDigits: 1 })}%</span>`}</div>
+        <div class="rx-bar"><i style="width:${at.desp ? Math.max(2, t.v / at.desp * 100) : 0}%"></i></div>
+        <div class="rx-m"><span><b>${at.desp ? pct(t.v / at.desp) : '–'}</b> das despesas</span><span><b>${baseRec > 0 ? pct(t.v / baseRec) : '–'}</b> da receita</span></div>
+        <div class="rx-f"><div class="rx-top">${top.map(([pid, val]) => `<div>${esc(M.plano[pid]?.nome ?? '')}<span>${valorCurto(val)}</span></div>`).join('')}</div>${sparkT(tMes[t.id], t.c)}</div>
+      </button>`;
+    }).join('')}</div>${despT.length > 8 ? `<div class="rx-mais"><button class="mini" data-act="rxTodos">${verTodos ? 'Mostrar só os 8 maiores' : `Ver todos os ${despT.length} temas`}</button></div>` : ''}`
+    : '<div class="ab-vazio">Sem despesas lançadas no período.</div>'}
+    <div class="tip" hidden></div></section>`;
+
+  // ---------- de cada R$ 100 que entram ----------
+  const card100 = (() => {
+    if (!(recOper > 0)) return `<section class="graf dcard s6"><div class="graf-t">De cada R$ 100 que entram</div><div class="dsub">${esc(P.rot)}</div><div class="ab-vazio">Sem receitas no período.</div></section>`;
+    const prin = despT.slice(0, 6), resto = despT.slice(6).reduce((a, t) => a + t.v, 0), sobra = recOper - at.desp;
+    const lin = (ic, nome, val, cls = '') => `<div class="c100-l ${cls}">${ic}<div><div class="n">${esc(nome)}</div><div class="b"><i style="width:${Math.min(100, Math.max(1.5, Math.abs(val) / recOper * 100))}%"></i></div></div>
+      <div class="v ${cls.includes('neg') ? 'neg' : ''}">R$ ${num2(val / recOper * 100)}<small>${brl(val)}</small></div></div>`;
+    return `<section class="graf dcard s6">
+      <div class="graf-t">De cada R$ 100 que entram</div>
+      <div class="dsub">${esc(P.rot)} · receitas da operação ${brl(recOper)}${recEmp ? ` (sem ${brl(recEmp)} de empréstimos)` : ''}</div>
+      <div class="c100-hero">sobram <b class="${sobra < 0 ? 'neg' : 'pos'}">R$ ${num2(sobra / recOper * 100)}</b> de cada R$ 100</div>
+      <div class="c100">
+        ${prin.map(t => lin(temaIc(t.id, 'tema-ic sm'), t.n, t.v)).join('')}
+        ${resto > 0.004 ? lin(temaIc('d:outros', 'tema-ic sm'), `Demais temas (${despT.length - 6})`, resto) : ''}
+        ${lin(`<span class="tema-ic sm" style="--tc:${sobra < 0 ? '#c62828' : '#1e7b3c'}">${icone('alvo')}</span>`, sobra < 0 ? 'Falta (prejuízo)' : 'Sobra (resultado)', sobra, 'fim' + (sobra < 0 ? ' neg' : ''))}
+      </div></section>`;
+  })();
+
+  // ---------- saúde financeira (indicadores com referência) ----------
+  const cardSaude = (() => {
+    const ref = (val, bom, at2, menor) => !Number.isFinite(val) ? 'nd' : menor ? (val <= bom ? 'bom' : val <= at2 ? 'at' : 'cr') : (val >= bom ? 'bom' : val >= at2 ? 'at' : 'cr');
+    const ST = { bom: '✓ Saudável', at: '! Atenção', cr: '✕ Crítico', nd: 'Sem dados' };
+    const rb = baseRec;
+    const cmv = rb > 0 ? -(vD.CMV + vD.VEST) / rb : NaN;
+    const rh = rb > 0 ? (tAt['d:rh']?.v || 0) / rb : NaN;
+    const ocup = rb > 0 ? (tAt['d:ocupacao']?.v || 0) / rb : NaN;
+    const mc = rb > 0 ? vD.MC / rb : NaN;
+    const meses = P.b - P.a + 1, peMes = Number.isFinite(vD.PE) ? vD.PE / meses : NaN, recMes = rb / meses;
+    const cob = peMes > 0 ? recMes / peMes : NaN;
+    const fimP = P.fim < HOJE ? P.fim : HOJE, dias = Math.max(1, Math.round((new Date(fimP + 'T12:00') - new Date(P.ini + 'T12:00')) / 864e5) + 1);
+    const diasCx = at.desp > 0 ? saldo / (at.desp / dias) : NaN;
+    const I = [
+      ['flores', 'd:flores', 'Custo das flores e insumos (CMV)', 'quanto da receita vai para mercadoria · ref. até 35%', pct(cmv), ref(cmv, .35, .45, true)],
+      ['rh', 'd:rh', 'Folha e RH', 'salários e encargos sobre a receita · ref. até 20%', pct(rh), ref(rh, .20, .30, true)],
+      ['ocupacao', 'd:ocupacao', 'Aluguel, água e energia', 'peso da estrutura da loja · ref. até 10%', pct(ocup), ref(ocup, .10, .15, true)],
+      ['pct', null, 'Margem de contribuição', 'o que sobra para pagar as despesas fixas · ref. acima de 45%', pct(mc), ref(mc, .45, .30, false)],
+      ['balanca', null, 'Ponto de equilíbrio', Number.isFinite(peMes) ? `precisa vender ${brl(peMes)}/mês · vendendo ${brl(recMes)}/mês` : 'faturamento mínimo para não ter prejuízo', Number.isFinite(cob) ? (cob * 100).toLocaleString('pt-BR', { maximumFractionDigits: 0 }) + '% coberto' : '–', ref(cob, 1.1, 1, false)],
+      ['relogio', null, 'Fôlego de caixa', 'quantos dias o saldo dos bancos paga as despesas', Number.isFinite(diasCx) ? `${Math.max(0, Math.round(diasCx))} dias` : '–', ref(diasCx, 30, 10, false)],
+    ];
+    return `<section class="graf dcard s6">
+      <div class="graf-t">Saúde financeira</div><div class="dsub">${esc(P.rot)} · indicadores com referência para floricultura</div>
+      <div class="sd">${I.map(([ic, tema, nome, sub, val, st]) => `<div class="sd-l">${tema ? temaIc(tema, 'tema-ic sm') : `<span class="tema-ic sm" style="--tc:#58595e">${icone(ic)}</span>`}
+        <div class="n"><b>${esc(nome)}</b><small>${esc(sub)}</small></div>
+        <div class="v"><b>${esc(val)}</b><span class="st ${st}">${ST[st]}</span></div></div>`).join('')}</div>
+      <div class="sd-nota">As referências são parâmetros gerais de varejo; ajuste a leitura conforme a realidade da loja.</div></section>`;
+  })();
   // ---------- 1. Receitas x despesas por mês ----------
   const g1 = (() => {
     const W = largGraf(12), H = Math.round(Math.min(250, Math.max(190, W * 0.2))), L = 58, R = 12, T = 12, B = 30;
@@ -3279,6 +3476,9 @@ function renderDash() {
     <div class="barra">${abasEmpresa(S.empresaVis, 'empresaVis', false, 'DASHBOARD')}</div>
     ${kpis}
     <div class="dgrid">
+      ${cardRaioX}
+      ${card100}
+      ${cardSaude}
       ${cardAbertos}
       ${cartao('d1', 'Receitas x Despesas por mês', `${S.ano} · meses fora do período aparecem esmaecidos`, g1, t1, 12, legendaRD)}
       ${cartao('d2', 'Do faturamento ao resultado', `${esc(P.rot)} · quanto cada etapa da DRE soma ou tira`, g2, t2, 6, `<div class="leg"><span><i style="background:${CORD.tot}"></i>Subtotal</span><span><i style="background:${CORD.rec}"></i>Soma</span><span><i style="background:${CORD.desp}"></i>Subtrai</span></div>`)}
@@ -4893,6 +5093,12 @@ const ACOES = {
   dreAbrir: d => { const a = S.dre.abertos; a.has(d.k) ? a.delete(d.k) : a.add(d.k); renderDRE(); },
   filtroBanco: d => { S.filtro.banco = S.filtro.banco === d.id ? '' : d.id; renderLancamentos(); },
   mkLimparMeses: () => { S.mk.prm.porMes = {}; salvarMarkup('Todos os meses usam o multiplicador padrão.'); },
+  rxTodos: () => { S.dash.rxTodos = !S.dash.rxTodos; renderDash(); },
+  rxTema: d => {
+    const P = periodoDash(), info = TEMA_INFO[d.t];
+    abrirLista({ titulo: info?.n ?? 'Despesas', sub: `${nomeNaTela(S.empresaVis, 'DASHBOARD')} · ${P.rot} de ${S.ano}`, cor: info?.c, ini: P.ini, fim: P.fim,
+      pid: S.empresaVis === 'all' ? null : S.empresaVis, pred: l => temaDe(l.plano_conta_id) === d.t });
+  },
   dashTab: d => { const t = S.dash.tabelas; t.has(d.id) ? t.delete(d.id) : t.add(d.id); renderDash(); },
   faAbrir: d => { const a = S.fa.abertos, g = Number(d.g); a.has(g) ? a.delete(g) : a.add(g); renderFluxoAcum(); },
   faTodos: () => { const a = S.fa.abertos; if (a.size) a.clear(); else S.grupos.forEach(g => a.add(g.id)); renderFluxoAcum(); },
