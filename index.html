@@ -256,7 +256,12 @@ tr.saldoant td{background:#eef3f5 !important;font-weight:700}
 .login-logo{text-align:center}.login-logo img{width:220px;max-width:80%}
 .login label{display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:12px;color:var(--teal)}
 .login .senha{position:relative;display:block}.login .senha input{width:100%;padding-right:40px}
-.login .ver{position:absolute;right:4px;top:50%;transform:translateY(-50%);border:0;background:transparent;font-size:15px;opacity:.6}
+.login .ver{position:absolute;right:3px;top:50%;transform:translateY(-50%);z-index:2;width:36px;height:36px;display:grid;place-items:center;border:0;border-radius:6px;background:transparent;color:#74757b;cursor:pointer;padding:0}
+.login .ver:hover{background:#f1f1f3;color:var(--orange-d)}
+.login .ver svg{width:20px;height:20px;pointer-events:none}
+.login .senha input::-ms-reveal,.login .senha input::-ms-clear{display:none}
+.login .lembrar{flex-direction:row !important;align-items:center;gap:8px !important;font-weight:500 !important;color:#55565b !important;cursor:pointer;user-select:none}
+.login .lembrar input{width:16px;height:16px;padding:0;accent-color:var(--orange);cursor:pointer}
 .login .btn{padding:11px;font-size:14px}.login .btn:disabled{opacity:.7}
 .login-rod{text-align:center;color:var(--muted);font-size:11px;margin-top:4px}
 .login .brand{color:var(--teal-d);font-size:26px;text-align:center}
@@ -283,10 +288,6 @@ table.compacto tr.entrada td{padding:2px 3px}
 /* ---------- edição na célula / ajustes ---------- */
 td.edt{cursor:cell;position:relative}
 td.edt:hover{outline:1px dashed var(--orange);outline-offset:-2px}
-td.aj,table.zebra>tbody>tr>td.aj{background:var(--aj-bg) !important;color:var(--aj-tx)}
-td.aj::after{content:'';position:absolute;top:0;right:0;border-style:solid;border-width:0 8px 8px 0;border-color:transparent var(--aj) transparent transparent}
-td.badge.aj-b{box-shadow:inset 0 0 0 3px var(--aj)}
-tr.tem-aj>td:first-child{box-shadow:inset 4px 0 0 var(--aj)}
 td.emedicao{padding:2px !important;background:#fff !important;outline:2px solid var(--orange) !important;outline-offset:-2px}
 .ied-w{display:flex;gap:3px;align-items:center}
 .ied{width:100%;min-width:90px;border:0;padding:5px 4px;font-size:12px;background:#fff;outline:none}
@@ -360,7 +361,6 @@ table.lanc th.c-valor{width:130px}table.lanc th.c-dprog,table.lanc th.c-dpag{wid
 table.lanc tr.lin:hover td{background:#fff8f2}
 table.lanc tr.lin.rec td:first-child{box-shadow:inset 3px 0 0 var(--green)}
 table.lanc tr.lin.desp td:first-child{box-shadow:inset 3px 0 0 #f3a29c}
-table.lanc tr.lin.tem-aj td:first-child{box-shadow:inset 4px 0 0 var(--aj)}
 table.lanc td.banco{font-size:12px;font-weight:700}
 table.lanc td.plano{white-space:normal;line-height:1.25;font-size:12px}
 table.lanc td.plano .cod{color:var(--muted);font-variant-numeric:tabular-nums;margin-right:2px}
@@ -371,7 +371,6 @@ table.lanc td.acc.neg{color:var(--neg)}
 table.lanc td.grupo{white-space:normal}
 .pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;line-height:1.2;color:#2a2b2f;background:color-mix(in srgb,var(--c) 13%,#fff);border:1px solid color-mix(in srgb,var(--c) 35%,#fff);border-radius:12px;padding:3px 9px}
 .pill::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--c);flex:none}
-.pill.aj-b{box-shadow:0 0 0 2px var(--aj)}
 tr.dia-sep td{background:#f6f6f8 !important;height:30px;border-bottom:1px solid var(--line);padding:0 10px}
 tr.dia-sep div{display:flex;align-items:center;gap:14px;font-size:12px;color:var(--muted);white-space:nowrap}
 tr.dia-sep b{color:var(--text);font-size:13px}
@@ -390,6 +389,11 @@ td.emedicao .cb-inp{border:0;padding:5px 4px;font-size:12px;width:100%;min-width
 .cb-pop .bsel-op{font-weight:500;padding:6px 10px}
 .cb-pop .bsel-op .cod{color:var(--muted);font-variant-numeric:tabular-nums;min-width:44px}
 .cb-vazio{padding:14px;color:var(--muted);font-size:13px}
+.cb-nova{position:sticky;bottom:-5px;display:flex;align-items:center;gap:8px;width:100%;margin-top:4px;border:0;border-top:1px solid var(--line);background:#fff;color:var(--orange-d);font-weight:700;font-size:13px;padding:9px 10px;text-align:left;cursor:pointer}
+.cb-nova:hover{background:var(--orange-l)}
+.cb-nova em{font-style:normal;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cbn-bg{z-index:160}
+.modal.m-cbn{width:min(520px,100%)}
 
 /* ---------- markup ---------- */
 .mk-topo{display:grid;grid-template-columns:280px minmax(0,1fr);gap:12px;margin-bottom:12px}
@@ -1089,8 +1093,8 @@ table.ls.imp td input[type=checkbox],table.ls.imp th input[type=checkbox]{width:
    Enquanto estiver vazio, o sistema roda em MODO DEMONSTRAÇÃO
    (os dados ficam salvos só neste navegador).
    ===================================================================== */
-const SUPABASE_URL      = 'https://xewatlcktplvqofvizim.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhld2F0bGNrdHBsdnFvZnZpemltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM3NTI4NTgsImV4cCI6MjEwOTMyODg1OH0.sZKjxtsvr2nd6xXC0KsQhKQTgMzb54N0ST-61xX9JFg';   // chave pública "anon" (pode ficar no código; os dados são protegidos pelo login + RLS)
+const SUPABASE_URL      = 'https://ivegrxserjlrdfxzlnye.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml2ZWdyeHNlcmpscmRmeHpsbnllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYzODQwMzIsImV4cCI6MjEwMTk2MDAzMn0.lES-AxDuxIW62gcRI2MyqP_7FbPAxcdW3EziiqjIdi0';   // chave pública "anon" (pode ficar no código; os dados são protegidos pelo login + RLS)
 
 const MODO_SUPABASE = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 
@@ -1194,7 +1198,7 @@ function calcularLinhas(v) {
 }
 
 /* ======================= ARMAZENAMENTO: DEMO ======================= */
-const LS_KEY = 'cap_financeiro_demo_v2';
+const LS_KEY = 'cap_financeiro_planeta_flores_v1';
 const REFS = {
   bancos: [['lancamentos', 'banco_id'], ['transferencias', 'banco_origem_id'], ['transferencias', 'banco_destino_id']],
   grupos: [['plano_contas', 'grupo_id']],
@@ -1206,9 +1210,9 @@ const UNICOS = { bancos: ['nome'], grupos: ['nome'], grupos_dre: ['nome'], plano
 const ORDEM = { planilhas: 'nome', bancos: 'nome', grupos: 'nome', grupos_dre: 'ordem', plano_contas: 'codigo' };
 
 function seedDemo() {
-  const BASE = /*SEED>*/{"grupos": [["RECEITAS COM PRODUTOS", "RECEITA", "#4caa4a"], ["RECEITAS NÃO OPERACIONAIS", "RECEITA", "#2e9d6a"], ["RECEITAS FINANCEIRAS", "RECEITA", "#1e8f8a"], ["DESPESAS COM PRODUTO", "DESPESA", "#f0483e"], ["IMPOSTOS", "DESPESA", "#c2410c"], ["DESPESAS COM MATERIAIS E EQUIPAMENTO", "DESPESA", "#f0483e"], ["DESPESAS COM RH", "DESPESA", "#f0483e"], ["DESPESAS ADMINISTRATIVAS", "DESPESA", "#f0483e"], ["DESPESAS FINANCEIRAS", "DESPESA", "#b91c1c"], ["EMPRÉSTIMOS E FINANCIAMENTOS", "DESPESA", "#9f1239"], ["DESPESAS VARIÁVEIS", "DESPESA", "#f0483e"]], "grupos_dre": [["Receita Operacional Bruta", "ROB", 10], ["Receitas Não Operacionais", "RNO", 20], ["Impostos", "IMP", 30], ["Variação do Estoque", "VEST", 40], ["Custo da Mercadoria Vendida", "CMV", 50], ["Despesas Variáveis de Venda", "DVV", 60], ["Despesas Administrativas", "ADM", 70], ["Resultado Financeiro", "RFIN", 80], ["(-) Empréstimos (Pagamentos)", "EMP", 90], ["(-) Despesas com Pós Resultados", "POS", 100], ["(+) Receita de Captação de Empréstimos", "CAPT", 110]], "plano": [["1.1.1", "VENDAS DE MERCADORIAS", "RECEITAS COM PRODUTOS", "Receita Operacional Bruta"], ["1.1.2", "COBRANÇAS DE ADVOGADO", "RECEITAS COM PRODUTOS", "Receita Operacional Bruta"], ["1.1.3", "PIX/DEPÓSITO DE FORNECEDORES", "RECEITAS COM PRODUTOS", "Receita Operacional Bruta"], ["1.2.1", "VENDA DE ATIVOS", "RECEITAS NÃO OPERACIONAIS", "Receitas Não Operacionais"], ["1.2.2", "VENDA DE RECICLÁVEIS", "RECEITAS NÃO OPERACIONAIS", "Receitas Não Operacionais"], ["1.2.3", "COBRANÇAS CANCELADAS", "RECEITAS NÃO OPERACIONAIS", "Receitas Não Operacionais"], ["1.2.4", "ACERTO ENERGIA ELÉTRICA ROSA/APTO 318", "RECEITAS NÃO OPERACIONAIS", "Receitas Não Operacionais"], ["1.2.5", "INDENIZAÇÃO DE MERCADORIAS", "RECEITAS NÃO OPERACIONAIS", "Receitas Não Operacionais"], ["1.3.1", "(+) FINANCIAMENTOS BANCÁRIOS", "RECEITAS FINANCEIRAS", "Resultado Financeiro"], ["2.1.1", "PAGTO DUPL. FORNECEDORES", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.2", "COMPRAS SÃO PAULO", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.3", "TRANSPORTADORAS", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.4", "SACOLAS PLÁSTICAS", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.5", "SACOLAS DE PAPEL", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.6", "CAIXAS PARA PRESENTES", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.7", "PAPEL DE PRESENTE", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.8", "FITAS E LAÇOS PARA PRESENTE", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.9", "ETIQUETAS PARA MERCADORIAS", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.10", "ETIQUETAS ADESIVAS PRESENTES", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.11", "ETIQUETAS TAG", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.12", "CONSERTOS DE MERCADORIAS", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.2.1", "SIMPLES NACIONAL", "IMPOSTOS", "Impostos"], ["2.3.1", "MANUTENÇÃO DE MÁQUINAS E EQUIPAMENTOS", "DESPESAS COM MATERIAIS E EQUIPAMENTO", "Despesas Administrativas"], ["2.3.2", "MANUTENÇÃO DE EQUIPAMENTOS DE INFORMÁTICA", "DESPESAS COM MATERIAIS E EQUIPAMENTO", "Despesas Administrativas"], ["2.3.3", "MANUTENÇÃO COM VEÍCULOS", "DESPESAS COM MATERIAIS E EQUIPAMENTO", "Despesas Administrativas"], ["2.3.4", "MANUTENÇÃO PREDIO", "DESPESAS COM MATERIAIS E EQUIPAMENTO", "Despesas Administrativas"], ["2.3.5", "COMPRA DE EQUIPAMENTOS DE INFORMÁTICA", "DESPESAS COM MATERIAIS E EQUIPAMENTO", "Despesas Administrativas"], ["2.3.6", "PRODUTOS DE LIMPEZA", "DESPESAS COM MATERIAIS E EQUIPAMENTO", "Despesas Administrativas"], ["2.3.7", "MATERIAL DE LIMPEZA", "DESPESAS COM MATERIAIS E EQUIPAMENTO", "Despesas Administrativas"], ["2.3.8", "MATERIAL DE EXPEDIENTE", "DESPESAS COM MATERIAIS E EQUIPAMENTO", "Despesas Administrativas"], ["2.3.9", "COMBUSTÍVEL", "DESPESAS COM MATERIAIS E EQUIPAMENTO", "Despesas Administrativas"], ["2.4.1", "PROLABORE", "DESPESAS COM RH", "Despesas Administrativas"], ["2.4.2", "SALÁRIOS", "DESPESAS COM RH", "Despesas Administrativas"], ["2.4.3", "FGTS", "DESPESAS COM RH", "Despesas Administrativas"], ["2.5.1", "ALUGUEL", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.2", "INTERNET/TELEFONIA", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.3", "CARTÓRIO", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.4", "ALVARÁS", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.5", "CONTABILIDADE", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.6", "SEGURO PREDIAL", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.7", "CONSULTORIA", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.8", "DESPESAS DE VIAGENS", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.9", "SAMAE", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.10", "SEGURO DE VEÍCULOS", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.11", "SISTEMAS / SOFTWARES / ASSINATURAS", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.12", "ACIMAI", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.13", "CDL", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.14", "COMPRAS LOJA", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.15", "CORREIOS", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.16", "SEGURANÇA / VIGILÂNCIA", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.17", "CERTIFICADO DIGITAL", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.18", "DESPESAS DE CELULAR", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.19", "FARMÁCIA", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.20", "DOAÇÕES E PATROCÍNIOS", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.21", "SISTEMAS LINX", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.22", "HONORÁRIOS ADVOCATÍCIOS", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.23", "IPTU", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.24", "ENERGIA ELÉTRICA", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.25", "SISTEMA RELÓGIO PONTO", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.26", "DOCUMENTOS VEÍCULOS", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.27", "SINDICATO SINDILOJAS", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.6.1", "(-) COTAS/APLICAÇÕES", "DESPESAS FINANCEIRAS", "Resultado Financeiro"], ["2.6.2", "(-) IOF", "DESPESAS FINANCEIRAS", "Resultado Financeiro"], ["2.6.3", "(-) JUROS", "DESPESAS FINANCEIRAS", "Resultado Financeiro"], ["2.6.4", "(-) TAXAS LINK PAGAMENTO", "DESPESAS FINANCEIRAS", "Resultado Financeiro"], ["2.6.5", "(-) ANUIDADES", "DESPESAS FINANCEIRAS", "Resultado Financeiro"], ["2.6.6", "(-) PAGTO FINANCIAMENTO", "DESPESAS FINANCEIRAS", "Resultado Financeiro"], ["2.6.7", "(-) ACERTO DE SALDO", "DESPESAS FINANCEIRAS", "Resultado Financeiro"], ["2.6.8", "(-) TARIFA PIX", "DESPESAS FINANCEIRAS", "Resultado Financeiro"], ["2.6.9", "(-) TARIFA MANUTENÇÃO CONTA", "DESPESAS FINANCEIRAS", "Resultado Financeiro"], ["2.7.1", "EMPRÉSTIMO APORTE CAPITAL", "EMPRÉSTIMOS E FINANCIAMENTOS", "(-) Empréstimos (Pagamentos)"], ["2.7.2", "PAGTO FINANCIAMENTO", "EMPRÉSTIMOS E FINANCIAMENTOS", "(-) Empréstimos (Pagamentos)"], ["3.0.1", "COMISSÃO DE VENDA", "DESPESAS VARIÁVEIS", "Despesas Variáveis de Venda"], ["3.0.2", "GRATIFICAÇÕES DE METAS", "DESPESAS VARIÁVEIS", "Despesas Variáveis de Venda"], ["3.0.3", "GRATIFICAÇÃO DK KIDS", "DESPESAS VARIÁVEIS", "Despesas Variáveis de Venda"], ["3.0.4", "MARKETING E PROPAGANDA", "DESPESAS VARIÁVEIS", "Despesas Variáveis de Venda"], ["3.0.5", "GRATIFICAÇÃO VALE ASSIDUIDADE", "DESPESAS VARIÁVEIS", "Despesas Variáveis de Venda"], ["3.0.6", "GRATIFICAÇÃO MAIORES VENDEDORES", "DESPESAS VARIÁVEIS", "Despesas Variáveis de Venda"]], "bancos": ["VIACREDI KF", "BANCO DO BRASIL", "MAXICREDITO KF", "BRADESCO", "DINHEIRO KF"]}/*<SEED*/;
+  const BASE = /*SEED>*/{"grupos": [["RECEITAS COM PRODUTOS", "RECEITA", "#4caa4a"], ["RECEITAS NÃO OPERACIONAIS", "RECEITA", "#2e9d6a"], ["RECEITAS FINANCEIRAS", "RECEITA", "#1e8f8a"], ["DESPESAS COM PRODUTO", "DESPESA", "#f0483e"], ["IMPOSTOS", "DESPESA", "#c2410c"], ["DESPESAS COM MATERIAIS E EQUIPAMENTO", "DESPESA", "#f0483e"], ["DESPESAS COM RH", "DESPESA", "#f0483e"], ["DESPESAS ADMINISTRATIVAS", "DESPESA", "#f0483e"], ["DESPESAS FINANCEIRAS", "DESPESA", "#b91c1c"], ["EMPRÉSTIMOS E FINANCIAMENTOS", "DESPESA", "#9f1239"], ["DESPESAS VARIÁVEIS", "DESPESA", "#f0483e"]], "grupos_dre": [["Receita Operacional Bruta", "ROB", 10], ["Receitas Não Operacionais", "RNO", 20], ["Impostos", "IMP", 30], ["Variação do Estoque", "VEST", 40], ["Custo da Mercadoria Vendida", "CMV", 50], ["Despesas Variáveis de Venda", "DVV", 60], ["Despesas Administrativas", "ADM", 70], ["Resultado Financeiro", "RFIN", 80], ["(-) Empréstimos (Pagamentos)", "EMP", 90], ["(-) Despesas com Pós Resultados", "POS", 100], ["(+) Receita de Captação de Empréstimos", "CAPT", 110]], "plano": [["1.1.1", "VENDAS DE MERCADORIAS", "RECEITAS COM PRODUTOS", "Receita Operacional Bruta"], ["1.1.2", "COBRANÇAS DE ADVOGADO", "RECEITAS COM PRODUTOS", "Receita Operacional Bruta"], ["1.1.3", "PIX/DEPÓSITO DE FORNECEDORES", "RECEITAS COM PRODUTOS", "Receita Operacional Bruta"], ["1.2.1", "VENDA DE ATIVOS", "RECEITAS NÃO OPERACIONAIS", "Receitas Não Operacionais"], ["1.2.2", "VENDA DE RECICLÁVEIS", "RECEITAS NÃO OPERACIONAIS", "Receitas Não Operacionais"], ["1.2.3", "COBRANÇAS CANCELADAS", "RECEITAS NÃO OPERACIONAIS", "Receitas Não Operacionais"], ["1.2.4", "ACERTO ENERGIA ELÉTRICA ROSA/APTO 318", "RECEITAS NÃO OPERACIONAIS", "Receitas Não Operacionais"], ["1.2.5", "INDENIZAÇÃO DE MERCADORIAS", "RECEITAS NÃO OPERACIONAIS", "Receitas Não Operacionais"], ["1.3.1", "(+) FINANCIAMENTOS BANCÁRIOS", "RECEITAS FINANCEIRAS", "Resultado Financeiro"], ["2.1.1", "PAGTO DUPL. FORNECEDORES", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.2", "COMPRAS SÃO PAULO", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.3", "TRANSPORTADORAS", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.4", "SACOLAS PLÁSTICAS", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.5", "SACOLAS DE PAPEL", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.6", "CAIXAS PARA PRESENTES", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.7", "PAPEL DE PRESENTE", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.8", "FITAS E LAÇOS PARA PRESENTE", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.9", "ETIQUETAS PARA MERCADORIAS", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.10", "ETIQUETAS ADESIVAS PRESENTES", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.11", "ETIQUETAS TAG", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.1.12", "CONSERTOS DE MERCADORIAS", "DESPESAS COM PRODUTO", "Custo da Mercadoria Vendida"], ["2.2.1", "SIMPLES NACIONAL", "IMPOSTOS", "Impostos"], ["2.3.1", "MANUTENÇÃO DE MÁQUINAS E EQUIPAMENTOS", "DESPESAS COM MATERIAIS E EQUIPAMENTO", "Despesas Administrativas"], ["2.3.2", "MANUTENÇÃO DE EQUIPAMENTOS DE INFORMÁTICA", "DESPESAS COM MATERIAIS E EQUIPAMENTO", "Despesas Administrativas"], ["2.3.3", "MANUTENÇÃO COM VEÍCULOS", "DESPESAS COM MATERIAIS E EQUIPAMENTO", "Despesas Administrativas"], ["2.3.4", "MANUTENÇÃO PREDIO", "DESPESAS COM MATERIAIS E EQUIPAMENTO", "Despesas Administrativas"], ["2.3.5", "COMPRA DE EQUIPAMENTOS DE INFORMÁTICA", "DESPESAS COM MATERIAIS E EQUIPAMENTO", "Despesas Administrativas"], ["2.3.6", "PRODUTOS DE LIMPEZA", "DESPESAS COM MATERIAIS E EQUIPAMENTO", "Despesas Administrativas"], ["2.3.7", "MATERIAL DE LIMPEZA", "DESPESAS COM MATERIAIS E EQUIPAMENTO", "Despesas Administrativas"], ["2.3.8", "MATERIAL DE EXPEDIENTE", "DESPESAS COM MATERIAIS E EQUIPAMENTO", "Despesas Administrativas"], ["2.3.9", "COMBUSTÍVEL", "DESPESAS COM MATERIAIS E EQUIPAMENTO", "Despesas Administrativas"], ["2.4.1", "PROLABORE", "DESPESAS COM RH", "Despesas Administrativas"], ["2.4.2", "SALÁRIOS", "DESPESAS COM RH", "Despesas Administrativas"], ["2.4.3", "FGTS", "DESPESAS COM RH", "Despesas Administrativas"], ["2.5.1", "ALUGUEL", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.2", "INTERNET/TELEFONIA", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.3", "CARTÓRIO", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.4", "ALVARÁS", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.5", "CONTABILIDADE", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.6", "SEGURO PREDIAL", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.7", "CONSULTORIA", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.8", "DESPESAS DE VIAGENS", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.9", "SAMAE", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.10", "SEGURO DE VEÍCULOS", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.11", "SISTEMAS / SOFTWARES / ASSINATURAS", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.12", "ACIMAI", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.13", "CDL", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.14", "COMPRAS LOJA", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.15", "CORREIOS", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.16", "SEGURANÇA / VIGILÂNCIA", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.17", "CERTIFICADO DIGITAL", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.18", "DESPESAS DE CELULAR", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.19", "FARMÁCIA", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.20", "DOAÇÕES E PATROCÍNIOS", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.21", "SISTEMAS LINX", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.22", "HONORÁRIOS ADVOCATÍCIOS", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.23", "IPTU", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.24", "ENERGIA ELÉTRICA", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.25", "SISTEMA RELÓGIO PONTO", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.26", "DOCUMENTOS VEÍCULOS", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.5.27", "SINDICATO SINDILOJAS", "DESPESAS ADMINISTRATIVAS", "Despesas Administrativas"], ["2.6.1", "(-) COTAS/APLICAÇÕES", "DESPESAS FINANCEIRAS", "Resultado Financeiro"], ["2.6.2", "(-) IOF", "DESPESAS FINANCEIRAS", "Resultado Financeiro"], ["2.6.3", "(-) JUROS", "DESPESAS FINANCEIRAS", "Resultado Financeiro"], ["2.6.4", "(-) TAXAS LINK PAGAMENTO", "DESPESAS FINANCEIRAS", "Resultado Financeiro"], ["2.6.5", "(-) ANUIDADES", "DESPESAS FINANCEIRAS", "Resultado Financeiro"], ["2.6.6", "(-) PAGTO FINANCIAMENTO", "DESPESAS FINANCEIRAS", "Resultado Financeiro"], ["2.6.7", "(-) ACERTO DE SALDO", "DESPESAS FINANCEIRAS", "Resultado Financeiro"], ["2.6.8", "(-) TARIFA PIX", "DESPESAS FINANCEIRAS", "Resultado Financeiro"], ["2.6.9", "(-) TARIFA MANUTENÇÃO CONTA", "DESPESAS FINANCEIRAS", "Resultado Financeiro"], ["2.7.1", "EMPRÉSTIMO APORTE CAPITAL", "EMPRÉSTIMOS E FINANCIAMENTOS", "(-) Empréstimos (Pagamentos)"], ["2.7.2", "PAGTO FINANCIAMENTO", "EMPRÉSTIMOS E FINANCIAMENTOS", "(-) Empréstimos (Pagamentos)"], ["3.0.1", "COMISSÃO DE VENDA", "DESPESAS VARIÁVEIS", "Despesas Variáveis de Venda"], ["3.0.2", "GRATIFICAÇÕES DE METAS", "DESPESAS VARIÁVEIS", "Despesas Variáveis de Venda"], ["3.0.3", "GRATIFICAÇÃO DK KIDS", "DESPESAS VARIÁVEIS", "Despesas Variáveis de Venda"], ["3.0.4", "MARKETING E PROPAGANDA", "DESPESAS VARIÁVEIS", "Despesas Variáveis de Venda"], ["3.0.5", "GRATIFICAÇÃO VALE ASSIDUIDADE", "DESPESAS VARIÁVEIS", "Despesas Variáveis de Venda"], ["3.0.6", "GRATIFICAÇÃO MAIORES VENDEDORES", "DESPESAS VARIÁVEIS", "Despesas Variáveis de Venda"]], "bancos": ["BANCO DO BRASIL", "BRADESCO"]}/*<SEED*/;
   const db = { _seq: 100000, planilhas: [], bancos: [], grupos: [], grupos_dre: [], plano_contas: [], lancamentos: [], transferencias: [] };
-  db.planilhas = [{ id: 1, nome: 'LANÇAMENTOS KF', saldo_inicial: 50000, cor: '#f37021' }, { id: 2, nome: 'LANÇAMENTOS DK', saldo_inicial: 18000, cor: '#58595e' }];
+  db.planilhas = [{ id: 1, nome: 'LANÇAMENTOS PLANETA FLORES', saldo_inicial: 18000, cor: '#58595e' }];
   const sIni = { 'VIACREDI KF': 30000, 'BANCO DO BRASIL': 10000, 'MAXICREDITO KF': 15000, 'BRADESCO': 8000, 'DINHEIRO KF': 5000 };
   db.bancos = BASE.bancos.map((nome, i) => ({ id: 10 + i, nome, saldo_inicial: sIni[nome] || 0, logo: null, planilha_id: empDoBancoDemo(nome) }));
   db.grupos = BASE.grupos.map(([nome, tipo, cor], i) => ({ id: 100 + i, nome, tipo, cor }));
@@ -1222,23 +1226,9 @@ function seedDemo() {
   const L = (pl, banco, data, conta, item, valor) => db.lancamentos.push({ id: lid++, planilha_id: pl, banco_id: bc(banco), plano_conta_id: pc(conta), data_lancamento: data, item, valor: r2(valor), data_programada: null, data_pagamento: data });
   const T = (data, o, d, valor, descricao) => db.transferencias.push({ id: tid++, data, banco_origem_id: bc(o), banco_destino_id: bc(d), valor: r2(valor), descricao });
 
-  // Primeiros dias de setembro/KF = linhas reais da planilha
-  [['MAXICREDITO KF',1,'VENDAS DE MERCADORIAS','Cartão de Credito',2241.42],['VIACREDI KF',1,'PAGTO DUPL. FORNECEDORES','Pagto Dupl. Fornecedores Diversos',2964.83],
-   ['VIACREDI KF',1,'SEGURO PREDIAL','Seguro Loja',722.34],['DINHEIRO KF',1,'SALÁRIOS','Pagto Folha de Pagamento de Agosto',30792.08],
-   ['DINHEIRO KF',1,'COMISSÃO DE VENDA','Pagto Comissões de Vendas de Agosto',5585.42],['DINHEIRO KF',1,'MANUTENÇÃO PREDIO','Pagto Amelio/Limpeza Terrenos Rua Indaial',375],
-   ['DINHEIRO KF',1,'VENDAS DE MERCADORIAS','Entrada de Dinheiro',7150],['VIACREDI KF',1,'VENDAS DE MERCADORIAS','Pix Parcelas',3314.94],
-   ['VIACREDI KF',1,'VENDAS DE MERCADORIAS','Pix Compras',650],['DINHEIRO KF',2,'VENDAS DE MERCADORIAS','Entrada de Dinheiro',1600],
-   ['MAXICREDITO KF',2,'VENDAS DE MERCADORIAS','Cartão de Credito Prev.',2565.70],['VIACREDI KF',2,'VENDAS DE MERCADORIAS','Pix Parcelas',3227.68],
-   ['VIACREDI KF',2,'VENDAS DE MERCADORIAS','Pix Compras',206.91],['DINHEIRO KF',3,'VENDAS DE MERCADORIAS','Entrada de Dinheiro',1600],
-   ['MAXICREDITO KF',3,'VENDAS DE MERCADORIAS','Cartão de Credito',2381.30],['VIACREDI KF',3,'PAGTO DUPL. FORNECEDORES','Pagto Dupl. Fornecedores Diversos',3630.01],
-   ['VIACREDI KF',3,'MANUTENÇÃO PREDIO','Pagto Propag/Troca de Extintores',387.50],['DINHEIRO KF',3,'FGTS','Pagto FGTS Bruna',560],
-  ].forEach(([b, d, c, i, v]) => L(1, b, `2026-09-${pad(d)}`, c, i, v));
-  T('2026-09-01', 'VIACREDI KF', 'DINHEIRO KF', 30000, 'Reforço de caixa para a folha');
-
   const limite = isoData(new Date());
   const EMP = [
-    { pl: 1, f: 1, pix: 'VIACREDI KF', cartao: 'MAXICREDITO KF', caixa: 'DINHEIRO KF', paga: 'VIACREDI KF' },
-    { pl: 2, f: .55, pix: 'BANCO DO BRASIL', cartao: 'BRADESCO', caixa: 'BANCO DO BRASIL', paga: 'BRADESCO' },
+    { pl: 1, f: .55, pix: 'BANCO DO BRASIL', cartao: 'BRADESCO', caixa: 'BANCO DO BRASIL', paga: 'BRADESCO' },
   ];
   for (const e of EMP) {
     let vendasAnt = 150000 * e.f; const acc = {};
@@ -1285,21 +1275,21 @@ function seedDemo() {
   // contas em aberto (sem banco e sem pagamento), para mostrar o "Pagar / Receber depois"
   const base = new Date();
   [[1, 3, 'ALUGUEL', 'Aluguel depósito', 2300], [1, 8, 'ENERGIA ELÉTRICA', 'Celesc filial', 980.4], [1, -4, 'CONTABILIDADE', 'Honorários extras', 650],
-   [2, 5, 'INTERNET/TELEFONIA', 'Telefonia', 289.9], [2, 12, 'SEGURO PREDIAL', 'Seguro Loja', 397.29], [1, 15, 'VENDA DE RECICLÁVEIS', 'Venda papelão a receber', 420]]
+   [1, 5, 'INTERNET/TELEFONIA', 'Telefonia', 289.9], [1, 12, 'SEGURO PREDIAL', 'Seguro Loja', 397.29], [1, 15, 'VENDA DE RECICLÁVEIS', 'Venda papelão a receber', 420]]
     .forEach(([pl, d, c, i, v]) => { const dt = isoData(new Date(base.getFullYear(), base.getMonth(), base.getDate() + d));
       db.lancamentos.push({ id: lid++, planilha_id: pl, banco_id: null, plano_conta_id: pc(c), data_lancamento: dt, item: i, valor: v, data_programada: dt, data_pagamento: null }); });
   return db;
 }
 
 // demonstração: bancos com "KF" no nome são da KF (id 1); Banco do Brasil e Bradesco são da DK (id 2)
-const empDoBancoDemo = nome => /KF/.test(nome) ? 1 : /BRASIL|BRADESCO/.test(nome) ? 2 : null;
+const empDoBancoDemo = () => 1;
 class LocalStore {
   constructor() {
     let d = null;
     try { d = JSON.parse(localStorage.getItem(LS_KEY)); } catch (e) {}
     this.db = d || seedDemo();
     for (const p of this.db.planilhas) {             // atualização: DR passou a se chamar DK
-      if (p.nome === 'LANÇAMENTOS DR') p.nome = 'LANÇAMENTOS DK';
+      if (p.nome === 'LANÇAMENTOS DK' || p.nome === 'LANÇAMENTOS DR') p.nome = 'LANÇAMENTOS PLANETA FLORES';
       if (!p.cor) p.cor = p.nome.includes('DK') ? '#58595e' : '#f37021';
     }
     for (const b of this.db.bancos) if (!('planilha_id' in b)) b.planilha_id = empDoBancoDemo(b.nome);   // atualização: banco × empresa
@@ -1445,14 +1435,14 @@ let store, sb;
 const hoje = new Date(), HOJE = isoData(hoje);
 const S = {
   view: 'dash', cadTab: 'plano_contas',
-  planilhaId: MODO_SUPABASE ? null : 1, empresaVis: 'all',
+  planilhaId: MODO_SUPABASE ? null : 1, empresaVis: MODO_SUPABASE ? null : 1,
   ano: hoje.getFullYear(), mes: hoje.getMonth(),
   planilhas: [], bancos: [], grupos: [], grupos_dre: [], plano_contas: [],
   lancs: [], saldoAnt: 0,
   editId: null, cadEdit: null, trEdit: null,
   filtro: { texto: '', banco: '', grupo: '', aj: false, sit: '' },
   lf: { modo: 'avulso', parc: null },
-  cf: { emp: 'all', lista: [], sel: null, lancs: {} },
+  cf: { emp: MODO_SUPABASE ? null : 1, lista: [], sel: null, lancs: {} },
   pers: null, usuario: '',
   dash: { per: 'ano', tabelas: new Set(), dados: null },
   buscaCad: '', cadOrd: {}, colFiltro: {},
@@ -1472,7 +1462,8 @@ async function recarregarCadastros() {
   M.gdre = Object.fromEntries(S.grupos_dre.map(g => [g.id, g]));
   M.planilha = Object.fromEntries(S.planilhas.map(p => [p.id, p]));
   if (!S.planilhas.some(p => p.id === S.planilhaId)) S.planilhaId = S.planilhas[0]?.id ?? null;
-  if (S.empresaVis !== 'all' && !M.planilha[S.empresaVis]) S.empresaVis = 'all';
+  if (!M.planilha[S.empresaVis]) S.empresaVis = S.planilhaId;   // sem visão consolidada: sempre a empresa
+  if (!M.planilha[S.cf.emp]) S.cf.emp = S.planilhaId;
 }
 const grupoDoPlano = pid => M.grupo[M.plano[pid]?.grupo_id];
 const sinal = l => grupoDoPlano(l.plano_conta_id)?.tipo === 'RECEITA' ? 1 : -1;
@@ -1546,7 +1537,7 @@ async function rerender() {
 
 const barraAno = () => `<div class="ano"><button data-act="ano" data-d="-1" aria-label="Ano anterior">‹</button><span>${S.ano}</span><button data-act="ano" data-d="1" aria-label="Próximo ano">›</button></div>`;
 const barraMeses = cor => `<div class="abas meses ${cor ? 'tema' : ''}" style="--ec:${cor || ''}">${MESES.map((m, i) => `<button class="aba ${i === S.mes ? 'on' : ''}" data-act="mes" data-m="${i}">${m}</button>`).join('')}</div>`;
-const abasEmpresa = (sel, act, consolidado, prefixo, cons) => `<div class="abas">${S.planilhas.map(p => `<button class="aba plan ${p.id === sel ? 'on' : ''}" style="--ec:${esc(corEmpresa(p.id))}" data-act="${act}" data-id="${p.id}"><i class="pt"></i>${esc(nomeNaTela(p.id, prefixo))}</button>`).join('')}
+const abasEmpresa = (sel, act, consolidado, prefixo, cons) => S.planilhas.length <= 1 && !consolidado ? '' : `<div class="abas">${S.planilhas.map(p => `<button class="aba plan ${p.id === sel ? 'on' : ''}" style="--ec:${esc(corEmpresa(p.id))}" data-act="${act}" data-id="${p.id}"><i class="pt"></i>${esc(nomeNaTela(p.id, prefixo))}</button>`).join('')}
   ${consolidado ? `<button class="aba plan cons ${sel === 'all' ? 'on' : ''}" style="--ec:#2f3034" data-act="${act}" data-id="all">${esc(prefixo ? nomeNaTela('all', prefixo, cons) : 'Consolidado')}</button>` : ''}</div>`;
 
 function opcoes(lista, sel, rotulo, vazio = 'Selecione…') {
@@ -1628,7 +1619,7 @@ function renderLocal() {
 // Cada alteração guarda o valor original em "ajustes" (só na 1ª vez) e a célula fica destacada.
 const EDIT = {
   lanc: { tab: 'lancamentos', get: id => S.lancs.find(x => x.id === id), reload: () => viewLancamentos(),
-    campos: { banco: { c: 'banco_id', t: 'banco' }, data: { c: 'data_lancamento', t: 'date', req: 1 }, plano: { c: 'plano_conta_id', t: 'plano' },
+    campos: { banco: { c: 'banco_id', t: 'banco' }, data: { c: 'data_lancamento', t: 'date', req: 1 }, plano: { c: 'plano_conta_id', t: 'plano' }, grupo: { c: 'plano_conta_id', t: 'plano' },
               item: { c: 'item', t: 'text' }, valor: { c: 'valor', t: 'money' }, dprog: { c: 'data_programada', t: 'date' }, dpag: { c: 'data_pagamento', t: 'date' },
               forma: { c: 'forma_pagamento', t: 'forma' } } },
   tr: { tab: 'transferencias', get: id => S.trLista.find(x => x.id === id), reload: () => viewTransferencias(),
@@ -1680,7 +1671,7 @@ function iniciarEdicao(td) {
   td.classList.add('emedicao');
   td.innerHTML = `<div class="ied-w">${ctrl}${f.c in A ? `<button class="ied-rev" title="Voltar ao original: ${esc(fmtCampo(f.t, A[f.c]))}">↺</button>` : ''}</div>`;
   const el = td.querySelector('.ied');
-  el.focus(); if (el.select) el.select();
+  el.focus({ preventScroll: true }); if (el.select) el.select();
   let feito = false;
   const desfazer = () => { td.innerHTML = antes; td.classList.remove('emedicao'); };
   const fim = async salvar => {
@@ -1696,7 +1687,7 @@ function iniciarEdicao(td) {
     prepararBuscaPlano();
     el.addEventListener('bsel-cancelou', () => fim(false));
     el.addEventListener('bsel-mesmo', () => fim(false));
-    el._inp.focus();
+    el._inp.focus({ preventScroll: true });
   }
   if (f.t === 'banco') {                      // seletor com ícones: já abre a lista
     prepararSeletoresBanco();
@@ -1755,6 +1746,8 @@ async function viewLancamentos() {
 
 function renderLancamentos() {
   fecharCf();
+  const chaveRol = `${S.planilhaId}|${S.ano}|${S.mes}`, tw = document.querySelector('#main table.lanc')?.closest('.tabwrap');
+  const rol = S.lancRol?.chave === chaveRol ? { y: window.scrollY, t: tw ? tw.scrollTop : S.lancRol.t } : null;
   const cfg = cfgTela('lancamentos');
   const dataPadrao = (hoje.getFullYear() === S.ano && hoje.getMonth() === S.mes) ? HOJE : `${S.ano}-${pad(S.mes + 1)}-01`;
   const nAj = qtdAjustados(S.lancs), cor = corEmpresa(S.planilhaId);
@@ -1785,10 +1778,14 @@ function renderLancamentos() {
         <tbody id="linhas"></tbody>
       </table>
     </div>
-    <p class="dica">Para corrigir um lançamento, <b>clique em qualquer célula</b> (banco, data, conta, descrição, valor, vencimento, pagamento, forma), altere e tecle Enter (Esc cancela) — ou use ✎ para editar todos os campos de uma vez.
-      <span class="leg-aj">célula ajustada</span> = alterada depois de lançada; passe o mouse para ver o valor original.</p>`;
+    <p class="dica">Para corrigir um lançamento, <b>clique em qualquer célula</b> (banco, data, conta, descrição, valor, vencimento, pagamento, forma), altere e tecle Enter (Esc cancela) — ou use ✎ para editar todos os campos de uma vez. Passe o mouse numa célula alterada para ver o valor original.</p>`;
   renderLinhas(); renderPainel();
   if (S.lf.modo === 'parcelado') desenharParcelas();
+  // fica na mesma posição da tabela depois de editar (só volta ao início ao trocar de mês/empresa)
+  const tw2 = document.querySelector('#main table.lanc')?.closest('.tabwrap');
+  if (rol) { if (tw2) tw2.scrollTop = rol.t; window.scrollTo(0, rol.y); }
+  S.lancRol = { chave: chaveRol, t: rol?.t ?? 0 };
+  if (tw2) tw2.addEventListener('scroll', () => { if (S.lancRol?.chave === chaveRol) S.lancRol.t = tw2.scrollTop; }, { passive: true });
 }
 
 function renderLinhas() {
@@ -1833,7 +1830,7 @@ function renderLinhas() {
       forma: celEd('lanc', l, 'forma', 'c mut', l.forma_pagamento ? esc(l.forma_pagamento) : '—'),
       status: `<td class="c st">${seloSituacao(l)}</td>`,
       data: celEd('lanc', l, 'data', 'c mut', fmtData(l.data_lancamento)),
-      grupo: `<td class="grupo"><span class="pill ${'plano_conta_id' in A ? 'aj-b' : ''}" style="--c:${esc(corGrupo(g))}">${esc(g?.nome ?? '')}</span></td>`,
+      grupo: celEd('lanc', l, 'grupo', 'grupo', `<span class="pill" style="--c:${esc(corGrupo(g))}">${esc(g?.nome ?? '')}</span>`),
       plano: celEd('lanc', l, 'plano', 'plano', `<span class="cod">${esc(M.plano[l.plano_conta_id]?.codigo ?? '')}</span> ${esc(M.plano[l.plano_conta_id]?.nome ?? '')}`),
       item: celEd('lanc', l, 'item', 'item', esc(l.item) || '<span class="mut">—</span>'),
       valor: celEd('lanc', l, 'valor', 'r valor', `<span class="${s > 0 ? 'pos' : 'neg'}">${s > 0 ? '+' : '−'} ${num2(l.valor)}</span>`),
@@ -2567,7 +2564,7 @@ function renderCustos() {
       <div><h2 class="tit">Custos Fixos</h2><p class="sub">Despesas recorrentes com vigência. Cada mês vira um lançamento em aberto, pago depois pelo botão <b>Pagar</b>.</p></div>
       <div class="filtros"><button class="btn" data-act="cfNovo">+ Novo custo fixo</button></div>
     </div>
-    <div class="barra">${abasEmpresa(emp, 'cfEmp', true, 'CUSTOS FIXOS')}</div>
+    <div class="barra">${abasEmpresa(emp, 'cfEmp', false, 'CUSTOS FIXOS')}</div>
     <div class="kpis kpis-4">
       <div class="kp hero"><div class="l">Custo fixo mensal</div><div class="v">${brl(mensal)}</div><div class="d">${ativos.length} custo(s) vigente(s) em ${MESES_NOME[hoje.getMonth()].toLowerCase()}</div></div>
       <div class="kp desp"><div class="l">Próximos 12 meses</div><div class="v">${brl(prox12)}</div><div class="d">${fmtMes(MES_ATUAL)} a ${fmtMes((() => { let y = MES_ATUAL; for (let i = 0; i < 11; i++) y = proxMes(y); return y; })())}</div></div>
@@ -2694,7 +2691,7 @@ function renderFluxo() {
     ${bannerEmpresa(S.empresaVis, 'FLUXO DE CAIXA', 'FLUXO DE CAIXA ACUMULADO')}
     <h2 class="tit">Fluxo de Caixa Diário</h2>
     <p class="sub">${MESES_NOME[S.mes]} de ${S.ano}. Clique no dia para expandir, ou em um valor para ver e editar os lançamentos.</p>
-    <div class="barra">${abasEmpresa(S.empresaVis, 'empresaVis', true, 'FLUXO DE CAIXA', 'FLUXO DE CAIXA ACUMULADO')}</div>
+    <div class="barra">${abasEmpresa(S.empresaVis, 'empresaVis', false, 'FLUXO DE CAIXA', 'FLUXO DE CAIXA ACUMULADO')}</div>
     <div class="barra">${barraAno()}${barraMeses(corEmpresa(S.empresaVis))}
       <div class="filtros"><label class="chk"><input type="checkbox" data-chg="fluxoVazios" ${S.fluxo.ocultarVazios ? 'checked' : ''}> Ocultar dias sem movimento</label>${botaoPers('fluxo')}${botoesPDF()}</div>
     </div>
@@ -2758,7 +2755,7 @@ function renderDRE() {
   const tot = calcularLinhas(Object.fromEntries(DRE_POS.map(([k]) => [k, soma(pos[k])])));   // total só dos meses exibidos
   const n = meses.filter(m => comDados.has(m)).length;
   const rob = tot.ROB;
-  const fmt = v => Math.abs(v) < 0.005 ? '<span class="z">–</span>' : `<span class="${v < 0 ? 'neg' : ''}">${num2(v)}</span>`;
+  const fmt = v => Math.abs(v) < 0.005 ? '<span class="z">–</span>' : `<span class="${v < 0 ? 'neg' : 'pos'}">${num2(v)}</span>`;   // positivo verde, negativo vermelho
   const f2 = v => Number.isFinite(v) ? num2(v) : '–';
   const head = `<tr><th style="text-align:left">Demonstrativo de Resultados</th>${meses.map(m => `<th>${MESES[m]}</th>`).join('')}${cfg.cols.map(k => `<th>${k === 'total' && oc.size ? `ACUMULADO (${meses.length} ${meses.length === 1 ? 'mês' : 'meses'})` : colDef('dre', k).h.toUpperCase()}</th>`).join('')}</tr>`;
   const ck = (at, m, v) => at && Math.abs(v || 0) > 0.004 ? ` class="clk" ${at} data-m="${m}" title="Ver os lançamentos"` : '';
@@ -2794,7 +2791,7 @@ function renderDRE() {
     ${bannerEmpresa(S.empresaVis, 'DRE')}
     <h2 class="tit">DRE — Demonstrativo de Resultados</h2>
     <p class="sub">${S.ano} · ${periodo}. Percentuais sobre a Receita Operacional Bruta. Clique em um grupo para ver as contas, ou em um valor para ver os lançamentos.</p>
-    <div class="barra">${abasEmpresa(S.empresaVis, 'empresaVis', true, 'DRE')}</div>
+    <div class="barra">${abasEmpresa(S.empresaVis, 'empresaVis', false, 'DRE')}</div>
     <div class="barra">${barraAno()}
       <div class="filtros">
         <div class="seg"><button class="${S.dre.pct ? 'on' : ''}" data-act="drePct" data-v="1">Com %</button><button class="${S.dre.pct ? '' : 'on'}" data-act="drePct" data-v="0">Só valores</button></div>
@@ -2939,7 +2936,7 @@ function renderMarkup() {
     ${bannerEmpresa(S.empresaVis)}
     <h2 class="tit">Markup de Venda</h2>
     <p class="sub">${S.ano} · calculado com os percentuais da DRE de cada mês. Os parâmetros ficam salvos por empresa e ano.</p>
-    <div class="barra">${abasEmpresa(S.empresaVis, 'empresaVis', true)}</div>
+    <div class="barra">${abasEmpresa(S.empresaVis, 'empresaVis', false)}</div>
     <div class="barra">${barraAno()}</div>
     <div class="mk-topo">
       <div class="mk-par">
@@ -3279,7 +3276,7 @@ function renderDash() {
         <select class="dper" data-chg="dashPer">${PERIODOS.map(([k, r], i) => `${i === 7 ? '<optgroup label="Mês">' : ''}<option value="${k}" ${k === P.k ? 'selected' : ''}>${r}</option>`).join('')}</optgroup></select>
       </div>
     </div>
-    <div class="barra">${abasEmpresa(S.empresaVis, 'empresaVis', true, 'DASHBOARD')}</div>
+    <div class="barra">${abasEmpresa(S.empresaVis, 'empresaVis', false, 'DASHBOARD')}</div>
     ${kpis}
     <div class="dgrid">
       ${cardAbertos}
@@ -3422,7 +3419,7 @@ function renderFluxoAcum() {
     ${bannerEmpresa(S.empresaVis, 'FLUXO ACUMULADO')}
     <h2 class="tit">Fluxo de Caixa Acumulado</h2>
     <p class="sub">${S.ano} · mês a mês, partindo do caixa inicial dos bancos da empresa. Clique em um grupo para ver as contas.</p>
-    <div class="barra">${abasEmpresa(S.empresaVis, 'empresaVis', true, 'FLUXO ACUMULADO')}</div>
+    <div class="barra">${abasEmpresa(S.empresaVis, 'empresaVis', false, 'FLUXO ACUMULADO')}</div>
     <div class="barra">${barraAno()}
       <div class="filtros"><button class="mini" data-act="faTodos">${abertos.size ? 'Recolher contas' : 'Expandir contas'}</button>${botaoPers('fluxoAcum')}${botoesPDF()}</div>
     </div>
@@ -4951,7 +4948,8 @@ const ACOES = {
   persReset: d => { delete VIS[d.t]; salvarVis(); renderLocal(); },
   sair: async () => {
     if (MODO_SUPABASE) await sb.auth.signOut();
-    try { sessionStorage.removeItem('cap_sessao'); } catch (e) {}
+    try { sessionStorage.removeItem('cap_sessao'); sessionStorage.removeItem('cap_ativo'); } catch (e) {}
+    lsSet('cap_sessao_lembrada', null);
     location.reload();
   },
   pdfMenu: () => $('pdfMenu').classList.toggle('on'),
@@ -5094,7 +5092,10 @@ function abrirCb(sel, q) {
   if (!pop) {
     pop = document.createElement('div'); pop.className = 'bsel-pop cb-pop'; pop.setAttribute('role', 'listbox');
     pop.addEventListener('pointerdown', e => e.preventDefault());
-    pop.addEventListener('click', e => { const o = e.target.closest('.bsel-op'); if (o) escolherCb(sel, o.dataset.v); });
+    pop.addEventListener('click', e => {
+      if (e.target.closest('.cb-nova')) { const txt = sel._inp.value.trim() === (sel.selectedOptions[0]?.text ?? '') ? '' : sel._inp.value.trim(); fecharCb(false); textoCb(sel); return novaContaRapida(sel, txt); }
+      const o = e.target.closest('.bsel-op'); if (o) escolherCb(sel, o.dataset.v);
+    });
     document.body.appendChild(pop);
   }
   const opcoesV = itens.filter(i => i.v);
@@ -5102,6 +5103,7 @@ function abrirCb(sel, q) {
     ? `<div class="cb-g"><i style="background:${esc(corGrupo(S.grupos.find(g => g.nome === i.g)))}"></i>${esc(i.g)}</div>`
     : `<div class="bsel-op ${i.v === sel.value ? 'on' : ''}" role="option" data-v="${esc(i.v)}"><span class="cod">${esc(i.t.split(' ')[0])}</span><span class="n">${esc(i.t.split(' ').slice(1).join(' '))}</span></div>`).join('')
     : '<div class="cb-vazio">Nenhuma conta encontrada</div>';
+  pop.insertAdjacentHTML('beforeend', `<button type="button" class="cb-nova">+ Cadastrar nova conta${q.trim() ? ` <em>“${esc(q.trim())}”</em>` : ''}</button>`);
   const r = sel._inp.getBoundingClientRect(), w = Math.max(r.width, 380);
   pop.style.minWidth = w + 'px'; pop.style.left = Math.max(8, Math.min(r.left, innerWidth - w - 8)) + 'px';
   let top = r.bottom + 4;
@@ -5110,6 +5112,64 @@ function abrirCb(sel, q) {
   const ops = [...pop.querySelectorAll('.bsel-op')];
   cbAberto = { sel, pop, ops, ativo: termo ? 0 : Math.max(0, ops.findIndex(o => o.dataset.v === sel.value)) };
   marcarCb(cbAberto.ativo);
+}
+/* cadastro rápido de conta (plano de contas) direto da lista de seleção */
+function novaContaRapida(sel, txt = '') {
+  $('cbNova')?.remove();
+  const bg = document.createElement('div');
+  bg.className = 'modal-bg cbn-bg'; bg.id = 'cbNova';
+  bg.innerHTML = `<div class="modal m-cbn" role="dialog" aria-modal="true">
+    <div class="mh"><div><small>Plano de contas</small><b>Nova conta</b></div><button type="button" class="ib x" data-x="fechar" title="Fechar (Esc)">✕</button></div>
+    <div class="mcorpo pc-grid">
+      <label class="span2"><span>Grupo (classificação) <i>*</i></span><select id="cbn_grupo"><option value="">Selecione o grupo…</option>${gruposOrdenados().map(g => `<option value="${g.id}">${esc(g.nome)} · ${g.tipo === 'RECEITA' ? 'Receita' : 'Despesa'}</option>`).join('')}</select></label>
+      <label><span>Código <i>*</i></span><input id="cbn_cod" placeholder="automático" autocomplete="off"></label>
+      <label><span>Nome da conta <i>*</i></span><input id="cbn_nome" value="${esc(txt)}" placeholder="Ex.: Embalagens" autocomplete="off"></label>
+      <div class="pc-info span2" id="cbn_info"><span class="mut">Escolha o grupo: o código e a linha da DRE são preenchidos automaticamente.</span></div>
+    </div>
+    <div class="mf"><span class="sp"></span><button type="button" class="btn sec" data-x="fechar">Cancelar</button><button type="button" class="btn" data-x="salvar">+ Cadastrar e usar</button></div></div>`;
+  document.body.appendChild(bg);
+  const fechar = (foco = true) => { bg.remove(); if (foco && document.body.contains(sel._inp)) sel._inp.focus(); };
+  const g = $('cbn_grupo'), cod = $('cbn_cod'); let sug = '';
+  g.addEventListener('change', () => {
+    const gid = Number(g.value) || null, gr = M.grupo[gid];
+    if (gid && (!cod.value.trim() || cod.value === sug)) { sug = proximoCodigo(gid); cod.value = sug; }
+    const d = gid ? M.gdre[dreDoGrupo(gid)] : null;
+    $('cbn_info').innerHTML = gr ? `<span class="tag" style="background:${esc(corGrupo(gr))}">${esc(gr.nome)}</span><span class="pc-tp ${gr.tipo === 'RECEITA' ? 'rec' : 'desp'}">${gr.tipo === 'RECEITA' ? 'Receita · soma' : 'Despesa · subtrai'}</span><span class="mut">DRE: <b>${d ? esc(d.nome) : 'definir em Grupos DRE'}</b></span>` : '';
+    $('cbn_nome').focus();
+  });
+  const salvar = async () => {
+    const gid = Number(g.value) || null, codigo = cod.value.trim(), nome = $('cbn_nome').value.trim();
+    if (!gid) return toast('Escolha o grupo (classificação).', true), g.focus();
+    if (!codigo) return toast('Informe o código.', true), cod.focus();
+    if (!nome) return toast('Informe o nome da conta.', true), $('cbn_nome').focus();
+    const dup = S.plano_contas.find(x => String(x.codigo).trim() === codigo);
+    if (dup) return toast(`O código ${codigo} já é usado por "${dup.nome}".`, true), cod.focus();
+    let nova;
+    try { nova = await store.insert('plano_contas', { codigo, nome, grupo_id: gid, grupo_dre_id: dreDoGrupo(gid) }); }
+    catch (e) { return toast(e.message, true); }
+    await recarregarCadastros();
+    fechar(false);
+    // coloca a conta nova nas outras listas abertas e seleciona nesta
+    const gr = M.grupo[gid];
+    document.querySelectorAll('select[data-busca]').forEach(s2 => {
+      if ([...s2.options].some(o => o.value === String(nova.id))) return;
+      let og = [...s2.querySelectorAll('optgroup')].find(o => o.label === gr.nome);
+      if (!og) { og = document.createElement('optgroup'); og.label = gr.nome; s2.appendChild(og); }
+      const op = new Option(`${codigo} ${nome}`, String(nova.id));
+      const depois = [...og.querySelectorAll('option')].find(o => o.text.localeCompare(op.text, 'pt-BR', { numeric: true }) > 0);
+      og.insertBefore(op, depois || null);
+    });
+    if (document.body.contains(sel)) { sel.value = String(nova.id); sel.dispatchEvent(new Event('change', { bubbles: true })); sel._inp?.focus(); }
+    toast(`Conta ${codigo} ${nome} cadastrada.`);
+  };
+  bg.addEventListener('click', e => { const x = e.target.closest('[data-x]')?.dataset.x; if (x === 'fechar') fechar(); else if (x === 'salvar') salvar(); });
+  bg.addEventListener('pointerdown', e => { if (e.target === bg) fechar(); });
+  bg.addEventListener('keydown', e => {          // não deixa o Enter/Esc chegar na janela de baixo
+    e.stopPropagation();
+    if (e.key === 'Escape') { e.preventDefault(); fechar(); }
+    else if (e.key === 'Enter' && !e.target.matches('button')) { e.preventDefault(); salvar(); }
+  });
+  (txt ? g : g).focus();
 }
 function marcarCb(i) {
   const c = cbAberto; if (!c || !c.ops.length) return;
@@ -5140,7 +5200,20 @@ function fecharCb(escolheu) {
   cbAberto = null; pop.remove();
   if (!escolheu) sel.dispatchEvent(new Event('bsel-cancelou'));
 }
-document.addEventListener('scroll', e => { if (cbAberto && !(e.target instanceof Element && e.target.closest('.cb-pop'))) { const s = cbAberto.sel; fecharCb(false); textoCb(s); } }, true);
+function posPop(pop, alvo, minW) {
+  const r = alvo.getBoundingClientRect();
+  if (r.bottom < 0 || r.top > innerHeight) return false;
+  const w = Math.max(r.width, minW);
+  pop.style.minWidth = w + 'px'; pop.style.left = Math.max(8, Math.min(r.left, innerWidth - w - 8)) + 'px';
+  let top = r.bottom + 4;
+  if (top + pop.offsetHeight > innerHeight - 8) top = Math.max(8, r.top - pop.offsetHeight - 4);
+  pop.style.top = top + 'px';
+  return true;
+}
+document.addEventListener('scroll', e => {
+  if (!cbAberto || (e.target instanceof Element && e.target.closest('.cb-pop'))) return;
+  if (!posPop(cbAberto.pop, cbAberto.sel._inp, 380)) { const s = cbAberto.sel; fecharCb(false); textoCb(s); }
+}, true);
 
 /* ================= SELETOR DE BANCO COM ÍCONE ================= */
 // O <select> nativo não mostra imagens: ele continua existindo (escondido) e guarda o valor;
@@ -5236,7 +5309,10 @@ function fecharBsel(escolheu = false) {
   if (!escolheu) sel.dispatchEvent(new Event('bsel-cancelou'));
 }
 document.addEventListener('pointerdown', e => { if (bselAberto && !e.target.closest('.bsel-pop') && !bselAberto.sel._bt.contains(e.target)) fecharBsel(); }, true);
-document.addEventListener('scroll', e => { if (bselAberto && !(e.target instanceof Element && e.target.closest('.bsel-pop'))) fecharBsel(); }, true);
+document.addEventListener('scroll', e => {
+  if (!bselAberto || (e.target instanceof Element && e.target.closest('.bsel-pop'))) return;
+  if (!posPop(bselAberto.pop, bselAberto.sel._bt, 230)) fecharBsel();
+}, true);
 window.addEventListener('resize', () => fecharBsel());
 
 function medirCabecalhos() { document.querySelectorAll('.tabwrap.congela').forEach(w => { const h = w.querySelector('thead'); if (h) w.style.setProperty('--thh', h.offsetHeight + 'px'); }); }
@@ -5280,28 +5356,51 @@ document.addEventListener('keydown', e => {
 // Usuário inicial: admin / cap_2026.
 // No Supabase, "admin" vira o e-mail admin@cap.local (crie esse usuário em Authentication > Users).
 // No modo demonstração a senha é conferida no navegador (sem segurança real: serve só para a demonstração).
-const LOGIN_DOMINIO = 'cap.local';
+const LOGIN_DOMINIO = 'gmail.com';   // login: capplanetaflores (ou o e-mail completo capplanetaflores@gmail.com)
 const DEMO_USUARIO = 'admin';
 const DEMO_SENHA_SHA256 = 'ec5b2902e8b2a8df186b0a3dd310a6dd0bd9ca0bde5c085da4c60cf7eb60afd1';
 async function sha256(txt) {
   const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt));
   return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
 }
+const OLHO_ABERTO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const OLHO_FECHADO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.9 17.9A10.4 10.4 0 0 1 12 19C5 19 1 12 1 12a18.5 18.5 0 0 1 5.1-5.9M9.9 4.2A9.6 9.6 0 0 1 12 4c7 0 11 7 11 7a18.6 18.6 0 0 1-2.2 3.2M14.1 14.1a3 3 0 1 1-4.2-4.2"/><path d="M1 1l22 22"/></svg>';
+// "Lembrar senha": guarda o usuário neste navegador, salva a senha no gerenciador de senhas do navegador e mantém o acesso ao reabrir.
+const LEMBRAR_KEY = 'cap_lembrar', LEMBRAR_USER = 'cap_lembrar_user';
+const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const lsSet = (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} };
 function renderLogin(msg = '', usuario = '') {
+  const lembrar = lsGet(LEMBRAR_KEY) === '1';
+  if (!usuario && lembrar) usuario = lsGet(LEMBRAR_USER) || '';
   $('app').innerHTML = `
     <div class="login">
       <form id="loginForm" autocomplete="on">
         <div class="login-logo"><img src="${BRAND.logoG}" alt="C@P Consultoria"></div>
         <div class="login-t">Sistema Financeiro</div>
-        <label>Usuário<input id="l_user" value="${esc(usuario)}" placeholder="admin" required autocomplete="username" autocapitalize="off"></label>
-        <label>Senha<span class="senha"><input type="password" id="l_senha" placeholder="••••••••" required autocomplete="current-password"><button type="button" class="ver" id="l_ver" title="Mostrar senha">👁</button></span></label>
+        <label>Usuário<input id="l_user" value="${esc(usuario)}" placeholder="capplanetaflores" required autocomplete="username" autocapitalize="off"></label>
+        <label>Senha<span class="senha"><input type="password" id="l_senha" placeholder="••••••••" required autocomplete="current-password"><button type="button" class="ver" id="l_ver" title="Mostrar senha" aria-label="Mostrar senha" aria-pressed="false">${OLHO_ABERTO}</button></span></label>
+        <label class="lembrar"><input type="checkbox" id="l_lembrar" ${lembrar ? 'checked' : ''}> Lembrar senha</label>
         <div class="erro">${esc(msg)}</div>
         <button class="btn" type="submit" id="l_ok">Entrar</button>
         <div class="login-rod">C@P Consultoria · ${MODO_SUPABASE ? 'acesso seguro' : 'modo demonstração'}</div>
       </form>
     </div>`;
   (usuario ? $('l_senha') : $('l_user')).focus();
-  $('l_ver').addEventListener('click', () => { const i = $('l_senha'); i.type = i.type === 'password' ? 'text' : 'password'; i.focus(); });
+  const ver = $('l_ver');
+  ver.addEventListener('mousedown', e => e.preventDefault());     // não tira o foco do campo
+  ver.addEventListener('click', e => {
+    e.preventDefault(); e.stopPropagation();
+    const i = $('l_senha'), mostrar = i.type === 'password';
+    i.type = mostrar ? 'text' : 'password';
+    ver.innerHTML = mostrar ? OLHO_FECHADO : OLHO_ABERTO;
+    ver.title = mostrar ? 'Ocultar senha' : 'Mostrar senha'; ver.setAttribute('aria-label', ver.title); ver.setAttribute('aria-pressed', String(mostrar));
+    i.focus(); const n = i.value.length; try { i.setSelectionRange(n, n); } catch (err) {}
+  });
+  // preenche a senha guardada no navegador (Chrome/Edge), se houver
+  if (lembrar && window.PasswordCredential && navigator.credentials?.get && !$('l_senha').value)
+    navigator.credentials.get({ password: true, mediation: 'optional' }).then(c => {
+      if (c && c.password && $('l_senha') && !$('l_senha').value) { if (c.id) $('l_user').value = c.id; $('l_senha').value = c.password; }
+    }).catch(() => {});
   $('loginForm').addEventListener('submit', async e => {
     e.preventDefault();
     const user = $('l_user').value.trim().toLowerCase(), senha = $('l_senha').value;
@@ -5311,7 +5410,7 @@ function renderLogin(msg = '', usuario = '') {
       const { error } = await sb.auth.signInWithPassword({ email, password: senha });
       if (error) {
         const m = error.message || '';
-        return renderLogin(/invalid login/i.test(m) ? 'Usuário ou senha inválidos.'
+        return renderLogin(/invalid login/i.test(m) ? `Usuário ou senha inválidos (${email} no projeto ${SUPABASE_URL.replace(/^https:\/\/|\.supabase\.co.*$/g, '')}).`
           : /not confirmed/i.test(m) ? 'Usuário ainda não confirmado. No Supabase, confirme o usuário (Auto Confirm User).'
           : /fetch|network/i.test(m) ? 'Sem conexão com o Supabase. Verifique a internet.' : 'Não foi possível entrar: ' + m, user);
       }
@@ -5323,6 +5422,12 @@ function renderLogin(msg = '', usuario = '') {
       S.usuario = user;
       try { sessionStorage.setItem('cap_sessao', user); } catch (err) {}
     }
+    const lembrarOk = $('l_lembrar').checked;
+    lsSet(LEMBRAR_KEY, lembrarOk ? '1' : '0'); lsSet(LEMBRAR_USER, lembrarOk ? $('l_user').value.trim() : null);
+    try { sessionStorage.setItem('cap_ativo', '1'); } catch (err) {}
+    if (lembrarOk && window.PasswordCredential && navigator.credentials?.store)
+      try { await navigator.credentials.store(new PasswordCredential({ id: $('l_user').value.trim(), password: senha, name: $('l_user').value.trim() })); } catch (err) {}
+    if (!MODO_SUPABASE && lembrarOk) lsSet('cap_sessao_lembrada', S.usuario); else lsSet('cap_sessao_lembrada', null);
     iniciarApp();
   });
 }
@@ -5343,11 +5448,14 @@ async function boot() {
     store = new SupaStore(sb);
     const { data: { session } } = await sb.auth.getSession();
     if (!session) return renderLogin();
+    let ativo = null; try { ativo = sessionStorage.getItem('cap_ativo'); } catch (e) {}
+    if (lsGet(LEMBRAR_KEY) !== '1' && !ativo) { await sb.auth.signOut(); return renderLogin(); }
     S.usuario = (session.user?.email || '').split('@')[0];
   } else {
     store = new LocalStore();
     let sessao = null;
     try { sessao = sessionStorage.getItem('cap_sessao'); } catch (e) {}
+    if (!sessao && lsGet(LEMBRAR_KEY) === '1') sessao = lsGet('cap_sessao_lembrada');
     if (!sessao) return renderLogin();
     S.usuario = sessao;
   }
