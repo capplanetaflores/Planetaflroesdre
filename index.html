@@ -1134,6 +1134,123 @@ table.ls.imp td input[type=checkbox],table.ls.imp th input[type=checkbox]{width:
   #toast{left:10px;right:10px;bottom:10px;max-width:none}
 }
 @media (max-width:400px){ .tiles,.kpis,.kpis-d,.kpis-4,.cards{grid-template-columns:1fr} .kp.hero{grid-column:auto} .lf-grid,.lf-grid.lf-fixo,.lf-grid.lf-parc{grid-template-columns:1fr} }
+
+/* ---------- volta para a linha editada ---------- */
+@keyframes piscaLinha{0%,100%{background:inherit}20%,60%{background:#ffe2c7}}
+table.lanc tr.lin.pisca td{animation:piscaLinha 1.6s ease}
+/* ---------- pagamento parcial ---------- */
+.selo.parcial{background:#fff7e6;color:#9a5b00;border-color:#f3c77a}
+.selo.parcial:hover{background:#b45309;color:#fff;border-color:#b45309}
+.selo.parcial.venc{background:#fdecea;color:#c62828;border-color:#ef9a9a}
+.p-vl{display:flex;flex-direction:column;gap:4px}
+.p-vl label{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;color:#55565b;text-transform:uppercase;letter-spacing:.3px}
+.p-vl input{max-width:220px;text-align:right;font-weight:700;font-size:15px}
+.p-vl p{margin:0;font-size:11.5px}
+.modal.m-fpp{width:min(860px,100%)}
+.fpp-kpi{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:10px;padding:12px 20px}
+.fpp-kpi>div{border:1px solid var(--line);border-radius:10px;padding:8px 14px}
+.fpp-kpi span{display:block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)}
+.fpp-kpi b{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums}
+.fpp-kpi .ok b{color:#22702b}.fpp-kpi .ab b{color:#c2410c}
+.fpp-kpi small{font-size:11px;color:var(--muted)}
+.fpp-bar{height:9px;background:#ececee;border-radius:6px;overflow:hidden;margin:6px 0 3px}
+.fpp-bar i{display:block;height:100%;background:linear-gradient(90deg,#f37021,#1baf7a);border-radius:6px}
+.fpp-bar.sm{height:7px;width:120px;margin:4px auto 2px}
+table.pp-tab td{height:46px}
+table.pp-tab tr.pp-venc td{background:#fff4f3 !important}
+/* ---------- cartões de crédito ---------- */
+.cc-cards{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:14px}
+.cc-card{position:relative;width:260px;min-height:128px;text-align:left;border:0;border-radius:14px;padding:14px 16px;color:#fff;background:linear-gradient(135deg,var(--cc,#3e3f44),color-mix(in srgb,var(--cc,#3e3f44) 55%,#000));box-shadow:0 6px 18px rgba(0,0,0,.15);display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.cc-card:hover{transform:translateY(-2px)}
+.cc-card.on{outline:3px solid var(--orange);outline-offset:2px}
+.cc-card.todos{background:linear-gradient(135deg,#58595e,#2a2b2f)}
+.cc-card.novo{background:#fff;color:var(--orange-d);border:2px dashed #f3b18f;box-shadow:none;justify-content:center;align-items:center;text-align:center}
+.cc-card.novo small{color:var(--muted)}
+.cc-top{display:flex;justify-content:space-between;gap:8px}.cc-top b{font-size:15px}.cc-top span{font-size:11px;opacity:.8;font-weight:700;text-transform:uppercase}
+.cc-mid{font-size:12px;opacity:.9}
+.cc-lim small{font-size:11px;opacity:.9}
+.cc-bar{height:6px;background:rgba(255,255,255,.25);border-radius:4px;overflow:hidden;margin-bottom:4px}.cc-bar i{display:block;height:100%;background:#fff}
+.cc-ed{position:absolute;right:10px;bottom:8px;font-size:14px;opacity:.75;padding:2px 6px;border-radius:6px}.cc-ed:hover{opacity:1;background:rgba(255,255,255,.18)}
+.lf-grid.cc-grid{grid-template-columns:minmax(170px,1.2fr) 140px minmax(240px,2fr) minmax(170px,1.5fr) 140px 90px auto}
+.lf-grid.cc-grid select:not(.bsel-ok):not(.cb-ok){border:1px solid #cfd0d4;border-radius:6px;padding:8px 10px;font-size:13px;min-height:38px;background:#fff;text-transform:none;letter-spacing:0}
+.cc-pv{display:inline-block;background:#f3f3f5;border:1px solid var(--line);border-radius:10px;padding:1px 8px;margin:2px 2px 0 0;font-weight:700;color:#44454a}.cc-pv small{font-weight:500;color:var(--muted)}
+.cc-fat{background:#fff;border:1px solid var(--line);border-top:4px solid var(--cc,#3e3f44);border-radius:10px;padding:12px 14px;margin-bottom:14px}
+.cc-fh{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.cc-fh small{display:block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)}
+.cc-fh b{font-size:17px;margin-right:8px}
+.cc-ft{display:flex;align-items:center;gap:12px;text-align:right}.cc-ft b{font-size:20px;color:var(--neg)}
+table.cc-tab{width:100%}
+/* ---------- metas ---------- */
+.mt-acoes{display:flex;align-items:center;gap:10px}
+.mt-res{font-size:12px;font-weight:700;border-radius:12px;padding:3px 10px}.mt-res.bom{background:#eaf6ec;color:#22702b}.mt-res.cr{background:#fdecea;color:#c62828}
+.mt-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(520px,1fr));gap:8px 18px;margin:10px 0 6px}
+.mt-l{display:grid;grid-template-columns:minmax(180px,1.1fr) 2fr auto;gap:12px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-left:4px solid #9a9ba0;border-radius:8px;cursor:pointer}
+.mt-l:hover{box-shadow:0 3px 10px rgba(0,0,0,.08);border-color:var(--orange)}
+.mt-l.bom{border-left-color:#1baf7a}.mt-l.at{border-left-color:#eda100}.mt-l.cr{border-left-color:#c62828}
+.mt-n b{display:block;font-size:12.5px}.mt-n small{font-size:11px;color:var(--muted)}
+.mt-bar{position:relative;height:10px;background:#ececee;border-radius:6px}
+.mt-bar i{display:block;height:100%;border-radius:6px;background:#1baf7a}
+.mt-l.at .mt-bar i{background:#eda100}.mt-l.cr .mt-bar i{background:#c62828}
+.mt-bar em{position:absolute;top:-3px;bottom:-3px;width:2px;background:#2a2b2f;margin-left:-1px}
+.mt-b small{font-size:11px;color:var(--muted)}
+.mt-l .st{font-size:11px;font-weight:700;white-space:nowrap}
+.mt-l .st.bom{color:#22702b}.mt-l .st.at{color:#b45309}.mt-l .st.cr{color:#c62828}
+.modal.m-metas{width:min(760px,100%)}
+.mt-g{border:1px solid var(--line);border-radius:8px;margin-bottom:10px;overflow:hidden}
+.mt-gh{display:flex;justify-content:space-between;align-items:center;padding:7px 12px;background:#f7f7f9;border-bottom:1px solid var(--line)}.mt-gh small{color:var(--muted)}
+.mt-i{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:5px 12px;border-bottom:1px solid #f0f0f2;font-size:12.5px}
+.mt-i:last-child{border-bottom:0}
+.mt-i input{width:150px;border:1px solid #cfd0d4;border-radius:6px;padding:6px 8px;text-align:right;font-weight:700}
+@media (max-width:760px){.mt-lista{grid-template-columns:1fr}.mt-l{grid-template-columns:1fr}.cc-card{width:100%}.fpp-kpi{grid-template-columns:1fr}}
+
+.rx-mbtn{display:block;margin:6px 0 0 auto}
+.rx-meta{margin-top:8px;padding-top:7px;border-top:1px dashed var(--line);font-size:11px;color:var(--muted)}
+.rx-meta.sem{text-align:right}
+.rx-mlink{color:var(--orange-d);font-weight:700;padding:1px 4px;border-radius:4px}.rx-mlink:hover{background:var(--orange-l)}
+.rx-mh{display:flex;justify-content:space-between;gap:6px;margin-bottom:4px}.rx-mh b{color:var(--text)}
+.rx-meta .st{font-weight:700}.rx-meta.bom .st{color:#22702b}.rx-meta.at .st{color:#b45309}.rx-meta.cr .st{color:#c62828}
+.rx-mbar{position:relative;height:7px;background:#ececee;border-radius:5px}
+.rx-mbar i{display:block;height:100%;border-radius:5px;background:#1baf7a}.rx-meta.at .rx-mbar i{background:#eda100}.rx-meta.cr .rx-mbar i{background:#c62828}
+.rx-mbar em{position:absolute;top:-3px;bottom:-3px;width:2px;background:#2a2b2f;margin-left:-1px}
+.rx-meta:not(.sem):hover{background:#fafafb}
+.mt-i .tema-ic{flex:none}.mt-tn{flex:1;font-weight:600}
+
+.dmes-nav{display:inline-flex;border:1px solid rgba(255,255,255,.35);border-radius:6px;overflow:hidden}
+.dmes-nav button{background:rgba(255,255,255,.08);color:#fff;border:0;padding:6px 12px;font-weight:700;font-size:13px}
+.dmes-nav button+button{border-left:1px solid rgba(255,255,255,.25)}
+.dmes-nav button:hover{background:var(--orange)}
+.dmes-nav button[data-d="-1"],.dmes-nav button[data-d="1"]{font-size:17px;line-height:1;padding:4px 14px}
+
+/* receitas verde, despesas vermelho */
+.kp[data-act]{cursor:pointer;transition:box-shadow .15s,transform .15s}.kp[data-act]:hover{box-shadow:0 6px 16px rgba(0,0,0,.1);transform:translateY(-1px)}
+.kp.rec::before{background:#2e7d32}.kp.rec .v{color:#2e7d32}
+.kp.desp::before{background:#c62828}.kp.desp .v{color:#c62828}
+.ls-tot .e b{color:#2e7d32}.ls-tot .s b{color:#c62828}
+table.ls td.r.pos b{color:#2e7d32}table.ls td.r.neg b{color:#c62828}
+table.ls tr.rec td:first-child{box-shadow:inset 3px 0 0 #2e7d32}table.ls tr.desp td:first-child{box-shadow:inset 3px 0 0 #c62828}
+/* metas mês a mês */
+.modal.m-metas{width:min(1320px,100%)}
+.mt-ano{display:inline-flex;align-items:center;gap:4px;margin-left:auto;margin-right:8px;background:rgba(255,255,255,.1);border-radius:6px;padding:2px}
+.mt-ano button{background:transparent;border:0;color:#fff;font-size:17px;padding:2px 10px;border-radius:4px}.mt-ano button:hover{background:var(--orange)}
+.mt-ano span{font-weight:800;font-size:15px;padding:0 6px}
+.mt-bloco{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;padding:12px 20px;background:#f7f7f9;border-bottom:1px solid var(--line)}
+.mt-bloco>b{align-self:center;font-size:12px;text-transform:uppercase;letter-spacing:.4px;color:#55565b}
+.mt-bloco label{display:flex;flex-direction:column;gap:4px;font-size:10.5px;font-weight:700;color:#55565b;text-transform:uppercase;letter-spacing:.3px}
+.mt-bloco input,.mt-bloco select{border:1px solid #cfd0d4;border-radius:6px;padding:7px 8px;font-size:13px;background:#fff;min-height:36px;text-transform:none;letter-spacing:0}
+.mt-bloco input{width:130px;text-align:right;font-weight:700}
+.mt-tabw{padding-top:10px}
+table.mt-tab{border-collapse:separate;border-spacing:0;width:100%}
+table.mt-tab th{position:sticky;top:0;z-index:1;background:#4a4b50;font-size:11px;padding:6px 4px}
+table.mt-tab td{height:38px;padding:2px 3px;border-bottom:1px solid #efeff1;border-right:0}
+table.mt-tab td.l{display:flex;align-items:center;gap:8px;min-width:210px;white-space:normal;font-weight:600;font-size:12px;height:38px}
+table.mt-tab th.l{text-align:left;padding-left:10px}
+table.mt-tab input{width:100%;min-width:74px;border:1px solid #dcdde1;border-radius:5px;padding:5px 6px;text-align:right;font-size:12px;font-variant-numeric:tabular-nums}
+table.mt-tab input:focus{outline:2px solid var(--orange);outline-offset:-1px;border-color:var(--orange)}
+table.mt-tab td.tot input{font-weight:800;background:#fff7ef;min-width:96px}
+table.mt-tab tr.foco td{background:#fff7ef}
+table.mt-tab tfoot td{font-weight:800;text-align:right;background:#f3f3f5;font-size:11.5px;padding:0 6px;font-variant-numeric:tabular-nums}
+table.mt-tab tfoot td.l{justify-content:flex-start}
+.mt-nota{margin:6px 20px 0;font-size:11.5px}
 </style>
 </head>
 <body>
@@ -1365,6 +1482,8 @@ class LocalStore {
   async insert(t, row) { this.unico(t, row, null); const r = { ...row, id: ++this.db._seq }; this.db[t].push(r); this.salvar(); return r; }
   async insertMany(t, rows) { const out = []; for (const row of rows) out.push(await this.insert(t, row)); return out; }
   async lancsOrigem(origem) { return this.db.lancamentos.filter(l => l.origem === origem).map(l => ({ ...l })).sort((a, b) => a.data_lancamento.localeCompare(b.data_lancamento)); }
+  async lancsPrefixo(pre) { return this.db.lancamentos.filter(l => String(l.origem || '').startsWith(pre)).map(l => ({ ...l })).sort((a, b) => a.data_lancamento.localeCompare(b.data_lancamento) || a.id - b.id); }
+  async lancsIds(ids) { const s = new Set(ids); return this.db.lancamentos.filter(l => s.has(l.id)).map(l => ({ ...l })); }
   async update(t, id, row) {
     if (Object.keys(row).some(k => (UNICOS[t] || []).includes(k))) this.unico(t, row, id);
     const i = this.db[t].findIndex(r => r.id === id);
@@ -1437,6 +1556,12 @@ class SupaStore {
   async insert(t, row) { const { data, error } = await this.c.from(t).insert(row).select().single(); this.erro(error); return data; }
   async insertMany(t, rows) { if (!rows.length) return []; const { data, error } = await this.c.from(t).insert(rows).select(); this.erro(error); return data; }
   async lancsOrigem(origem) { return this.todos(() => this.c.from('lancamentos').select('*').eq('origem', origem).order('data_lancamento').order('id')); }
+  async lancsPrefixo(pre) { return this.todos(() => this.c.from('lancamentos').select('*').like('origem', pre + '%').order('data_lancamento').order('id')); }
+  async lancsIds(ids) {
+    const out = [], u = [...new Set(ids)];
+    for (let i = 0; i < u.length; i += 200) { const { data, error } = await this.c.from('lancamentos').select('*').in('id', u.slice(i, i + 200)); this.erro(error); out.push(...data); }
+    return out;
+  }
   async update(t, id, row) { const { error } = await this.c.from(t).update(row).eq('id', id); this.erro(error); }
   async remove(t, id) { const { error } = await this.c.from(t).delete().eq('id', id); this.erro(error); }
   async lancs({ ini, fim, planilha_id, banco_id } = {}) {
@@ -1495,10 +1620,11 @@ const S = {
   lancs: [], saldoAnt: 0,
   editId: null, cadEdit: null, trEdit: null,
   filtro: { texto: '', banco: '', grupo: '', aj: false, sit: '' },
-  lf: { modo: 'avulso', parc: null },
+  lf: { modo: 'avulso', parc: null, base: 'total' },
+  pgp: {}, parc: { lista: [] }, cc: { lista: [], lancs: [], sel: 'all' }, metas: {},
   cf: { emp: MODO_SUPABASE ? null : 1, lista: [], sel: null, lancs: {} },
   pers: null, usuario: '',
-  dash: { per: 'ano', tabelas: new Set(), dados: null },
+  dash: { per: 'm' + hoje.getMonth(), tabelas: new Set(), dados: null },
   buscaCad: '', cadOrd: {}, colFiltro: {},
   fluxo: { ocultarVazios: false, abertos: new Set() },
   dre: { pct: true, abertos: new Set(), dados: null },
@@ -1542,7 +1668,7 @@ const gruposOrdenados = () => [...S.grupos].sort((a, b) => {
 
 /* ============================== LAYOUT ============================== */
 const VIEWS = [
-  ['dash', 'Dashboard'], ['lancamentos', 'Lançamentos'], ['custos', 'Custos Fixos'], ['fluxo', 'Fluxo de Caixa'], ['fluxoAcum', 'Fluxo Acumulado'], ['dre', 'DRE'], ['markup', 'Markup'],
+  ['dash', 'Dashboard'], ['lancamentos', 'Lançamentos'], ['parciais', 'Pagos Parcialmente'], ['cartoes', 'Cartões de Crédito'], ['custos', 'Custos Fixos'], ['fluxo', 'Fluxo de Caixa'], ['fluxoAcum', 'Fluxo Acumulado'], ['dre', 'DRE'], ['markup', 'Markup'],
   ['bancos', 'Bancos'], ['transferencias', 'Transferências'], ['cadastros', 'Cadastros'],
 ];
 const CAD_TABS = [['plano_contas', 'Plano de Contas'], ['grupos', 'Grupos (Classificação)'], ['grupos_dre', 'Grupos DRE'], ['bancos', 'Bancos'], ['planilhas', 'Empresas']];
@@ -1572,6 +1698,7 @@ function renderShell() {
 async function irPara(v) {
   document.body.classList.remove('menu-on');
   S.view = v; S.editId = null; S.cadEdit = null; S.trEdit = null; S.buscaCad = '';
+  if (v === 'dash') { S.dash.per = 'm' + hoje.getMonth(); S.ano = hoje.getFullYear(); }   // dashboard sempre abre no mês atual
   document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
   await rerender();
 }
@@ -1580,6 +1707,8 @@ async function rerender() {
   if (v === 'dash') return viewDash();
   if (v === 'markup') return viewMarkup();
   if (v === 'lancamentos') return viewLancamentos();
+  if (v === 'parciais') return viewParciais();
+  if (v === 'cartoes') return viewCartoes();
   if (v === 'custos') return viewCustos();
   if (v === 'fluxo') return viewFluxo();
   if (v === 'fluxoAcum') return viewFluxoAcum();
@@ -1661,6 +1790,8 @@ function renderLocal() {
   if (v === 'dash') renderDash();
   else if (v === 'markup') renderMarkup();
   else if (v === 'lancamentos') renderLancamentos();
+  else if (v === 'parciais') renderParciais();
+  else if (v === 'cartoes') renderCartoes();
   else if (v === 'custos') renderCustos();
   else if (v === 'fluxo') renderFluxo();
   else if (v === 'fluxoAcum') renderFluxoAcum();
@@ -1780,7 +1911,7 @@ async function gravarAjuste(ed, reg, campo, v, msg, desfazer, extra = null) {
   const cfg = EDIT[ed], y = window.scrollY;
   try {
     await store.update(cfg.tab, reg.id, { ...comAjuste(reg, { [campo]: v }), ...(extra || {}) });
-    toast(msg); await cfg.reload(); window.scrollTo(0, y);
+    toast(msg); await cfg.reload(); window.scrollTo(0, y); if (ed === 'lanc') focarLinha(reg.id);
   } catch (e) { toast(e.message, true); desfazer(); }
 }
 const qtdAjustados = lista => lista.filter(r => r.ajustes && Object.keys(r.ajustes).length).length;
@@ -1793,17 +1924,32 @@ async function viewLancamentos() {
   }
   const { ini, fim } = periodoMes();
   try {
-    [S.lancs, S.saldoAnt] = await Promise.all([store.lancs({ ini, fim, planilha_id: S.planilhaId }), store.saldoAte(S.planilhaId, ini)]);
+    let filhos;
+    [S.lancs, S.saldoAnt, filhos] = await Promise.all([store.lancs({ ini, fim, planilha_id: S.planilhaId }), store.saldoAte(S.planilhaId, ini), store.lancsPrefixo('PGP:').catch(() => [])]);
+    S.pgp = mapaParciais(filhos);
   } catch (e) { toast(e.message, true); S.lancs = []; S.saldoAnt = 0; }
   renderLancamentos();
 }
+// volta para a linha do lançamento que acabou de ser editado/pago (e destaca a linha)
+function focarLinha(id) {
+  if (!id) return;
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    const tr = document.querySelector(`#linhas tr.lin[data-id="${id}"]`); if (!tr) return;
+    const tw = tr.closest('.tabwrap');
+    if (tw) { const r = tr.getBoundingClientRect(), w = tw.getBoundingClientRect(); tw.scrollTop += (r.top - w.top) - (tw.clientHeight / 2 - r.height / 2); }
+    const r2_ = (tw || tr).getBoundingClientRect();
+    if (r2_.top < 0 || r2_.top > innerHeight - 120) window.scrollTo(0, window.scrollY + r2_.top - 80);
+    tr.classList.add('pisca'); setTimeout(() => tr.classList.remove('pisca'), 1800);
+  }));
+}
+const recarregarEFocar = id => async () => { await viewLancamentos(); focarLinha(id); };
 
 function renderLancamentos() {
   fecharCf();
   const chaveRol = `${S.planilhaId}|${S.ano}|${S.mes}`, tw = document.querySelector('#main table.lanc')?.closest('.tabwrap');
   const rol = S.lancRol?.chave === chaveRol ? { y: window.scrollY, t: tw ? tw.scrollTop : S.lancRol.t } : null;
   const cfg = cfgTela('lancamentos');
-  const dataPadrao = (hoje.getFullYear() === S.ano && hoje.getMonth() === S.mes) ? HOJE : `${S.ano}-${pad(S.mes + 1)}-01`;
+  const dataPadrao = HOJE;                         // a data do lançamento sempre começa no dia de hoje
   const nAj = qtdAjustados(S.lancs), cor = corEmpresa(S.planilhaId);
   $('main').innerHTML = `
     ${bannerEmpresa(S.planilhaId)}
@@ -1892,7 +2038,7 @@ function renderLinhas() {
       dpag: celEd('lanc', l, 'dpag', 'c mut', fmtData(l.data_pagamento) || '—'),
       acum: `<td class="r acc ${l.acum < 0 ? 'neg' : ''} ${emAberto(l) ? 'acc-ab' : ''}" ${emAberto(l) ? 'title="Em aberto: não entra no acumulado"' : ''}>${l.acum < 0 ? '−' : ''}${num2(Math.abs(l.acum))}</td>`,
     };
-    html += `<tr class="lin ${S.editId === l.id ? 'editando' : ''} ${Object.keys(A).length ? 'tem-aj' : ''} ${s > 0 ? 'rec' : 'desp'} ${situacao(l) !== 'pago' ? 'aberto' : ''} ${situacao(l) === 'vencido' ? 'vencido' : ''}">${cfg.cols.map(k => C[k]).join('')}
+    html += `<tr data-id="${l.id}" class="lin ${S.editId === l.id ? 'editando' : ''} ${Object.keys(A).length ? 'tem-aj' : ''} ${s > 0 ? 'rec' : 'desp'} ${situacao(l) !== 'pago' ? 'aberto' : ''} ${situacao(l) === 'vencido' ? 'vencido' : ''}">${cfg.cols.map(k => C[k]).join('')}
       <td class="acoes"><button class="ib" title="Editar todos os campos" data-act="editarLancJanela" data-id="${l.id}">✎</button><button class="ib del" title="Excluir" data-act="excluirLanc" data-id="${l.id}">✕</button></td></tr>`;
   }
   $('linhas').innerHTML = html || `<tr><td colspan="${nCol}" class="vazio">Nenhum lançamento ${f.aj ? 'ajustado ' : ''}${f.sit ? 'nessa situação ' : ''}${cfAtivos().length ? 'com os filtros das colunas ' : ''}em ${MESES_NOME[S.mes]} de ${S.ano}.${cfAtivos().length ? ' <button class="mini" data-act="cfLimparTudo">Limpar filtros das colunas</button>' : ''}</td></tr>`;
@@ -2028,6 +2174,14 @@ const vencimento = l => l.data_programada || l.data_lancamento;
 const situacao = l => emAberto(l) ? (vencimento(l) < HOJE ? 'vencido' : 'aberto') : 'pago';
 function seloSituacao(l) {
   const rec = sinal(l) > 0, st = situacao(l);
+  const filhos = S.pgp?.[l.id];
+  if (st !== 'pago' && filhos?.length) {            // pago parcialmente: abre o fluxo de pagamentos do lançamento
+    const pago = filhos.reduce((a, x) => a + Number(x.valor), 0), tot = pago + Number(l.valor);
+    return `<button class="selo parcial ${st === 'vencido' ? 'venc' : ''}" data-act="pagar" data-id="${l.id}" title="Pago ${brl(pago)} de ${brl(tot)} · resta ${brl(l.valor)} · clique para ver o fluxo de pagamentos">◐ Parcial<small>${Math.round(pago / tot * 100)}% · resta ${num2(l.valor)}</small></button>`;
+  }
+  if (st === 'pago' && String(l.origem || '').startsWith('PGP:')) {
+    return `<button class="selo ok" data-act="pagar" data-id="${l.id}" title="Pagamento parcial de um lançamento · clique para ver o fluxo">✓ ${rec ? 'Receb.' : 'Pago'} ${fmtData(l.data_pagamento).slice(0, 5)}<small>parcial</small></button>`;
+  }
   if (st === 'pago') {
     const quando = l.data_pagamento ? ` ${fmtData(l.data_pagamento).slice(0, 5)}` : '';
     return `<button class="selo ok" data-act="pagar" data-id="${l.id}" title="${rec ? 'Recebido' : 'Pago'}${l.data_pagamento ? ' em ' + fmtData(l.data_pagamento) : ''}${l.forma_pagamento ? ' · ' + esc(l.forma_pagamento) : ''} · clique para ver ou desfazer">✓ ${rec ? 'Recebido' : 'Pago'}${quando}${l.forma_pagamento ? `<small>${esc(l.forma_pagamento)}</small>` : ''}</button>`;
@@ -2074,7 +2228,7 @@ function formLancamento(cor, dataPadrao) {
         ${plano}
         <label class="f-item">Descrição<input id="e_item" placeholder="Ex.: Empréstimo Viacredi, Financiamento veículo…" data-parc></label>
         <label class="f-valor">Valor (R$)<input id="e_valor" placeholder="0,00" inputmode="decimal" data-parc></label>
-        <label class="f-tipo-v">O valor é<span class="seg seg-sm"><button type="button" class="${S.lf.base !== 'total' ? 'on' : ''}" data-act="parcBase" data-v="parcela">da parcela</button><button type="button" class="${S.lf.base === 'total' ? 'on' : ''}" data-act="parcBase" data-v="total">total</button></span></label>
+        <label class="f-tipo-v">O valor é<span class="seg seg-sm"><button type="button" class="${S.lf.base === 'total' ? 'on' : ''}" data-act="parcBase" data-v="total">total</button><button type="button" class="${S.lf.base !== 'total' ? 'on' : ''}" data-act="parcBase" data-v="parcela">da parcela</button></span></label>
         <label class="f-dia">Nº de parcelas<input id="e_np" type="number" min="2" max="360" value="${S.lf.np ?? 12}" data-parc></label>
         <label class="f-data">1º vencimento<input type="date" id="e_data" value="${dataPadrao}" data-parc></label>
       </div>
@@ -2123,14 +2277,14 @@ async function salvarLanc() {
   const [a, m] = row.data_lancamento.split('-').map(Number);
   const foraDoMes = a !== S.ano || m - 1 !== S.mes;
   toast(S.editId ? 'Lançamento ajustado.' : foraDoMes ? `Lançamento salvo em ${MESES_NOME[m - 1]}/${a}.` : row.data_pagamento ? 'Lançamento adicionado como ' + (sinal(row) > 0 ? 'recebido.' : 'pago.') : 'Lançado em aberto — pague/receba quando quiser.');
-  const manter = { banco: row.banco_id ?? '', data: row.data_lancamento, edit: S.editId };
+  const manter = { banco: row.banco_id ?? '', edit: S.editId };
   S.editId = null;
   await viewLancamentos();
   if (!manter.edit) {
     $('e_banco').value = manter.banco;
-    if (!foraDoMes) $('e_data').value = manter.data;
-    $('e_plano').focus();
-  }
+    $('e_data').value = HOJE;                      // volta sempre para o dia de hoje
+    $('e_plano').focus({ preventScroll: true });
+  } else focarLinha(manter.edit);
 }
 
 function editarLanc(id) {
@@ -2175,7 +2329,7 @@ const FORMAS_PAG = ['PIX', 'Dinheiro', 'Cheque', 'Cheque pré-datado', 'Boleto',
 let PAG = null;             // { l, depois }
 function abrirPagamento(l, depois, voltar, dataSug) {
   if (!l) return;
-  const parcela = /^PAR:/.test(l.origem || '');          // empréstimos/parcelas ficam sempre no vencimento
+  const parcela = /^(PAR|CC):/.test(l.origem || '');     // empréstimos/parcelas e cartão de crédito ficam sempre no vencimento
   const rec = sinal(l) > 0, pago = !emAberto(l), st = situacao(l), cor = corEmpresa(l.planilha_id);
   const g = grupoDoPlano(l.plano_conta_id), formaAtual = l.forma_pagamento || (pago ? '' : 'PIX');
   const verbo = rec ? 'recebimento' : 'pagamento';
@@ -2193,6 +2347,8 @@ function abrirPagamento(l, depois, voltar, dataSug) {
     <div class="mcorpo">
       <label><span>Data do ${verbo} <i>*</i></span><input type="date" id="p_data" value="${l.data_pagamento || dataSug || HOJE}"></label>
       <label class="p-un"><span>Banco <i>*</i></span><select id="p_banco" data-banco>${opcoes(bancosDaEmpresa(l.planilha_id), l.banco_id ?? '', b => b.nome, 'Escolha o banco…')}</select></label>
+      ${pago ? '' : `<div class="p-un p-vl span2"><label><span>Valor ${rec ? 'recebido' : 'pago'} agora (R$) <i>*</i></span><input id="p_valor" inputmode="decimal" value="${num2(l.valor)}" class="m-val"></label>
+        <p class="mut">Para <b>pagar parcialmente</b>, informe um valor menor que ${brl(l.valor)}: o pagamento fica registrado <b>dentro deste lançamento</b> e o restante continua em aberto (tela <b>Pagos Parcialmente</b>).</p></div>`}
       <div class="mlbl p-un">Forma de ${verbo} <i>*</i></div>
       <div class="formas p-un">${FORMAS_PAG.map(f => `<label class="fp"><input type="radio" name="p_forma" value="${esc(f)}" ${f === formaAtual ? 'checked' : ''}><span>${esc(f)}</span></label>`).join('')}</div>
       ${pago ? '' : `<div class="p-div-tg"><button type="button" class="mini" data-act="pagDividir">⇄ <span id="p_tg">${rec ? 'Receber' : 'Pagar'} em mais de uma forma (ex.: parte em cheque, parte em dinheiro)</span></button></div>
@@ -2251,9 +2407,11 @@ async function confirmarPagamento() {
     if (resta < -0.004) return toast(`As formas somam ${brl(tot)}, mais que o valor do lançamento (${brl(l.valor)}).`, true);
     if (resta > 0.004 && !confirm(`As formas somam ${brl(tot)}. Os ${brl(resta)} restantes continuam em aberto. Confirmar?`)) return;
     const pagoRow = p => ({ banco_id: p.banco, forma_pagamento: p.forma, data_pagamento: data, data_lancamento: dataLanc, data_programada: venc, valor: r2(p.valor) });
+    const ligar = resta > 0.004 || S.pgp?.[l.id]?.length || FPP?.pai?.id === l.id;     // parcial: as formas ficam no fluxo de pagamentos do lançamento
     const copia = p => {
       const r = { planilha_id: l.planilha_id, plano_conta_id: l.plano_conta_id, item: l.item, ...pagoRow(p) };
-      if (l.origem) r.origem = l.origem; if (l.parcela) r.parcela = l.parcela;
+      if (ligar) r.origem = `PGP:${l.id}`; else if (l.origem) r.origem = l.origem;
+      if (l.parcela) r.parcela = l.parcela;
       return r;
     };
     try {
@@ -2273,6 +2431,22 @@ async function confirmarPagamento() {
   const forma = document.querySelector('#modal input[name=p_forma]:checked')?.value;
   if (!forma) return toast(`Escolha a forma de ${verbo}.`, true);
   if (!banco) return toast('Escolha o banco.', true), abrirBsel($('p_banco'));
+  if ($('p_valor')) {                                         // pagamento parcial: registra dentro do lançamento, o restante fica em aberto
+    const pv = parseValor($('p_valor').value), resta = r2(Number(l.valor) - pv);
+    if (!(pv > 0)) return toast('Informe o valor.', true), $('p_valor').focus();
+    if (resta < -0.004) return toast(`O valor informado (${brl(pv)}) é maior que o valor em aberto (${brl(l.valor)}).`, true), $('p_valor').focus();
+    if (resta > 0.004) {
+      const filho = { planilha_id: l.planilha_id, plano_conta_id: l.plano_conta_id, item: l.item, banco_id: banco, forma_pagamento: forma, data_pagamento: data,
+        data_lancamento: dataLanc, data_programada: venc, valor: r2(pv), origem: `PGP:${l.id}` };
+      if (l.parcela) filho.parcela = l.parcela;
+      const mud = { valor: resta }; if (!l.data_programada) mud.data_programada = l.data_lancamento;
+      try { await store.insert('lancamentos', filho); await store.update('lancamentos', l.id, comAjuste(l, mud)); }
+      catch (e) { return toast(e.message, true); }
+      fecharModal(true);
+      toast(`${sinal(l) > 0 ? 'Recebido' : 'Pago'} parcialmente: ${brl(pv)} · resta ${brl(resta)} em aberto`);
+      return (depois || rerender)();
+    }
+  }
   const row = { data_pagamento: data, forma_pagamento: forma, banco_id: banco };
   if (!l.data_programada) row.data_programada = l.data_lancamento;          // guarda o vencimento original
   if (dataLanc !== l.data_lancamento) row.data_lancamento = dataLanc;
@@ -2384,7 +2558,7 @@ async function salvarNaJanela() {
   if (!row.data_lancamento) return toast('Informe a data do lançamento.', true);
   if (!row.plano_conta_id) return toast('Selecione o plano de contas.', true);
   if (!(row.valor > 0)) return toast('Informe um valor maior que zero.', true);
-  if (/^PAR:/.test(l.origem || '') && row.data_programada && row.data_programada !== l.data_programada && row.data_lancamento === l.data_lancamento)
+  if (/^(PAR|CC):/.test(l.origem || '') && row.data_programada && row.data_programada !== l.data_programada && row.data_lancamento === l.data_lancamento)
     row.data_lancamento = row.data_programada;                                         // parcela: acompanha o vencimento
   if (row.data_pagamento && !row.banco_id) return toast('Para marcar como pago/recebido, escolha também o banco.', true);
   if (!row.data_pagamento) row.forma_pagamento = null;                                 // sem data de pagamento = em aberto
@@ -2454,14 +2628,14 @@ function desenharParcelas() {
   if (!P) { box.innerHTML = `<p class="lf-nota">Informe o valor, o número de parcelas e o 1º vencimento: as parcelas aparecem aqui já preenchidas, e você pode ajustar a data e o valor de cada uma.</p>`; return; }
   const tot = P.reduce((a, p) => a + p.valor, 0);
   box.innerHTML = `
-    <div class="parc-h"><b>${P.length} parcelas</b><span class="mut">mensais · ajuste a data ou o valor de qualquer parcela</span>
+    <div class="parc-h"><b>${P.length} parcelas</b><span class="mut">mensais · ${P.map(p => fmtMes(p.data.slice(0, 7))).slice(0, 4).join(', ')}${P.length > 4 ? '…' : ''} · ajuste a data ou o valor de qualquer parcela</span>
       <span class="parc-tot">Total <b>${brl(tot)}</b></span></div>
     <div class="parc-grid">${P.map((p, i) => `<div class="parc ${p.ed ? 'ed' : ''}">
       <div class="pn"><b>${i + 1}</b>/${P.length}</div>
       <input type="date" value="${p.data}" data-pi="${i}" data-pk="data">
       <input inputmode="decimal" value="${num2(p.valor)}" data-pi="${i}" data-pk="valor">
     </div>`).join('')}</div>
-    <div class="parc-f"><span class="mut">Cada parcela entra no fluxo de caixa e na DRE <b>na data do seu vencimento</b>, em aberto, e é paga depois pelo botão <b>Pagar</b> (continua no vencimento).</span>
+    <div class="parc-f"><span class="mut">Cada parcela entra nos lançamentos, no fluxo de caixa e na DRE <b>no mês do seu vencimento</b> (não tudo na competência da compra), em aberto, e é paga depois pelo botão <b>Pagar</b> (continua no vencimento).</span>
       <button class="salvar" data-act="lancarParcelas">+ Lançar ${P.length} parcelas · ${brl(tot)}</button></div>`;
 }
 async function lancarParcelas() {
@@ -2483,6 +2657,460 @@ async function excluirLanc(id) {
   if (!l || !confirm(`Excluir o lançamento "${l.item || 'sem descrição'}" de ${brl(l.valor)}?`)) return;
   try { await store.remove('lancamentos', id); toast('Lançamento excluído.'); await viewLancamentos(); }
   catch (e) { toast(e.message, true); }
+}
+
+/* ===================== PAGAMENTOS PARCIAIS ===================== */
+// Um pagamento parcial vira um lançamento pago ligado ao original (origem "PGP:<id do original>"), assim ele entra
+// no banco, no fluxo e na DRE na data certa. O original fica em aberto só com o restante e mostra o fluxo de pagamentos.
+// Quando o restante é pago, o próprio original vira o último pagamento (quitação) e sai da tela "Pagos Parcialmente".
+function mapaParciais(filhos) {
+  const m = {};
+  for (const f of filhos || []) { const id = Number(String(f.origem).slice(4)); if (id) (m[id] ||= []).push(f); }
+  return m;
+}
+const paiParcial = l => !l ? null : String(l.origem || '').startsWith('PGP:') ? Number(l.origem.slice(4)) : S.pgp?.[l.id]?.length ? l.id : null;
+
+let FPP = null;     // { pai, filhos, depois }
+async function abrirFluxoParcial(paiId, depois) {
+  if (!paiId) return;
+  let pai, filhos;
+  try { [[pai], filhos] = await Promise.all([store.lancsIds([paiId]), store.lancsOrigem(`PGP:${paiId}`)]); }
+  catch (e) { return toast(e.message, true); }
+  if (!pai) return toast('Lançamento original não encontrado.', true);
+  FPP = { pai, filhos: filhos.sort((a, b) => (a.data_pagamento || '').localeCompare(b.data_pagamento || '') || a.id - b.id), depois: depois || FPP?.depois };
+  desenharFluxoParcial();
+}
+function totaisParcial(pai, filhos) {
+  const quitado = !emAberto(pai), pagoF = filhos.reduce((a, f) => a + Number(f.valor), 0);
+  const total = r2(pagoF + Number(pai.valor)), pago = r2(pagoF + (quitado ? Number(pai.valor) : 0));
+  return { quitado, total, pago, resta: r2(total - pago) };
+}
+function desenharFluxoParcial() {
+  const { pai, filhos } = FPP, rec = sinal(pai) > 0, T = totaisParcial(pai, filhos), g = grupoDoPlano(pai.plano_conta_id);
+  const linhas = [...filhos.map(f => ({ ...f, _f: true })), ...(T.quitado ? [{ ...pai, _q: true }] : [])];
+  let acum = 0;
+  abrirModal(`
+    <div class="mh ${rec ? 'rec' : 'desp'}" style="--ec:${esc(corEmpresa(pai.planilha_id))}">
+      <div><small>Fluxo de ${rec ? 'recebimentos' : 'pagamentos'} · ${esc(siglaEmpresa(pai.planilha_id))}</small><b>${esc(pai.item || M.plano[pai.plano_conta_id]?.nome || 'Lançamento')}</b></div>
+      <button class="ib x" data-act="fecharModal" title="Fechar (Esc)">✕</button>
+    </div>
+    <div class="mresumo pp-res">
+      <div><span>Conta</span><b>${esc(planoLabel(pai.plano_conta_id))}</b>${g ? `<em style="--c:${esc(corGrupo(g))}" class="pill">${esc(g.nome)}</em>` : ''}</div>
+      <div><span>Vencimento</span><b>${fmtData(vencimento(pai))}</b>${pai.parcela ? `<em class="mut">parcela ${esc(pai.parcela)}</em>` : ''}</div>
+      <div class="mv"><span>Valor total</span><b>${brl(T.total)}</b></div>
+    </div>
+    <div class="fpp-kpi">
+      <div class="ok"><span>${rec ? 'Recebido' : 'Pago'}</span><b>${brl(T.pago)}</b></div>
+      <div class="${T.resta > 0.004 ? 'ab' : 'ok'}"><span>Resta</span><b>${brl(T.resta)}</b></div>
+      <div class="pg"><span>${T.quitado ? '✓ Quitado' : 'Andamento'}</span><div class="fpp-bar"><i style="width:${T.total ? Math.min(100, T.pago / T.total * 100) : 0}%"></i></div><small>${T.total ? Math.round(T.pago / T.total * 100) : 0}% ${rec ? 'recebido' : 'pago'}</small></div>
+    </div>
+    <div class="ls-tab"><table class="ls"><thead><tr><th>#</th><th>Data ${rec ? 'receb.' : 'pagto.'}</th><th>Banco</th><th>Forma</th><th style="text-align:right">Valor</th><th style="text-align:right">Acumulado</th><th></th></tr></thead><tbody>
+      ${linhas.map((x, i) => { acum += Number(x.valor); return `<tr class="${rec ? 'rec' : 'desp'}">
+        <td class="c"><b>${i + 1}</b>${x._q ? ' <small class="mut">quitação</small>' : ''}</td>
+        <td class="c">${fmtData(x.data_pagamento)}</td>
+        <td>${x.banco_id ? bancoTag(M.banco[x.banco_id], 18) : '—'}</td>
+        <td class="c mut">${esc(x.forma_pagamento || '—')}</td>
+        <td class="r"><b>${num2(x.valor)}</b></td>
+        <td class="r mut">${num2(acum)}</td>
+        <td class="acoes">${x._q ? `<button class="ib del" title="Desfazer a quitação (volta a ficar em aberto)" data-act="fppDesfazer">↺</button>`
+          : `<button class="ib" title="Editar este pagamento" data-act="fppEditar" data-id="${x.id}">✎</button><button class="ib del" title="Excluir este pagamento (o valor volta a ficar em aberto)" data-act="fppExcluir" data-id="${x.id}">✕</button>`}</td></tr>`; }).join('')
+      || `<tr><td colspan="7" class="vazio">Nenhum pagamento ainda.</td></tr>`}
+    </tbody></table></div>
+    <div class="mf">
+      <button class="btn sec" data-act="fppImprimir">⎙ Imprimir</button>
+      <span class="sp"></span>
+      <button class="btn sec" data-act="fecharModal">Fechar</button>
+      ${T.quitado ? '' : `<button class="btn ${rec ? 'ok' : ''}" data-primary data-act="fppPagar">+ Registrar ${rec ? 'recebimento' : 'pagamento'}</button>`}
+    </div>`, 'm-fpp', () => { const d = FPP?.depois; FPP = null; d?.(); });
+}
+const voltarFluxo = () => abrirFluxoParcial(FPP?.pai.id);
+function fppPagar() {
+  const { pai } = FPP;
+  abrirPagamento(pai, async () => { await abrirFluxoParcial(pai.id); }, voltarFluxo);
+}
+function fppEditar(id) {
+  const f = FPP.filhos.find(x => x.id === id); if (!f) return;
+  const { pai } = FPP, quitado = !emAberto(pai), rec = sinal(pai) > 0;
+  abrirModal(`
+    <div class="mh ${rec ? 'rec' : 'desp'}" style="--ec:${esc(corEmpresa(pai.planilha_id))}">
+      <div><small>Editar ${rec ? 'recebimento' : 'pagamento'} parcial</small><b>${esc(pai.item || 'Lançamento')}</b></div>
+      <button class="ib x" data-act="fecharModal" title="Fechar (Esc)">✕</button>
+    </div>
+    <div class="mcorpo">
+      <label>Data do ${rec ? 'recebimento' : 'pagamento'}<input type="date" id="fe_data" value="${f.data_pagamento || ''}"></label>
+      <label>Valor (R$)<input id="fe_valor" inputmode="decimal" value="${num2(f.valor)}" class="m-val" ${quitado ? 'disabled title="Lançamento quitado: desfaça a quitação para mudar valores"' : ''}></label>
+      <label>Banco<select id="fe_banco" data-banco>${opcoes(bancosDaEmpresa(pai.planilha_id), f.banco_id ?? '', b => b.nome, 'Escolha o banco…')}</select></label>
+      <label>Forma<select id="fe_forma">${FORMAS_PAG.map(x => `<option ${x === f.forma_pagamento ? 'selected' : ''}>${esc(x)}</option>`).join('')}</select></label>
+      <p class="mut span2" style="margin:0">Em aberto agora: <b>${brl(quitado ? 0 : pai.valor)}</b>. Ao mudar o valor deste pagamento, o restante em aberto é recalculado.</p>
+    </div>
+    <div class="mf"><span class="sp"></span><button class="btn sec" data-act="fecharModal">Cancelar</button><button class="btn" data-primary data-act="fppSalvar" data-id="${f.id}">Salvar</button></div>`, 'm-ed', voltarFluxo);
+}
+async function fppSalvar(id) {
+  const f = FPP.filhos.find(x => x.id === id), { pai } = FPP; if (!f) return;
+  const data = $('fe_data').value, banco = Number($('fe_banco').value) || null, forma = $('fe_forma').value;
+  const valor = $('fe_valor').disabled ? Number(f.valor) : parseValor($('fe_valor').value);
+  if (!data) return toast('Informe a data.', true);
+  if (!banco) return toast('Escolha o banco.', true);
+  if (!(valor > 0)) return toast('Informe um valor maior que zero.', true);
+  const restaNovo = r2(Number(pai.valor) - (valor - Number(f.valor)));
+  if (emAberto(pai) && restaNovo < 0.005) return toast(`Esse valor quita ou passa do total. Para quitar, use "+ Registrar pagamento" com o restante (${brl(Number(pai.valor) + Number(f.valor))} no máximo).`, true);
+  const mud = { data_pagamento: data, banco_id: banco, forma_pagamento: forma, valor: r2(valor) };
+  if (f.data_lancamento === f.data_pagamento && !/^(PAR|CC):/.test(pai.origem || '')) mud.data_lancamento = data;   // acompanha a data do pagamento
+  try {
+    await store.update('lancamentos', f.id, mud);
+    if (Math.abs(restaNovo - Number(pai.valor)) > 0.004) await store.update('lancamentos', pai.id, comAjuste(pai, { valor: restaNovo }));
+  } catch (e) { return toast(e.message, true); }
+  toast('Pagamento alterado.');
+  await abrirFluxoParcial(pai.id);
+}
+async function fppExcluir(id) {
+  const f = FPP.filhos.find(x => x.id === id), { pai } = FPP; if (!f) return;
+  if (!emAberto(pai)) return toast('Este lançamento está quitado. Desfaça a quitação (↺) primeiro para excluir pagamentos anteriores.', true);
+  if (!confirm(`Excluir o pagamento de ${brl(f.valor)} de ${fmtData(f.data_pagamento)}? O valor volta a ficar em aberto no lançamento.`)) return;
+  try {
+    await store.update('lancamentos', pai.id, comAjuste(pai, { valor: r2(Number(pai.valor) + Number(f.valor)) }));
+    await store.remove('lancamentos', f.id);
+  } catch (e) { return toast(e.message, true); }
+  toast('Pagamento excluído · valor voltou a ficar em aberto.');
+  await abrirFluxoParcial(pai.id);
+}
+async function fppDesfazer() {
+  const { pai } = FPP;
+  if (!confirm('Desfazer a quitação? O último pagamento é removido e o valor dele volta a ficar em aberto.')) return;
+  const row = { data_pagamento: null, forma_pagamento: null, banco_id: null };
+  if (pai.data_programada && pai.data_programada !== pai.data_lancamento) row.data_lancamento = pai.data_programada;
+  try { await store.update('lancamentos', pai.id, row); } catch (e) { return toast(e.message, true); }
+  toast('Quitação desfeita.');
+  await abrirFluxoParcial(pai.id);
+}
+function fppImprimir() {
+  const { pai, filhos } = FPP, T = totaisParcial(pai, filhos), rec = sinal(pai) > 0;
+  const linhas = [...filhos, ...(T.quitado ? [pai] : [])];
+  let acum = 0;
+  const w = window.open('', '_blank');
+  if (!w) return toast('O navegador bloqueou a janela de impressão. Libere pop-ups para este site.', true);
+  w.document.write(`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><title>Fluxo de pagamentos · ${esc(pai.item || '')}</title>
+    <style>body{font:13px Segoe UI,Roboto,Arial,sans-serif;color:#2a2b2f;margin:28px}h1{font-size:18px;margin:0 0 2px}.s{color:#74757b;margin:0 0 16px}
+    .k{display:flex;gap:12px;margin:0 0 16px}.k div{flex:1;border:1px solid #dcdde1;border-radius:8px;padding:8px 12px}.k span{display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#74757b}.k b{font-size:17px}
+    table{border-collapse:collapse;width:100%}th{background:#3e3f44;color:#fff;text-align:left;padding:6px 8px;font-size:11px}td{border-bottom:1px solid #e3e3e6;padding:6px 8px}.r{text-align:right}
+    img{height:42px;margin-bottom:10px}@media print{body{margin:10mm}}</style></head><body>
+    <img src="${BRAND.logo}" alt="">
+    <h1>Fluxo de ${rec ? 'recebimentos' : 'pagamentos'} — ${esc(pai.item || M.plano[pai.plano_conta_id]?.nome || '')}</h1>
+    <p class="s">${esc(nomeEmpresa(pai.planilha_id))} · ${esc(planoLabel(pai.plano_conta_id))} · vencimento ${fmtData(vencimento(pai))} · emitido em ${new Date().toLocaleString('pt-BR')}</p>
+    <div class="k"><div><span>Valor total</span><b>${brl(T.total)}</b></div><div><span>${rec ? 'Recebido' : 'Pago'}</span><b>${brl(T.pago)}</b></div><div><span>Resta</span><b>${brl(T.resta)}</b></div><div><span>Situação</span><b>${T.quitado ? 'Quitado' : 'Parcial'}</b></div></div>
+    <table><thead><tr><th>#</th><th>Data</th><th>Banco</th><th>Forma</th><th class="r">Valor</th><th class="r">Acumulado</th></tr></thead><tbody>
+    ${linhas.map((x, i) => { acum += Number(x.valor); return `<tr><td>${i + 1}</td><td>${fmtData(x.data_pagamento)}</td><td>${esc(M.banco[x.banco_id]?.nome || '')}</td><td>${esc(x.forma_pagamento || '')}</td><td class="r">${num2(x.valor)}</td><td class="r">${num2(acum)}</td></tr>`; }).join('')}
+    </tbody></table><script>onload=()=>setTimeout(()=>print(),200)<\/script></body></html>`);
+  w.document.close();
+}
+
+/* ---------- tela: lançamentos pagos parcialmente ---------- */
+async function viewParciais() {
+  let filhos = [], pais = [];
+  try {
+    filhos = await store.lancsPrefixo('PGP:');
+    const mapa = mapaParciais(filhos);
+    pais = (await store.lancsIds(Object.keys(mapa).map(Number))).filter(p => emAberto(p) && (S.planilhaId == null || p.planilha_id === S.planilhaId));
+    S.parc.lista = pais.map(p => ({ pai: p, filhos: mapa[p.id], ...totaisParcial(p, mapa[p.id]) })).sort((a, b) => vencimento(a.pai).localeCompare(vencimento(b.pai)));
+  } catch (e) { toast(e.message, true); S.parc.lista = []; }
+  renderParciais();
+}
+function renderParciais() {
+  const L = S.parc.lista, q = semAcento((S.parc.q || '').trim());
+  const vis = L.filter(x => !q || semAcento(`${x.pai.item} ${planoLabel(x.pai.plano_conta_id)}`).includes(q));
+  const tot = L.reduce((a, x) => a + x.total, 0), pago = L.reduce((a, x) => a + x.pago, 0), resta = L.reduce((a, x) => a + x.resta, 0);
+  $('main').innerHTML = `
+    ${bannerEmpresa(S.planilhaId, 'PAGOS PARCIALMENTE')}
+    <h2 class="tit">Lançamentos pagos parcialmente</h2>
+    <p class="sub">Lançamentos que já receberam parte do pagamento e ainda têm saldo em aberto. Quando o restante é pago, o lançamento sai desta tela.</p>
+    <div class="tiles">
+      <div class="tile"><div class="l">Lançamentos</div><div class="v">${L.length}</div></div>
+      <div class="tile b"><div class="l">Valor total</div><div class="v">${brl(tot)}</div></div>
+      <div class="tile g"><div class="l">Já pago / recebido</div><div class="v">${brl(pago)}</div></div>
+      <div class="tile r"><div class="l">Resta em aberto</div><div class="v">${brl(resta)}</div></div>
+    </div>
+    <div class="barra"><input id="pp_q" class="busca-ic" placeholder="Buscar descrição ou conta…" value="${esc(S.parc.q || '')}" style="max-width:320px"></div>
+    <div class="tabwrap"><table class="zebra pp-tab">
+      <thead><tr><th>Vencimento</th><th style="text-align:left">Descrição / conta</th><th>Tipo</th><th style="text-align:right">Total</th><th style="text-align:right">Pago</th><th style="text-align:right">Resta</th><th>Andamento</th><th>Último pagamento</th><th></th></tr></thead>
+      <tbody>${vis.map(x => { const p = x.pai, rec = sinal(p) > 0, ult = x.filhos.at(-1), st = situacao(p);
+        return `<tr class="${st === 'vencido' ? 'pp-venc' : ''}">
+        <td class="c ${st === 'vencido' ? 'neg' : ''}">${fmtData(vencimento(p))}${st === 'vencido' ? '<br><small>vencido</small>' : ''}</td>
+        <td class="ls-c"><b>${esc(p.item || M.plano[p.plano_conta_id]?.nome || '')}</b><small>${esc(planoLabel(p.plano_conta_id))}${p.parcela ? ' · parcela ' + esc(p.parcela) : ''}</small></td>
+        <td class="c"><span class="pill" style="--c:${rec ? '#2a78d6' : '#eb6834'}">${rec ? 'A receber' : 'A pagar'}</span></td>
+        <td class="r">${num2(x.total)}</td><td class="r pos">${num2(x.pago)}</td><td class="r neg"><b>${num2(x.resta)}</b></td>
+        <td class="c"><div class="fpp-bar sm"><i style="width:${Math.min(100, x.pago / x.total * 100)}%"></i></div><small>${Math.round(x.pago / x.total * 100)}% · ${x.filhos.length} pagto(s)</small></td>
+        <td class="c mut">${ult ? `${fmtData(ult.data_pagamento)} · ${num2(ult.valor)}` : '—'}</td>
+        <td class="acoes" style="width:150px"><button class="mini" data-act="ppAbrir" data-id="${p.id}">Ver fluxo / pagar</button></td></tr>`; }).join('')
+      || `<tr><td colspan="9" class="vazio">${L.length ? 'Nada encontrado.' : 'Nenhum lançamento pago parcialmente. Para pagar parte de uma conta, clique em <b>Pagar</b> na tela de Lançamentos e informe um valor menor que o total.'}</td></tr>`}</tbody>
+    </table></div>`;
+}
+
+/* ======================= CARTÕES DE CRÉDITO ======================= */
+// Cartões ficam em "parametros" (chave cartoes_credito). Cada compra vira um lançamento por parcela, em aberto,
+// com data do lançamento = vencimento da fatura em que a parcela cai (entra na DRE e no fluxo pelo vencimento).
+// Origem dos lançamentos: "CC:<id do cartão>:<data da compra AAAAMMDD><código da compra>".
+const CC_CHAVE = 'cartoes_credito';
+const BANDEIRAS = ['Visa', 'Mastercard', 'Elo', 'American Express', 'Hipercard', 'Outra'];
+const ccDaOrigem = o => { const m = /^CC:([^:]+):(\d{8})(.*)$/.exec(o || ''); return m ? { cartao: m[1], data: `${m[2].slice(0, 4)}-${m[2].slice(4, 6)}-${m[2].slice(6, 8)}`, compra: m[2] + m[3] } : null; };
+const cartaoDe = id => S.cc.lista.find(c => c.id === id);
+// vencimento da fatura em que cai uma compra (parcela 0) feita na data "iso"
+function vencFatura(cc, iso, i = 0) {
+  const [a, m, d] = iso.split('-').map(Number);
+  let fm = m - 1 + (d >= Number(cc.fechamento) ? 1 : 0);          // compra no dia do fechamento ou depois: próxima fatura
+  if (Number(cc.vencimento) <= Number(cc.fechamento)) fm += 1;      // vence no mês seguinte ao fechamento
+  fm += i;
+  const x = new Date(a, fm, 1);
+  return `${x.getFullYear()}-${pad(x.getMonth() + 1)}-${pad(Math.min(Number(cc.vencimento), ultimoDia(x.getFullYear(), x.getMonth())))}`;
+}
+async function carregarCartoes() {
+  let v = null;
+  try { v = await store.getParam(CC_CHAVE); } catch (e) { toast(e.message, true); }
+  S.cc.lista = Array.isArray(v) ? v : [];
+}
+async function viewCartoes() {
+  await carregarCartoes();
+  try { S.cc.lancs = (await store.lancsPrefixo('CC:')).filter(l => S.planilhaId == null || l.planilha_id === S.planilhaId); }
+  catch (e) { toast(e.message, true); S.cc.lancs = []; }
+  renderCartoes();
+}
+function renderCartoes() {
+  const ym = `${S.ano}-${pad(S.mes + 1)}`, cor = corEmpresa(S.planilhaId), L = S.cc.lancs;
+  const usados = {}; for (const l of L) if (emAberto(l)) { const o = ccDaOrigem(l.origem); if (o) usados[o.cartao] = (usados[o.cartao] || 0) + Number(l.valor) * (sinal(l) < 0 ? 1 : -1); }
+  const cards = S.cc.lista.map(c => {
+    const u = usados[c.id] || 0, lim = Number(c.limite) || 0;
+    return `<button type="button" class="cc-card ${S.cc.sel === c.id ? 'on' : ''}" style="--cc:${esc(c.cor || '#3e3f44')}" data-act="ccSel" data-id="${c.id}">
+      <div class="cc-top"><b>${esc(c.nome)}</b><span>${esc(c.bandeira || '')}</span></div>
+      <div class="cc-mid">fecha dia <b>${c.fechamento}</b> · vence dia <b>${c.vencimento}</b></div>
+      <div class="cc-lim">${lim ? `<div class="cc-bar"><i style="width:${Math.min(100, u / lim * 100)}%"></i></div><small>usado ${brl(u)} de ${brl(lim)} · disponível ${brl(lim - u)}</small>` : `<small>em aberto ${brl(u)}</small>`}</div>
+      <span class="cc-ed" data-act="ccEditar" data-id="${c.id}" title="Editar cartão">✎</span>
+    </button>`;
+  }).join('');
+  const cartoesVis = S.cc.sel === 'all' ? S.cc.lista : S.cc.lista.filter(c => c.id === S.cc.sel);
+  const faturas = cartoesVis.map(c => {
+    const itens = L.filter(l => ccDaOrigem(l.origem)?.cartao === c.id && vencimento(l).slice(0, 7) === ym)
+      .sort((a, b) => (ccDaOrigem(a.origem).data).localeCompare(ccDaOrigem(b.origem).data) || a.id - b.id);
+    const tot = itens.reduce((a, l) => a - sinal(l) * Number(l.valor), 0), ab = itens.filter(emAberto), venc = itens[0] ? vencimento(itens[0]) : `${ym}-${pad(Math.min(Number(c.vencimento), ultimoDia(S.ano, S.mes)))}`;
+    const paga = itens.length && !ab.length, pag = itens.find(l => !emAberto(l));
+    return `<section class="cc-fat" style="--cc:${esc(c.cor || '#3e3f44')}">
+      <div class="cc-fh"><div><small>Fatura ${MESES_NOME[S.mes]}/${S.ano}</small><b>${esc(c.nome)}</b><span class="mut">vence ${fmtData(venc)}</span></div>
+        <div class="cc-ft"><small>Total da fatura</small><b>${brl(tot)}</b>${itens.length ? (paga ? `<span class="selo ok">✓ Paga ${pag?.data_pagamento ? fmtData(pag.data_pagamento).slice(0, 5) : ''}</span>` : `<button class="btn" data-act="ccPagar" data-id="${c.id}">Pagar fatura · ${brl(ab.reduce((a, l) => a - sinal(l) * Number(l.valor), 0))}</button>`) : ''}</div></div>
+      <table class="ls cc-tab"><thead><tr><th>Compra</th><th style="text-align:left">Descrição</th><th style="text-align:left">Plano de contas</th><th>Parcela</th><th style="text-align:right">Valor</th><th>Situação</th><th></th></tr></thead><tbody>
+      ${itens.map(l => { const o = ccDaOrigem(l.origem), g = grupoDoPlano(l.plano_conta_id); return `<tr class="${sinal(l) > 0 ? 'rec' : 'desp'}">
+        <td class="c">${fmtData(o.data)}</td><td class="ls-c"><b>${esc(String(l.item || '').replace(/\s*\(\d+\/\d+\)$/, ''))}</b></td>
+        <td class="ls-c"><small>${g ? `<i style="background:${esc(corGrupo(g))}"></i>` : ''}${esc(planoLabel(l.plano_conta_id))}</small></td>
+        <td class="c">${esc(l.parcela || '1/1')}</td><td class="r ${sinal(l) > 0 ? 'pos' : 'neg'}"><b>${sinal(l) > 0 ? '+' : ''}${num2(l.valor)}</b></td>
+        <td class="c">${emAberto(l) ? '<span class="mut">em aberto</span>' : '<span class="pos">✓ paga</span>'}</td>
+        <td class="acoes"><button class="ib" title="Editar esta parcela" data-act="ccEdLanc" data-id="${l.id}">✎</button><button class="ib del" title="Excluir a compra (todas as parcelas em aberto)" data-act="ccExcluirCompra" data-id="${l.id}">✕</button></td></tr>`; }).join('')
+      || `<tr><td colspan="7" class="vazio">Nenhuma compra nesta fatura.</td></tr>`}</tbody></table></section>`;
+  }).join('');
+  const hojeCC = S.cc.lista[0];
+  $('main').innerHTML = `
+    ${bannerEmpresa(S.planilhaId, 'CARTÕES DE CRÉDITO')}
+    <h2 class="tit">Cartões de crédito</h2>
+    <p class="sub">Lance as compras no cartão: cada parcela entra nos lançamentos e na DRE <b>no mês do vencimento da fatura</b>, em aberto, até a fatura ser paga.</p>
+    <div class="cc-cards">
+      ${S.cc.lista.length > 1 ? `<button type="button" class="cc-card todos ${S.cc.sel === 'all' ? 'on' : ''}" data-act="ccSel" data-id="all"><div class="cc-top"><b>Todos os cartões</b></div><div class="cc-mid">${S.cc.lista.length} cartões</div></button>` : ''}
+      ${cards}
+      <button type="button" class="cc-card novo" data-act="ccNovo"><b>+ Novo cartão</b><small>nome, fechamento, vencimento e limite</small></button>
+    </div>
+    ${S.cc.lista.length ? `
+    <section class="lanc-form cc-form" style="--ec:${esc(cor)}">
+      <div class="lf-h"><b>Nova compra no cartão</b><span class="lf-tipo" id="e_grupo">Escolha o plano de contas</span><span class="lf-dica">Enter lança</span></div>
+      <div class="lf-grid cc-grid">
+        <label>Cartão<select id="cc_cartao" data-chg="ccPrev">${S.cc.lista.map(c => `<option value="${esc(c.id)}" ${(S.cc.sel === c.id || (S.cc.sel === 'all' && c === hojeCC)) ? 'selected' : ''}>${esc(c.nome)}</option>`).join('')}</select></label>
+        <label>Data da compra<input type="date" id="cc_data" value="${HOJE}" data-ccp></label>
+        <label class="f-plano">Plano de contas<select id="e_plano" data-busca data-chg="ePlano">${opcoesPlano('')}</select></label>
+        <label>Descrição<input id="cc_item" placeholder="Ex.: Fornecedor, loja, assinatura…"></label>
+        <label>Valor total (R$)<input id="cc_valor" placeholder="0,00" inputmode="decimal" data-ccp style="text-align:right;font-weight:700"></label>
+        <label>Parcelas<input id="cc_np" type="number" min="1" max="48" value="1" data-ccp></label>
+        <div class="f-acoes"><button class="salvar" data-act="ccLancar">+ Lançar compra</button></div>
+      </div>
+      <div id="cc_prev" class="lf-nota"></div>
+    </section>` : `<div class="vazio">Cadastre um cartão para começar a lançar as compras. <button class="btn" data-act="ccNovo">+ Novo cartão</button></div>`}
+    <div class="barra">${barraAno()}${barraMeses(cor)}</div>
+    ${faturas}`;
+  ccPrevia();
+}
+function ccLerCompra() {
+  const c = cartaoDe($('cc_cartao')?.value), data = $('cc_data')?.value, v = parseValor($('cc_valor')?.value || ''), n = Math.max(1, Math.min(48, parseInt($('cc_np')?.value, 10) || 1));
+  if (!c || !data || !(v > 0)) return null;
+  const base = Math.floor(v / n * 100) / 100;
+  return { c, data, v, n, parc: Array.from({ length: n }, (_, i) => ({ venc: vencFatura(c, data, i), valor: i === n - 1 ? r2(v - base * (n - 1)) : base })) };
+}
+function ccPrevia() {
+  const el = $('cc_prev'); if (!el) return;
+  const k = ccLerCompra();
+  el.innerHTML = k ? `<b>${k.n}x de ${brl(k.parc[0].valor)}</b>${k.n > 1 && Math.abs(k.parc.at(-1).valor - k.parc[0].valor) > 0.004 ? ` (última ${brl(k.parc.at(-1).valor)})` : ''} · faturas: ${k.parc.map(p => `<span class="cc-pv">${fmtMes(p.venc.slice(0, 7))} <small>vence ${fmtData(p.venc).slice(0, 5)}</small></span>`).join(' ')}`
+    : 'Informe o cartão, a data da compra, o valor e as parcelas: aparecem aqui as faturas em que cada parcela vai cair.';
+}
+async function ccLancar() {
+  const k = ccLerCompra(), plano = Number(valCampo('e_plano')) || null, desc = valCampo('cc_item').trim();
+  if (!plano) return toast('Selecione o plano de contas.', true), $('e_plano').focus();
+  if (!k) return toast('Informe cartão, data da compra e valor.', true);
+  const origem = `CC:${k.c.id}:${k.data.replace(/-/g, '')}${Date.now().toString(36).slice(-5)}`;
+  const nome = desc || M.plano[plano]?.nome || 'Compra no cartão';
+  const rows = k.parc.map((p, i) => ({ planilha_id: S.planilhaId, banco_id: null, plano_conta_id: plano, data_lancamento: p.venc, data_programada: p.venc,
+    item: k.n > 1 ? `${nome} (${i + 1}/${k.n})` : nome, valor: p.valor, origem, parcela: `${i + 1}/${k.n}` }));
+  try { await store.insertMany('lancamentos', rows); } catch (e) { return toast(e.message, true); }
+  toast(`Compra lançada no ${k.c.nome}: ${k.n}x · ${brl(k.v)} · 1ª fatura ${fmtMes(k.parc[0].venc.slice(0, 7))}`);
+  const v0 = k.parc[0].venc; S.ano = Number(v0.slice(0, 4)); S.mes = Number(v0.slice(5, 7)) - 1;
+  await viewCartoes();
+  $('cc_cartao').value = k.c.id; ccPrevia(); $('e_plano')?.focus();
+}
+function abrirEditorCartao(c) {
+  const novo = !c; c = c || { id: 'c' + Date.now().toString(36), nome: '', bandeira: 'Mastercard', fechamento: 1, vencimento: 10, limite: 0, cor: '#3e3f44', banco_id: null };
+  S.cc.ed = { c, novo };
+  abrirModal(`
+    <div class="mh" style="--ec:${esc(c.cor || '#f37021')}"><div><small>${novo ? 'Novo cartão' : 'Editar cartão'}</small><b>${esc(c.nome || 'Cartão de crédito')}</b></div><button class="ib x" data-act="fecharModal">✕</button></div>
+    <div class="mcorpo">
+      <label class="span2">Nome do cartão<input id="cc_nome" value="${esc(c.nome)}" placeholder="Ex.: Sicoob Mastercard Empresarial" autofocus></label>
+      <label>Bandeira<select id="cc_band">${BANDEIRAS.map(b => `<option ${b === c.bandeira ? 'selected' : ''}>${b}</option>`).join('')}</select></label>
+      <label>Limite (R$)<input id="cc_lim" inputmode="decimal" value="${num2(c.limite)}" class="m-val"></label>
+      <label>Dia do fechamento<input id="cc_fech" type="number" min="1" max="31" value="${c.fechamento}"></label>
+      <label>Dia do vencimento<input id="cc_venc" type="number" min="1" max="31" value="${c.vencimento}"></label>
+      <label>Banco que paga a fatura<select id="cc_banco" data-banco>${opcoes(bancosDaEmpresa(S.planilhaId), c.banco_id ?? '', b => b.nome, 'Escolher na hora de pagar')}</select></label>
+      <label>Cor<input id="cc_cor" type="color" value="${esc(c.cor || '#3e3f44')}" style="padding:2px;height:38px"></label>
+      <p class="mut span2" style="margin:0">Compras feitas <b>no dia do fechamento ou depois</b> caem na fatura seguinte.</p>
+    </div>
+    <div class="mf">${novo ? '' : '<button class="btn sec perigo" data-act="ccExcluirCartao">✕ Excluir cartão</button>'}<span class="sp"></span><button class="btn sec" data-act="fecharModal">Cancelar</button><button class="btn" data-primary data-act="ccSalvarCartao">Salvar</button></div>`, 'm-ed');
+}
+async function ccSalvarCartao() {
+  const { c, novo } = S.cc.ed;
+  const n = { ...c, nome: $('cc_nome').value.trim(), bandeira: $('cc_band').value, limite: parseValor($('cc_lim').value) || 0,
+    fechamento: parseInt($('cc_fech').value, 10), vencimento: parseInt($('cc_venc').value, 10), banco_id: Number($('cc_banco').value) || null, cor: $('cc_cor').value };
+  if (!n.nome) return toast('Informe o nome do cartão.', true);
+  if (!(n.fechamento >= 1 && n.fechamento <= 31 && n.vencimento >= 1 && n.vencimento <= 31)) return toast('Dias de fechamento e vencimento entre 1 e 31.', true);
+  await carregarCartoes();
+  if (novo) S.cc.lista.push(n); else S.cc.lista = S.cc.lista.map(x => x.id === n.id ? n : x);
+  try { await store.setParam(CC_CHAVE, S.cc.lista); } catch (e) { return toast(e.message, true); }
+  fecharModal(true); toast(novo ? 'Cartão cadastrado.' : 'Cartão alterado.'); S.cc.sel = n.id; viewCartoes();
+}
+async function ccExcluirCartao() {
+  const { c } = S.cc.ed;
+  if (S.cc.lancs.some(l => ccDaOrigem(l.origem)?.cartao === c.id && emAberto(l))) return toast('Este cartão tem parcelas em aberto. Pague ou exclua as compras antes.', true);
+  if (!confirm(`Excluir o cartão "${c.nome}"? Os lançamentos já pagos continuam nos lançamentos.`)) return;
+  await carregarCartoes(); S.cc.lista = S.cc.lista.filter(x => x.id !== c.id);
+  try { await store.setParam(CC_CHAVE, S.cc.lista); } catch (e) { return toast(e.message, true); }
+  fecharModal(true); S.cc.sel = 'all'; toast('Cartão excluído.'); viewCartoes();
+}
+function ccPagarFatura(id) {
+  const c = cartaoDe(id), ym = `${S.ano}-${pad(S.mes + 1)}`;
+  const ab = S.cc.lancs.filter(l => ccDaOrigem(l.origem)?.cartao === id && vencimento(l).slice(0, 7) === ym && emAberto(l));
+  if (!ab.length) return;
+  const tot = ab.reduce((a, l) => a - sinal(l) * Number(l.valor), 0);
+  S.cc.pag = { c, ab };
+  abrirModal(`
+    <div class="mh desp" style="--ec:${esc(c.cor || '#f37021')}"><div><small>Pagar fatura · ${MESES_NOME[S.mes]}/${S.ano}</small><b>${esc(c.nome)}</b></div><button class="ib x" data-act="fecharModal">✕</button></div>
+    <div class="mresumo"><div><span>Itens</span><b>${ab.length} lançamento(s)</b></div><div><span>Vencimento</span><b>${fmtData(vencimento(ab[0]))}</b></div><div class="mv"><span>Total</span><b class="neg">${brl(tot)}</b></div></div>
+    <div class="mcorpo">
+      <label>Data do pagamento<input type="date" id="ccp_data" value="${HOJE}"></label>
+      <label>Banco<select id="ccp_banco" data-banco>${opcoes(bancosDaEmpresa(S.planilhaId), c.banco_id ?? '', b => b.nome, 'Escolha o banco…')}</select></label>
+      <p class="mut span2" style="margin:0">Todas as parcelas da fatura ficam pagas (forma: Cartão de crédito). Na DRE e no fluxo elas continuam no <b>vencimento</b>.</p>
+    </div>
+    <div class="mf"><span class="sp"></span><button class="btn sec" data-act="fecharModal">Cancelar</button><button class="btn" data-primary data-act="ccConfirmarPag">Confirmar pagamento</button></div>`, 'm-pag');
+}
+async function ccConfirmarPag() {
+  const { c, ab } = S.cc.pag, data = $('ccp_data').value, banco = Number($('ccp_banco').value) || null;
+  if (!data) return toast('Informe a data do pagamento.', true);
+  if (!banco) return toast('Escolha o banco.', true), abrirBsel($('ccp_banco'));
+  try { for (const l of ab) await store.update('lancamentos', l.id, { banco_id: banco, data_pagamento: data, forma_pagamento: 'Cartão de crédito' }); }
+  catch (e) { toast(e.message, true); }
+  fecharModal(true); toast(`Fatura ${c.nome} paga · ${ab.length} lançamento(s).`); viewCartoes();
+}
+async function ccExcluirCompra(id) {
+  const l = S.cc.lancs.find(x => x.id === id); if (!l) return;
+  const todas = S.cc.lancs.filter(x => x.origem === l.origem), ab = todas.filter(emAberto);
+  if (!ab.length) return toast('Todas as parcelas desta compra já foram pagas.', true);
+  if (!confirm(`Excluir a compra "${String(l.item).replace(/\s*\(\d+\/\d+\)$/, '')}"?\n${ab.length} parcela(s) em aberto serão removidas${todas.length > ab.length ? ` (${todas.length - ab.length} já paga(s) ficam)` : ''}.`)) return;
+  try { for (const x of ab) await store.remove('lancamentos', x.id); } catch (e) { return toast(e.message, true); }
+  toast('Compra excluída.'); viewCartoes();
+}
+
+/* ======================= METAS DO RAIO-X (dashboard) ======================= */
+// Meta (teto) por tema do Raio-X das despesas, mês a mês, por ano: "parametros" chave metas_raiox:<empresa>:<ano>
+// = { tema: [jan..dez] }. No dashboard a meta do período = soma dos meses do período escolhido.
+const chaveMetas = (ano = S.ano) => `metas_raiox:${S.empresaVis}:${ano}`;
+const TEMAS_META = () => [...TEMAS_D.map(([k]) => 'd:' + k), 'd:outros'];
+async function lerMetasAno(ano) {
+  let v = null;
+  try { v = await store.getParam(chaveMetas(ano)); } catch (e) { console.warn(e); }
+  if (v && typeof v === 'object' && !Array.isArray(v)) return v;
+  let ant = null;                                   // versão anterior: um valor mensal único por tema
+  try { ant = await store.getParam(`metas_raiox:${S.empresaVis}`); } catch (e) {}
+  const out = {};
+  if (ant && typeof ant === 'object') for (const [k, x] of Object.entries(ant)) if (Number(x) > 0) out[k] = Array(12).fill(Number(x));
+  return out;
+}
+async function carregarMetas() { S.metas = await lerMetasAno(S.ano); S.metasAno = S.ano; }
+const somaMeta = (arr, a = 0, b = 11) => { let t = 0; for (let m = a; m <= b; m++) t += Number(arr?.[m]) || 0; return r2(t); };
+// linha de meta dentro do cartão do Raio-X
+function metaRx(id, real, P) {
+  const meta = somaMeta(S.metas[id], P.a, P.b);
+  if (!meta) return `<div class="rx-meta sem"><span class="rx-mlink" data-act="metasEditar" data-t="${id}" title="Definir metas para este tema">+ definir meta</span></div>`;
+  const q = real / meta, st = q <= .9 ? 'bom' : q <= 1 ? 'at' : 'cr';
+  return `<div class="rx-meta ${st}" data-act="metasEditar" data-t="${id}" title="Meta de ${esc(P.rot)}: ${brl(meta)} · clique para alterar">
+    <div class="rx-mh"><span>Meta <b>${brl(meta)}</b></span><span class="st">${st === 'cr' ? `✕ passou ${valorCurto(real - meta)}` : st === 'at' ? '! perto do teto' : '✓ dentro'} · ${pct(q)}</span></div>
+    <div class="rx-mbar"><i style="width:${Math.min(100, q * 100)}%"></i><em style="left:${Math.min(100, 100 / Math.max(1, q))}%"></em></div></div>`;
+}
+async function abrirEditorMetas(foco, ano = S.ano) {
+  const dados = JSON.parse(JSON.stringify(ano === S.metasAno ? S.metas : await lerMetasAno(ano)));
+  S.metasEd = { ano, dados, foco, mudou: false };
+  const temas = TEMAS_META();
+  abrirModal(`
+    <div class="mh" style="--ec:${esc(corEmpresa(S.empresaVis))}"><div><small>Dashboard · Raio-X das despesas</small><b>Metas por tema · ${ano}</b></div>
+      <div class="mt-ano"><button data-act="metasAno" data-d="-1" title="Ano anterior">‹</button><span>${ano}</span><button data-act="metasAno" data-d="1" title="Próximo ano">›</button></div>
+      <button class="ib x" data-act="fecharModal">✕</button></div>
+    <div class="mt-bloco">
+      <b>Lançar em bloco</b>
+      <label>Tema<select id="mb_tema"><option value="*">Todos os temas</option>${temas.map(t => `<option value="${t}" ${t === foco ? 'selected' : ''}>${esc(TEMA_INFO[t].n)}</option>`).join('')}</select></label>
+      <label>Valor (R$)<input id="mb_valor" inputmode="decimal" placeholder="0,00"></label>
+      <label>O valor é<select id="mb_modo"><option value="mes">por mês</option><option value="total">total do período (divide)</option></select></label>
+      <label>De<select id="mb_de">${MESES.map((m, i) => `<option value="${i}">${m}</option>`).join('')}</select></label>
+      <label>Até<select id="mb_ate">${MESES.map((m, i) => `<option value="${i}" ${i === 11 ? 'selected' : ''}>${m}</option>`).join('')}</select></label>
+      <button class="btn" data-act="metasBloco">Aplicar</button>
+      <button class="mini" data-act="metasCopiar" title="Copia as metas de ${ano - 1} para ${ano}">Copiar de ${ano - 1}</button>
+    </div>
+    <div class="ls-tab mt-tabw"><table class="mt-tab"><thead><tr><th class="l">Tema</th>${MESES.map(m => `<th>${m}</th>`).join('')}<th>Total ${ano}</th></tr></thead>
+      <tbody id="mt_corpo"></tbody><tfoot id="mt_pe"></tfoot></table></div>
+    <p class="mt-nota mut">Edite qualquer mês direto na tabela. Na coluna <b>Total</b>, digitar um valor anual distribui igualmente pelos 12 meses. Deixe vazio para não ter meta.</p>
+    <div class="mf"><button class="btn sec perigo" data-act="metasLimpar">Limpar ${ano}</button><span class="sp"></span><button class="btn sec" data-act="fecharModal">Cancelar</button><button class="btn" data-primary data-act="metasSalvar">Salvar metas de ${ano}</button></div>`, 'm-lista m-metas');
+  desenharMetas();
+  if (foco) setTimeout(() => document.querySelector(`#mt_corpo [data-mm="${foco}|${S.ano === ano ? hoje.getMonth() : 0}"]`)?.focus(), 60);
+}
+function desenharMetas() {
+  const corpo = $('mt_corpo'); if (!corpo) return;
+  const D = S.metasEd.dados, temas = TEMAS_META(), v = x => Number(x) > 0 ? num2(x) : '';
+  corpo.innerHTML = temas.map(t => `<tr class="${t === S.metasEd.foco ? 'foco' : ''}"><td class="l">${temaIc(t, 'tema-ic sm')}<span>${esc(TEMA_INFO[t].n)}</span></td>
+    ${MESES.map((_, m) => `<td><input inputmode="decimal" data-mm="${t}|${m}" value="${v(D[t]?.[m])}" placeholder="—"></td>`).join('')}
+    <td class="tot"><input inputmode="decimal" data-mt="${t}" value="${v(somaMeta(D[t]))}" placeholder="—"></td></tr>`).join('');
+  desenharPeMetas();
+}
+function desenharPeMetas() {
+  const D = S.metasEd.dados, pe = $('mt_pe'); if (!pe) return;
+  const col = m => Object.values(D).reduce((a, arr) => a + (Number(arr?.[m]) || 0), 0);
+  pe.innerHTML = `<tr><td class="l">Total</td>${MESES.map((_, m) => `<td>${col(m) ? num2(col(m)) : '–'}</td>`).join('')}<td>${num2(MESES.reduce((a, _, m) => a + col(m), 0))}</td></tr>`;
+  document.querySelectorAll('#mt_corpo [data-mt]').forEach(i => { if (document.activeElement !== i) { const s = somaMeta(D[i.dataset.mt]); i.value = s ? num2(s) : ''; } });
+}
+const dividir = (v, n) => { const b = Math.floor(v / n * 100) / 100; return Array.from({ length: n }, (_, i) => i === n - 1 ? r2(v - b * (n - 1)) : b); };
+function metasBloco() {
+  const tema = $('mb_tema').value, v = parseValor($('mb_valor').value) || 0, modo = $('mb_modo').value;
+  let de = Number($('mb_de').value), ate = Number($('mb_ate').value);
+  if (de > ate) [de, ate] = [ate, de];
+  if (!(v >= 0)) return toast('Informe o valor.', true);
+  const vals = modo === 'total' ? dividir(v, ate - de + 1) : Array(ate - de + 1).fill(v);
+  for (const t of tema === '*' ? TEMAS_META() : [tema]) {
+    const arr = (S.metasEd.dados[t] ||= Array(12).fill(0));
+    for (let m = de; m <= ate; m++) arr[m] = vals[m - de];
+  }
+  S.metasEd.mudou = true; desenharMetas();
+  toast(`Aplicado: ${tema === '*' ? 'todos os temas' : TEMA_INFO[tema].n} · ${MESES[de]} a ${MESES[ate]}`);
+}
+async function salvarMetas() {
+  const m = {};
+  for (const [k, arr] of Object.entries(S.metasEd.dados)) if (somaMeta(arr) > 0) m[k] = arr.map(x => r2(Number(x) || 0));
+  try { await store.setParam(chaveMetas(S.metasEd.ano), m); } catch (e) { return toast(e.message, true); }
+  if (S.metasEd.ano === S.ano) { S.metas = m; S.metasAno = S.ano; }
+  fecharModal(true); toast(`Metas de ${S.metasEd.ano} salvas · ${Object.keys(m).length} tema(s).`); renderDash();
 }
 
 /* ============================ CUSTOS FIXOS ============================ */
@@ -2701,13 +3329,19 @@ function lerEditorCF() {
 async function viewFluxo() {
   const { ini, fim } = periodoMes();
   const pid = S.empresaVis === 'all' ? null : S.empresaVis;
+  // fluxo de caixa realizado: só o que foi pago/recebido, no dia do pagamento (em aberto não entra)
   let lancs = [], saldo0 = 0;
-  try { [lancs, saldo0] = await Promise.all([store.lancs({ ini, fim, planilha_id: pid }), store.saldoAte(pid, ini)]); }
-  catch (e) { toast(e.message, true); }
+  try {
+    const todos = (await store.lancs({ planilha_id: pid })).filter(l => l.data_pagamento);
+    saldo0 = S.planilhas.filter(p => pid == null || p.id === pid).reduce((a, p) => a + (Number(p.saldo_inicial) || 0), 0);
+    for (const l of todos) if (l.data_pagamento < ini) saldo0 += sinal(l) * Number(l.valor);
+    saldo0 = r2(saldo0);
+    lancs = todos.filter(l => l.data_pagamento >= ini && l.data_pagamento <= fim);
+  } catch (e) { toast(e.message, true); }
   const nd = ultimoDia(S.ano, S.mes);
   const dias = Array.from({ length: nd }, (_, i) => ({ dia: i + 1, data: `${S.ano}-${pad(S.mes + 1)}-${pad(i + 1)}`, ent: 0, sai: 0, itens: [] }));
   for (const l of lancs) {
-    const d = dias[Number(l.data_lancamento.slice(8, 10)) - 1]; if (!d) continue;
+    const d = dias[Number(l.data_pagamento.slice(8, 10)) - 1]; if (!d) continue;
     const v = Number(l.valor);
     if (sinal(l) > 0) d.ent += v; else d.sai += v;
     d.itens.push(l);
@@ -2768,7 +3402,7 @@ function renderFluxo() {
       }).join('') || `<tr><td colspan="${cfg.cols.length + 1}" class="vazio">Sem movimento no mês.</td></tr>`}</tbody>
       <tfoot><tr><td style="text-align:left">Total do mês</td>${cfg.cols.map(k => `<td class="r ${peCls[k] ?? ''} ${['ent', 'sai', 'res', 'qtd'].includes(k) ? 'clk" data-act="fxCel" data-k="' + k : ''}">${pe[k]}</td>`).join('')}</tr></tfoot>
     </table></div>
-    <p class="dica">O fluxo usa a data do lançamento. Transferências entre bancos não alteram o caixa da empresa — veja-as na tela Bancos.</p>`;
+    <p class="dica">O fluxo mostra só o que foi <b>pago/recebido</b>, na data do pagamento — lançamentos em aberto não entram. Transferências entre bancos não alteram o caixa da empresa — veja-as na tela Bancos.</p>`;
 }
 
 /* ================================ DRE ================================ */
@@ -3143,7 +3777,7 @@ async function viewDash() {
   let lancs = [], saldo = 0, saldosB = {}, abertos = [];
   try {
     [lancs, saldo, saldosB, abertos] = await Promise.all([store.lancs({ ini, fim: `${S.ano}-12-31`, planilha_id: pid }), store.saldoAte(pid, depois), store.saldosBancos(depois),
-      store.lancs({ ini: `${hoje.getFullYear() - 1}-01-01`, fim: addDias(HOJE, 120), planilha_id: pid })]);
+      store.lancs({ ini: `${hoje.getFullYear() - 1}-01-01`, fim: addDias(HOJE, 120), planilha_id: pid }), carregarMetas()]);
     abertos = abertos.filter(emAberto).sort((a, b) => vencimento(a).localeCompare(vencimento(b)));
   } catch (e) { toast(e.message, true); }
   // saldo em caixa = bancos ligados à empresa (se houver), senão o saldo da empresa
@@ -3263,12 +3897,12 @@ function renderDash() {
   };
   const resM12 = recM.map((r, m) => r - despM[m]);
   const kpis = `<div class="kpis kpis-d">
-    <div class="kp rec"><div class="l">${icone('sobe')}Receitas</div><div class="v">${brl(at.rec)}</div>${delta(at.rec, an.rec, true)}${spark(recM, CORD.rec)}</div>
-    <div class="kp desp"><div class="l">${icone('desce')}Despesas</div><div class="v">${brl(at.desp)}</div>${delta(at.desp, an.desp, false)}${spark(despM, CORD.desp)}</div>
-    <div class="kp hero"><div class="l">${icone('alvo')}Resultado</div><div class="v ${res < 0 ? 'neg' : ''}">${brl(res)}</div>${delta(res, resA, true)}${spark(resM12, '#f8a66d')}</div>
-    <div class="kp"><div class="l">${icone('pct')}Margem líquida</div><div class="v ${margem < 0 ? 'neg' : ''}">${Number.isFinite(margem) ? pct(margem) : '–'}</div>${delta(margem, margemA, true, true)}
+    <div class="kp rec" data-act="kpLista" data-t="rec" title="Ver os lançamentos de receitas"><div class="l">${icone('sobe')}Receitas</div><div class="v">${brl(at.rec)}</div>${delta(at.rec, an.rec, true)}${spark(recM, CORD.rec)}</div>
+    <div class="kp desp" data-act="kpLista" data-t="desp" title="Ver os lançamentos de despesas"><div class="l">${icone('desce')}Despesas</div><div class="v">${brl(at.desp)}</div>${delta(at.desp, an.desp, false)}${spark(despM, CORD.desp)}</div>
+    <div class="kp hero" data-act="kpLista" data-t="res" title="Ver todos os lançamentos do período"><div class="l">${icone('alvo')}Resultado</div><div class="v ${res < 0 ? 'neg' : ''}">${brl(res)}</div>${delta(res, resA, true)}${spark(resM12, '#f8a66d')}</div>
+    <div class="kp" data-act="kpLista" data-t="res" title="Ver todos os lançamentos do período"><div class="l">${icone('pct')}Margem líquida</div><div class="v ${margem < 0 ? 'neg' : ''}">${Number.isFinite(margem) ? pct(margem) : '–'}</div>${delta(margem, margemA, true, true)}
       <div class="barra-m"><i style="width:${Number.isFinite(margem) ? Math.max(0, Math.min(100, margem * 100)) : 0}%"></i></div></div>
-    <div class="kp caixa"><div class="l">${icone('carteira')}Saldo em bancos</div><div class="v ${saldo < 0 ? 'neg' : ''}">${brl(saldo)}</div><div class="d">em ${fmtData(P.fim)}${nBancos ? ` · ${nBancos} conta(s)` : ''}</div></div>
+    <div class="kp caixa" data-act="view" data-v="bancos" title="Ver os bancos"><div class="l">${icone('carteira')}Saldo em bancos</div><div class="v ${saldo < 0 ? 'neg' : ''}">${brl(saldo)}</div><div class="d">em ${fmtData(P.fim)}${nBancos ? ` · ${nBancos} conta(s)` : ''}</div></div>
   </div>`;
 
   // ---------- contas em aberto (pagar / receber depois) ----------
@@ -3314,7 +3948,7 @@ function renderDash() {
   const cardRaioX = `<section class="graf dcard s12" id="rx">
     <div class="rx-h"><div><div class="graf-t">Raio-X das despesas · para onde vai o dinheiro</div>
       <div class="dsub">${esc(P.rot)} de ${S.ano} · agrupado pelo plano de contas · comparado com ${esc(P.antRot)} · clique num cartão para ver os lançamentos</div></div>
-      <div class="rx-tot"><small>Total de despesas</small><b>${brl(at.desp)}</b></div></div>
+      <div class="rx-tot"><small>Total de despesas</small><b>${brl(at.desp)}</b><button class="mini rx-mbtn" data-act="metasEditar">⚙ Metas</button></div></div>
     ${despT.length ? `<div class="rx-grid">${rxLista.map((t, i) => {
       const dv = t.ant ? (t.v - t.ant) / t.ant : null;
       const top = Object.entries(t.contas).sort((a, b) => b[1] - a[1]).slice(0, 2);
@@ -3324,6 +3958,7 @@ function renderDash() {
         <div class="rx-bar"><i style="width:${at.desp ? Math.max(2, t.v / at.desp * 100) : 0}%"></i></div>
         <div class="rx-m"><span><b>${at.desp ? pct(t.v / at.desp) : '–'}</b> das despesas</span><span><b>${baseRec > 0 ? pct(t.v / baseRec) : '–'}</b> da receita</span></div>
         <div class="rx-f"><div class="rx-top">${top.map(([pid, val]) => `<div>${esc(M.plano[pid]?.nome ?? '')}<span>${valorCurto(val)}</span></div>`).join('')}</div>${sparkT(tMes[t.id], t.c)}</div>
+        ${metaRx(t.id, t.v, P)}
       </button>`;
     }).join('')}</div>${despT.length > 8 ? `<div class="rx-mais"><button class="mini" data-act="rxTodos">${verTodos ? 'Mostrar só os 8 maiores' : `Ver todos os ${despT.length} temas`}</button></div>` : ''}`
     : '<div class="ab-vazio">Sem despesas lançadas no período.</div>'}
@@ -3470,6 +4105,7 @@ function renderDash() {
       </div>
       <div class="dh-f">
         ${barraAno()}
+        <div class="dmes-nav"><button data-act="dashMes" data-d="-1" title="Mês anterior" aria-label="Mês anterior">‹</button><button data-act="dashMes" data-d="0" title="Voltar para o mês atual">Mês atual</button><button data-act="dashMes" data-d="1" title="Próximo mês" aria-label="Próximo mês">›</button></div>
         <select class="dper" data-chg="dashPer">${PERIODOS.map(([k, r], i) => `${i === 7 ? '<optgroup label="Mês">' : ''}<option value="${k}" ${k === P.k ? 'selected' : ''}>${r}</option>`).join('')}</optgroup></select>
       </div>
     </div>
@@ -4985,10 +5621,12 @@ const ACOES = {
   filtroSit: d => { S.filtro.sit = S.filtro.sit === d.v ? '' : d.v; renderLancamentos(); },
   pagar: d => {
     const id = Number(d.id), l = (S.view === 'dash' ? S.dash.dados?.abertos : S.lancs)?.find(x => x.id === id);
-    abrirPagamento(l, S.view === 'dash' ? viewDash : viewLancamentos);
+    const depois = S.view === 'dash' ? viewDash : recarregarEFocar(id);
+    if (paiParcial(l)) return abrirFluxoParcial(paiParcial(l), depois);
+    abrirPagamento(l, depois);
   },
   fecharModal: () => fecharModal(),
-  lsPagar: d => { const l = LST?.lancs.find(x => x.id === Number(d.id)); abrirPagamento(l, mudouLista, voltarLista); },
+  lsPagar: d => { const l = LST?.lancs.find(x => x.id === Number(d.id)); if (paiParcial(l)) return abrirFluxoParcial(paiParcial(l), mudouLista); abrirPagamento(l, mudouLista, voltarLista); },
   lsEditar: d => editarNaJanela(LST?.lancs.find(x => x.id === Number(d.id)), voltarLista),
   lsExcluir: d => excluirNaJanela(LST?.lancs.find(x => x.id === Number(d.id))),
   mSalvar: () => salvarNaJanela(),
@@ -5004,9 +5642,10 @@ const ACOES = {
   fxCel: d => {           // fluxo de caixa diário: clique nos números
     const pid = S.empresaVis === 'all' ? null : S.empresaVis, dia = d.d, k = d.k;
     const { ini, fim } = periodoMes();
-    const pred = k === 'ent' ? (l => sinal(l) > 0) : k === 'sai' ? (l => sinal(l) < 0) : null;
+    const a = dia || ini, b = dia || fim, noDia = l => l.data_pagamento && l.data_pagamento >= a && l.data_pagamento <= b;
+    const pred = k === 'ent' ? (l => noDia(l) && sinal(l) > 0) : k === 'sai' ? (l => noDia(l) && sinal(l) < 0) : noDia;
     abrirLista({ titulo: `${k === 'ent' ? 'Entradas' : k === 'sai' ? 'Saídas' : 'Lançamentos'} ${dia ? 'de ' + fmtData(dia) : 'de ' + MESES_NOME[S.mes] + '/' + S.ano}`,
-      sub: nomeNaTela(S.empresaVis, 'FLUXO DE CAIXA'), cor: corEmpresa(S.empresaVis), ini: dia || ini, fim: dia || fim, pid, pred });
+      sub: `${nomeNaTela(S.empresaVis, 'FLUXO DE CAIXA')} · pagos/recebidos`, cor: corEmpresa(S.empresaVis), ini: null, fim: null, pid, pred });
   },
   dreCel: d => {          // DRE: clique nos números
     const pid = S.empresaVis === 'all' ? null : S.empresaVis, oc = mesesOcultosDRE(), m = d.m === 'tot' ? null : Number(d.m);
@@ -5025,6 +5664,35 @@ const ACOES = {
       ini: m == null ? `${S.ano}-01-01` : `${S.ano}-${pad(m + 1)}-01`, fim: m == null ? `${S.ano}-12-31` : `${S.ano}-${pad(m + 1)}-${pad(ultimoDia(S.ano, m))}`, pid, pred });
   },
   confirmarPag: () => confirmarPagamento(),
+  ppAbrir: d => abrirFluxoParcial(Number(d.id), viewParciais),
+  fppPagar: () => fppPagar(),
+  fppEditar: d => fppEditar(Number(d.id)),
+  fppSalvar: d => fppSalvar(Number(d.id)),
+  fppExcluir: d => fppExcluir(Number(d.id)),
+  fppDesfazer: () => fppDesfazer(),
+  fppImprimir: () => fppImprimir(),
+  ccSel: d => { S.cc.sel = d.id; renderCartoes(); },
+  ccNovo: () => abrirEditorCartao(null),
+  ccEditar: d => abrirEditorCartao(cartaoDe(d.id)),
+  ccSalvarCartao: () => ccSalvarCartao(),
+  ccExcluirCartao: () => ccExcluirCartao(),
+  ccLancar: () => ccLancar(),
+  ccPagar: d => ccPagarFatura(d.id),
+  ccConfirmarPag: () => ccConfirmarPag(),
+  ccExcluirCompra: d => ccExcluirCompra(Number(d.id)),
+  ccEdLanc: d => editarNaJanela(S.cc.lancs.find(x => x.id === Number(d.id)), null, viewCartoes),
+  metasEditar: d => abrirEditorMetas(d.t),
+  metasSalvar: () => salvarMetas(),
+  metasBloco: () => metasBloco(),
+  metasAno: d => { if (S.metasEd.mudou && !confirm('Trocar de ano sem salvar as alterações?')) return; abrirEditorMetas(S.metasEd.foco, S.metasEd.ano + Number(d.d)); },
+  metasCopiar: async () => {
+    const ant = await lerMetasAno(S.metasEd.ano - 1);
+    if (!Object.keys(ant).length) return toast(`Não há metas em ${S.metasEd.ano - 1}.`, true);
+    if (Object.keys(S.metasEd.dados).length && !confirm(`Substituir as metas de ${S.metasEd.ano} pelas de ${S.metasEd.ano - 1}?`)) return;
+    S.metasEd.dados = JSON.parse(JSON.stringify(ant)); S.metasEd.mudou = true; desenharMetas(); toast(`Metas de ${S.metasEd.ano - 1} copiadas.`);
+  },
+  metasLimpar: () => { if (!confirm(`Remover todas as metas de ${S.metasEd.ano}?`)) return; S.metasEd.dados = {}; S.metasEd.mudou = true; desenharMetas(); },
+
   pagDividir: () => {
     PAG.dividir = !PAG.dividir;
     const rec = sinal(PAG.l) > 0;
@@ -5087,12 +5755,27 @@ const ACOES = {
   },
   cancelarLanc: () => { S.editId = null; renderLancamentos(); },
   editarLanc: d => editarLanc(Number(d.id)),
-  editarLancJanela: d => editarNaJanela(S.lancs.find(x => x.id === Number(d.id)), null, viewLancamentos),
-  excluirLanc: d => excluirLanc(Number(d.id)),
+  editarLancJanela: d => {
+    const l = S.lancs.find(x => x.id === Number(d.id));
+    if (paiParcial(l)) return abrirFluxoParcial(paiParcial(l), recarregarEFocar(l.id));
+    editarNaJanela(l, null, recarregarEFocar(Number(d.id)));
+  },
+  excluirLanc: d => { const l = S.lancs.find(x => x.id === Number(d.id)); if (l && String(l.origem || '').startsWith('PGP:')) return abrirFluxoParcial(paiParcial(l), viewLancamentos); excluirLanc(Number(d.id)); },
   fluxoDia: d => { const a = S.fluxo.abertos; a.has(d.d) ? a.delete(d.d) : a.add(d.d); renderFluxo(); },
   dreAbrir: d => { const a = S.dre.abertos; a.has(d.k) ? a.delete(d.k) : a.add(d.k); renderDRE(); },
   filtroBanco: d => { S.filtro.banco = S.filtro.banco === d.id ? '' : d.id; renderLancamentos(); },
   mkLimparMeses: () => { S.mk.prm.porMes = {}; salvarMarkup('Todos os meses usam o multiplicador padrão.'); },
+  dashMes: d => {
+    const n = Number(d.d), m = /^m(\d+)$/.exec(S.dash.per);
+    if (n === 0 || !m) { S.ano = hoje.getFullYear(); S.dash.per = 'm' + hoje.getMonth(); }
+    else { let x = Number(m[1]) + n; if (x < 0) { x = 11; S.ano--; } if (x > 11) { x = 0; S.ano++; } S.dash.per = 'm' + x; }
+    viewDash();
+  },
+  kpLista: d => {
+    const P = periodoDash(), t = d.t, pred = t === 'rec' ? (l => sinal(l) > 0) : t === 'desp' ? (l => sinal(l) < 0) : null;
+    abrirLista({ titulo: { rec: 'Receitas', desp: 'Despesas', res: 'Receitas e despesas' }[t], sub: `${nomeNaTela(S.empresaVis, 'DASHBOARD')} · ${P.rot} de ${S.ano}`,
+      cor: corEmpresa(S.empresaVis), ini: P.ini, fim: P.fim, pid: S.empresaVis === 'all' ? null : S.empresaVis, pred });
+  },
   rxTodos: () => { S.dash.rxTodos = !S.dash.rxTodos; renderDash(); },
   rxTema: d => {
     const P = periodoDash(), info = TEMA_INFO[d.t];
@@ -5187,6 +5870,7 @@ const MUDANCAS = {
   impChk: el => { const l = IMP?.linhas[Number(el.dataset.i)]; if (l) { l.sel = el.checked; desenharImp(); } },
   impTodos: el => { if (!IMP) return; const R = impResolver().filter(r => (r.st === 'ok' || r.st === 'dup') && (!IMP.filtro || r.st === IMP.filtro)); R.forEach(r => r.l.sel = el.checked); desenharImp(); },
   ePlano: () => atualizarBadgeEntrada(),
+  ccPrev: () => ccPrevia(),
   fBanco: el => { S.filtro.banco = el.value; renderLinhas(); },
   fGrupo: el => { S.filtro.grupo = el.value; renderLinhas(); },
   fSit: el => { S.filtro.sit = el.value; renderLancamentos(); },
@@ -5234,6 +5918,10 @@ document.addEventListener('submit', e => {
   if (e.target.id === 'cadForm') { e.preventDefault(); salvarCadastro(e.target.dataset.t); }
 });
 document.addEventListener('change', e => {
+  if (e.target.dataset?.mt != null && S.metasEd) {          // total do ano digitado: divide pelos 12 meses
+    const v = parseValor(e.target.value) || 0, t = e.target.dataset.mt;
+    S.metasEd.dados[t] = v > 0 ? dividir(v, 12) : Array(12).fill(0); S.metasEd.mudou = true; desenharMetas(); return;
+  }
   const k = e.target.dataset?.chg;
   if (k) MUDANCAS[k]?.(e.target);
 });
@@ -5541,6 +6229,12 @@ document.addEventListener('input', e => {
     if (pt) pt.textContent = brl(tot); if (bt) bt.textContent = `+ Lançar ${S.lf.parc.length} parcelas · ${brl(tot)}`;
   }
   if (id === 'f_texto') { S.filtro.texto = e.target.value; renderLinhas(); }
+  if (e.target.dataset?.ccp != null) ccPrevia();
+  if (id === 'pp_q') buscaViva(e.target, v => S.parc.q = v, renderParciais);
+  if (e.target.dataset?.mm != null && S.metasEd) {
+    const [t, m] = e.target.dataset.mm.split('|'); (S.metasEd.dados[t] ||= Array(12).fill(0))[Number(m)] = parseValor(e.target.value) || 0;
+    S.metasEd.mudou = true; desenharPeMetas();
+  }
   if (id === 'cadBusca') buscaViva(e.target, v => S.buscaCad = v, renderCadastros);
   if (id === 'gdreBusca') buscaViva(e.target, v => S.gdre.busca = v, renderCadastros);
   if (id === 'bk_busca') { S.bk.busca = e.target.value; clearTimeout(bkT); bkT = setTimeout(buscaBancos, 250); }
@@ -5553,7 +6247,7 @@ document.addEventListener('keydown', e => {
   }
   if (e.key === 'Enter' && e.target.closest('tr.entrada, .lanc-form') && !e.target.matches('button')) {
     e.preventDefault();
-    if (S.view === 'transferencias') salvarTransf(); else salvarLanc();
+    if (S.view === 'transferencias') salvarTransf(); else if (S.view === 'cartoes') ccLancar(); else salvarLanc();
   }
   if (e.key === 'Escape' && S.editId) { S.editId = null; renderLancamentos(); }
 });
