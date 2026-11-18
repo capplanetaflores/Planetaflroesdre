@@ -1251,6 +1251,27 @@ table.mt-tab tr.foco td{background:#fff7ef}
 table.mt-tab tfoot td{font-weight:800;text-align:right;background:#f3f3f5;font-size:11.5px;padding:0 6px;font-variant-numeric:tabular-nums}
 table.mt-tab tfoot td.l{justify-content:flex-start}
 .mt-nota{margin:6px 20px 0;font-size:11.5px}
+
+/* ---------- cheques ---------- */
+.p-chq{display:flex;flex-direction:column;gap:6px;border:1px solid #f3c77a;background:#fffaf0;border-radius:10px;padding:10px 12px}
+.chq-cab,.chq-l{display:grid;grid-template-columns:90px 1fr 1.4fr 140px 110px 28px;gap:6px;align-items:center}
+.chq-cab span{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;color:var(--muted)}
+.chq-l input{border:1px solid #cfd0d4;border-radius:6px;padding:6px 7px;font-size:12.5px;background:#fff;min-height:34px;width:100%;min-width:0}
+.chq-f{display:flex;align-items:center;gap:10px;font-size:12.5px}
+.chq-f #chq_tot{margin-left:auto}
+.chq-f em{font-style:normal;font-weight:700;margin-left:6px;padding:2px 8px;border-radius:10px}
+.chq-f .ok{background:#eaf6ec;color:#22702b}.chq-f .falta{background:#fff4e5;color:#b45309}.chq-f .passa{background:#fdecea;color:var(--neg)}
+.chq-prop{font-size:12px;font-weight:500}
+.chq-sel{display:flex;flex-direction:column;gap:4px;max-height:220px;overflow:auto}
+.chq-it{display:grid;grid-template-columns:20px 90px 1fr auto 110px;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;cursor:pointer}
+.chq-it.on{border-color:var(--orange);background:#fff3e8}
+.chq-it em{font-style:normal;font-weight:800;text-align:right}
+.chq-it small{font-size:11px;white-space:nowrap}
+.tr-chq{border:1px solid #f3c77a;background:#fffaf0;border-radius:10px;padding:10px 12px;margin:10px 0}
+.tr-chq-h{display:flex;justify-content:space-between;gap:10px;margin-bottom:6px;font-size:12.5px}
+table.chq-tab td{height:40px}
+table.chq-tab tr.chq-on td{background:#fff3e8 !important}
+@media (max-width:760px){.chq-cab{display:none}.chq-l{grid-template-columns:1fr 1fr}.chq-it{grid-template-columns:20px 1fr auto}}
 </style>
 </head>
 <body>
@@ -1621,7 +1642,7 @@ const S = {
   editId: null, cadEdit: null, trEdit: null,
   filtro: { texto: '', banco: '', grupo: '', aj: false, sit: '' },
   lf: { modo: 'avulso', parc: null, base: 'total' },
-  pgp: {}, parc: { lista: [] }, cc: { lista: [], lancs: [], sel: 'all' }, metas: {},
+  pgp: {}, parc: { lista: [] }, chq: { lista: [], conta: {}, aba: 'aberto' }, cc: { lista: [], lancs: [], sel: 'all' }, metas: {},
   cf: { emp: MODO_SUPABASE ? null : 1, lista: [], sel: null, lancs: {} },
   pers: null, usuario: '',
   dash: { per: 'm' + hoje.getMonth(), tabelas: new Set(), dados: null },
@@ -1668,7 +1689,7 @@ const gruposOrdenados = () => [...S.grupos].sort((a, b) => {
 
 /* ============================== LAYOUT ============================== */
 const VIEWS = [
-  ['dash', 'Dashboard'], ['lancamentos', 'Lançamentos'], ['parciais', 'Pagos Parcialmente'], ['cartoes', 'Cartões de Crédito'], ['custos', 'Custos Fixos'], ['fluxo', 'Fluxo de Caixa'], ['fluxoAcum', 'Fluxo Acumulado'], ['dre', 'DRE'], ['markup', 'Markup'],
+  ['dash', 'Dashboard'], ['lancamentos', 'Lançamentos'], ['parciais', 'Pagos Parcialmente'], ['cartoes', 'Cartões de Crédito'], ['cheques', 'Cheques'], ['custos', 'Custos Fixos'], ['fluxo', 'Fluxo de Caixa'], ['fluxoAcum', 'Fluxo Acumulado'], ['dre', 'DRE'], ['markup', 'Markup'],
   ['bancos', 'Bancos'], ['transferencias', 'Transferências'], ['cadastros', 'Cadastros'],
 ];
 const CAD_TABS = [['plano_contas', 'Plano de Contas'], ['grupos', 'Grupos (Classificação)'], ['grupos_dre', 'Grupos DRE'], ['bancos', 'Bancos'], ['planilhas', 'Empresas']];
@@ -1709,6 +1730,7 @@ async function rerender() {
   if (v === 'lancamentos') return viewLancamentos();
   if (v === 'parciais') return viewParciais();
   if (v === 'cartoes') return viewCartoes();
+  if (v === 'cheques') return viewCheques();
   if (v === 'custos') return viewCustos();
   if (v === 'fluxo') return viewFluxo();
   if (v === 'fluxoAcum') return viewFluxoAcum();
@@ -1792,6 +1814,7 @@ function renderLocal() {
   else if (v === 'lancamentos') renderLancamentos();
   else if (v === 'parciais') renderParciais();
   else if (v === 'cartoes') renderCartoes();
+  else if (v === 'cheques') renderCheques();
   else if (v === 'custos') renderCustos();
   else if (v === 'fluxo') renderFluxo();
   else if (v === 'fluxoAcum') renderFluxoAcum();
@@ -2333,7 +2356,7 @@ function abrirPagamento(l, depois, voltar, dataSug) {
   const rec = sinal(l) > 0, pago = !emAberto(l), st = situacao(l), cor = corEmpresa(l.planilha_id);
   const g = grupoDoPlano(l.plano_conta_id), formaAtual = l.forma_pagamento || (pago ? '' : 'PIX');
   const verbo = rec ? 'recebimento' : 'pagamento';
-  PAG = { l, depois, dividir: false, partes: [{ forma: rec ? 'Dinheiro' : 'PIX', banco: l.banco_id ?? '', valor: Number(l.valor) }] };
+  PAG = { l, depois, dividir: false, chqNovos: null, chqSel: new Set(), chqProprio: false, partes: [{ forma: rec ? 'Dinheiro' : 'PIX', banco: l.banco_id ?? '', valor: Number(l.valor) }] };
   abrirModal(`
     <div class="mh ${rec ? 'rec' : 'desp'}" style="--ec:${esc(cor)}">
       <div><small>${pago ? (rec ? 'Recebido' : 'Pago') : rec ? 'Receber' : 'Pagar'} · ${esc(siglaEmpresa(l.planilha_id))}</small><b>${esc(l.item || M.plano[l.plano_conta_id]?.nome || 'Lançamento')}</b></div>
@@ -2347,6 +2370,7 @@ function abrirPagamento(l, depois, voltar, dataSug) {
     <div class="mcorpo">
       <label><span>Data do ${verbo} <i>*</i></span><input type="date" id="p_data" value="${l.data_pagamento || dataSug || HOJE}"></label>
       <label class="p-un"><span>Banco <i>*</i></span><select id="p_banco" data-banco>${opcoes(bancosDaEmpresa(l.planilha_id), l.banco_id ?? '', b => b.nome, 'Escolha o banco…')}</select></label>
+      ${pago ? '' : '<div class="p-un p-chq span2" id="p_chq" hidden></div>'}
       ${pago ? '' : `<div class="p-un p-vl span2"><label><span>Valor ${rec ? 'recebido' : 'pago'} agora (R$) <i>*</i></span><input id="p_valor" inputmode="decimal" value="${num2(l.valor)}" class="m-val"></label>
         <p class="mut">Para <b>pagar parcialmente</b>, informe um valor menor que ${brl(l.valor)}: o pagamento fica registrado <b>dentro deste lançamento</b> e o restante continua em aberto (tela <b>Pagos Parcialmente</b>).</p></div>`}
       <div class="mlbl p-un">Forma de ${verbo} <i>*</i></div>
@@ -2364,6 +2388,7 @@ function abrirPagamento(l, depois, voltar, dataSug) {
       <button class="btn sec" data-act="fecharModal">Cancelar</button>
       <button class="btn ${rec ? 'ok' : ''}" data-primary data-act="confirmarPag">${pago ? 'Salvar alteração' : `Confirmar ${verbo}`}</button>
     </div>`, 'm-pag', voltar);
+  if (!pago) pagChqAtualizar();
 }
 // ---- várias formas de pagamento no mesmo lançamento ----
 function lerPartes() {
@@ -2427,10 +2452,43 @@ async function confirmarPagamento() {
     toast(`${sinal(l) > 0 ? 'Recebido' : 'Pago'}: ${partes.map(p => `${p.forma} ${brl(p.valor)}`).join(' + ')}${resta > 0.004 ? ` · ${brl(resta)} em aberto` : ''}`);
     return (depois || rerender)();
   }
-  const banco = Number($('p_banco').value) || null;
+  let banco = Number($('p_banco').value) || null;
   const forma = document.querySelector('#modal input[name=p_forma]:checked')?.value;
   if (!forma) return toast(`Escolha a forma de ${verbo}.`, true);
+  // ---- cheques ----
+  const rec = sinal(l) > 0, ehChq = FORMAS_CHQ.includes(forma) && PAG.chqAtivo;
+  let chqRec = null, chqUsar = null;
+  if (ehChq && rec) {
+    pagChqLer();
+    chqRec = PAG.chqNovos;
+    for (const [i, c] of chqRec.entries()) {
+      if (!c.numero) return toast(`Cheque ${i + 1}: informe o número.`, true);
+      if (!c.emitente) return toast(`Cheque ${i + 1}: informe de quem veio.`, true);
+      if (!(c.valor > 0)) return toast(`Cheque ${i + 1}: informe o valor.`, true);
+    }
+    const tot = r2(chqRec.reduce((x, c) => x + c.valor, 0));
+    if (tot - Number(l.valor) > 0.004) return toast(`Os cheques somam ${brl(tot)}, mais que o valor em aberto (${brl(l.valor)}).`, true);
+    try { banco = await garantirContaCheque(l.planilha_id); } catch (e) { return toast(e.message, true); }
+    if ($('p_valor')) $('p_valor').value = num2(tot);
+  } else if (ehChq && !rec && !PAG.chqProprio && PAG.chqSel.size) {
+    chqUsar = chqCarteira(l.planilha_id).filter(c => PAG.chqSel.has(c.id));
+    const tot = r2(chqUsar.reduce((x, c) => x + Number(c.valor), 0));
+    if (tot - Number(l.valor) > 0.004) return toast(`Os cheques somam ${brl(tot)}, mais que o valor em aberto (${brl(l.valor)}). Desmarque algum cheque.`, true);
+    banco = contaCheque(l.planilha_id);
+    if ($('p_valor')) $('p_valor').value = num2(tot);
+  } else if (ehChq && !rec && !PAG.chqProprio && chqCarteira(l.planilha_id).length) {
+    return toast('Marque os cheques da carteira que estão sendo usados — ou marque "Cheque próprio da empresa".', true);
+  }
   if (!banco) return toast('Escolha o banco.', true), abrirBsel($('p_banco'));
+  // registra os cheques depois de gravar o pagamento (lid = lançamento que ficou pago)
+  const posCheques = async lid => {
+    if (!chqRec && !chqUsar) return;
+    await carregarCheques();
+    if (chqRec) for (const c of chqRec) S.chq.lista.push({ id: 'q' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), planilha_id: l.planilha_id, numero: c.numero, banco: c.banco, emitente: c.emitente,
+      bom_para: c.bom_para || data, recebido_em: data, valor: r2(c.valor), status: 'carteira', lanc_id: lid, origem_desc: l.item || M.plano[l.plano_conta_id]?.nome || '' });
+    if (chqUsar) for (const c of S.chq.lista) if (chqUsar.some(u => u.id === c.id)) { c.status = 'repassado'; c.baixa_ref = `L:${lid}`; c.baixa_data = data; c.baixa_desc = `Pagamento: ${l.item || M.plano[l.plano_conta_id]?.nome || ''}`; }
+    await gravarCheques();
+  };
   if ($('p_valor')) {                                         // pagamento parcial: registra dentro do lançamento, o restante fica em aberto
     const pv = parseValor($('p_valor').value), resta = r2(Number(l.valor) - pv);
     if (!(pv > 0)) return toast('Informe o valor.', true), $('p_valor').focus();
@@ -2440,25 +2498,26 @@ async function confirmarPagamento() {
         data_lancamento: dataLanc, data_programada: venc, valor: r2(pv), origem: `PGP:${l.id}` };
       if (l.parcela) filho.parcela = l.parcela;
       const mud = { valor: resta }; if (!l.data_programada) mud.data_programada = l.data_lancamento;
-      try { await store.insert('lancamentos', filho); await store.update('lancamentos', l.id, comAjuste(l, mud)); }
+      try { const f = await store.insert('lancamentos', filho); await store.update('lancamentos', l.id, comAjuste(l, mud)); await posCheques(f.id); }
       catch (e) { return toast(e.message, true); }
       fecharModal(true);
-      toast(`${sinal(l) > 0 ? 'Recebido' : 'Pago'} parcialmente: ${brl(pv)} · resta ${brl(resta)} em aberto`);
+      toast(`${rec ? 'Recebido' : 'Pago'} parcialmente: ${brl(pv)} · resta ${brl(resta)} em aberto`);
       return (depois || rerender)();
     }
   }
   const row = { data_pagamento: data, forma_pagamento: forma, banco_id: banco };
   if (!l.data_programada) row.data_programada = l.data_lancamento;          // guarda o vencimento original
   if (dataLanc !== l.data_lancamento) row.data_lancamento = dataLanc;
-  try { await store.update('lancamentos', l.id, row); }
+  try { await store.update('lancamentos', l.id, row); await posCheques(l.id); }
   catch (e) { return toast(e.message, true); }
   fecharModal(true);
-  toast(`${sinal(l) > 0 ? 'Recebido' : 'Pago'}: ${brl(l.valor)} · ${forma} · ${M.banco[banco]?.nome ?? ''}`);
+  toast(`${rec ? 'Recebido' : 'Pago'}: ${brl(l.valor)} · ${forma} · ${M.banco[banco]?.nome ?? ''}${chqRec ? ` · ${chqRec.length} cheque(s) na carteira` : chqUsar ? ` · ${chqUsar.length} cheque(s) repassado(s)` : ''}`);
   await (depois || rerender)();
 }
 async function estornarPagamento() {
   const { l, depois } = PAG || {}; if (!l) return;
   if (!confirm('Desfazer o pagamento? O lançamento volta a ficar em aberto (sem banco e sem data de pagamento).')) return;
+  if (!(await chequesAoDesfazerLanc(l.id))) return;
   const row = { data_pagamento: null, forma_pagamento: null, banco_id: null };
   if (l.data_programada && l.data_programada !== l.data_lancamento) row.data_lancamento = l.data_programada;   // volta para o vencimento
   try { await store.update('lancamentos', l.id, row); } catch (e) { return toast(e.message, true); }
@@ -2569,6 +2628,7 @@ async function salvarNaJanela() {
 }
 async function excluirNaJanela(l, depois) {
   if (!l || !confirm(`Excluir o lançamento "${l.item || 'sem descrição'}" de ${brl(l.valor)}?`)) return;
+  if (!(await chequesAoDesfazerLanc(l.id))) return;
   try { await store.remove('lancamentos', l.id); } catch (e) { return toast(e.message, true); }
   toast('Lançamento excluído.');
   if ($('modal')?.querySelector('.m-ed')) fecharModal(true);
@@ -2655,6 +2715,7 @@ async function lancarParcelas() {
 async function excluirLanc(id) {
   const l = S.lancs.find(x => x.id === id);
   if (!l || !confirm(`Excluir o lançamento "${l.item || 'sem descrição'}" de ${brl(l.valor)}?`)) return;
+  if (!(await chequesAoDesfazerLanc(id))) return;
   try { await store.remove('lancamentos', id); toast('Lançamento excluído.'); await viewLancamentos(); }
   catch (e) { toast(e.message, true); }
 }
@@ -2767,6 +2828,7 @@ async function fppExcluir(id) {
   const f = FPP.filhos.find(x => x.id === id), { pai } = FPP; if (!f) return;
   if (!emAberto(pai)) return toast('Este lançamento está quitado. Desfaça a quitação (↺) primeiro para excluir pagamentos anteriores.', true);
   if (!confirm(`Excluir o pagamento de ${brl(f.valor)} de ${fmtData(f.data_pagamento)}? O valor volta a ficar em aberto no lançamento.`)) return;
+  if (!(await chequesAoDesfazerLanc(f.id))) return;
   try {
     await store.update('lancamentos', pai.id, comAjuste(pai, { valor: r2(Number(pai.valor) + Number(f.valor)) }));
     await store.remove('lancamentos', f.id);
@@ -2777,6 +2839,7 @@ async function fppExcluir(id) {
 async function fppDesfazer() {
   const { pai } = FPP;
   if (!confirm('Desfazer a quitação? O último pagamento é removido e o valor dele volta a ficar em aberto.')) return;
+  if (!(await chequesAoDesfazerLanc(pai.id))) return;
   const row = { data_pagamento: null, forma_pagamento: null, banco_id: null };
   if (pai.data_programada && pai.data_programada !== pai.data_lancamento) row.data_lancamento = pai.data_programada;
   try { await store.update('lancamentos', pai.id, row); } catch (e) { return toast(e.message, true); }
@@ -3111,6 +3174,197 @@ async function salvarMetas() {
   try { await store.setParam(chaveMetas(S.metasEd.ano), m); } catch (e) { return toast(e.message, true); }
   if (S.metasEd.ano === S.ano) { S.metas = m; S.metasAno = S.ano; }
   fecharModal(true); toast(`Metas de ${S.metasEd.ano} salvas · ${Object.keys(m).length} tema(s).`); renderDash();
+}
+
+/* ============================ CHEQUES ============================ */
+// Cheques recebidos de terceiros ficam em "parametros" (chave cheques) e o dinheiro deles fica numa conta-banco própria
+// ("CHEQUES EM CARTEIRA", criada automaticamente, ligada à empresa em parametros chave cheques_conta).
+// Situação: carteira (em aberto) → depositado (transferência para um banco) ou repassado (usado para pagar uma conta).
+// baixa_ref: "T:<id da transferência>" ou "L:<id do lançamento pago>". lanc_id: lançamento do recebimento.
+const CHQ_CHAVE = 'cheques', CHQ_CONTA = 'cheques_conta';
+const FORMAS_CHQ = ['Cheque', 'Cheque pré-datado'];
+async function carregarCheques() {
+  try {
+    const [l, c] = await Promise.all([store.getParam(CHQ_CHAVE), store.getParam(CHQ_CONTA)]);
+    S.chq.lista = Array.isArray(l) ? l : []; S.chq.conta = c && typeof c === 'object' ? c : {};
+  } catch (e) { console.warn('cheques', e); }
+}
+const gravarCheques = () => store.setParam(CHQ_CHAVE, S.chq.lista);
+const contaCheque = pid => { const id = S.chq.conta?.[pid]; return id && M.banco[id] ? Number(id) : null; };
+const ehContaCheque = bid => !!bid && Object.values(S.chq.conta || {}).map(Number).includes(Number(bid));
+const chqCarteira = pid => S.chq.lista.filter(c => c.status === 'carteira' && c.planilha_id === pid).sort((a, b) => (a.bom_para || '').localeCompare(b.bom_para || ''));
+async function garantirContaCheque(pid) {
+  if (contaCheque(pid)) return contaCheque(pid);
+  let b = S.bancos.find(x => x.planilha_id === pid && /CHEQUE/.test(normTxt(x.nome)));
+  if (!b) {
+    let nome = 'CHEQUES EM CARTEIRA';
+    if (S.bancos.some(x => normTxt(x.nome) === normTxt(nome))) nome += ' ' + siglaEmpresa(pid);
+    b = await store.insert('bancos', { nome, saldo_inicial: 0, logo: null, planilha_id: pid });
+    await recarregarCadastros();
+    toast(`Conta "${nome}" criada para controlar os cheques.`);
+  }
+  S.chq.conta = { ...(S.chq.conta || {}), [pid]: b.id };
+  await store.setParam(CHQ_CONTA, S.chq.conta);
+  return b.id;
+}
+// volta para a carteira os cheques baixados por uma transferência/pagamento desfeito
+async function chequesVoltar(ref) {
+  await carregarCheques();
+  let n = 0;
+  for (const c of S.chq.lista) if (c.baixa_ref === ref) { c.status = 'carteira'; c.baixa_ref = c.baixa_data = c.baixa_desc = null; n++; }
+  if (n) { await gravarCheques(); toast(`${n} cheque(s) voltaram para a carteira.`); }
+}
+// antes de desfazer/excluir um lançamento: devolve cheques repassados e remove os recebidos por ele
+async function chequesAoDesfazerLanc(id) {
+  await carregarCheques();
+  const rec = S.chq.lista.filter(c => c.lanc_id === id);
+  if (rec.some(c => c.status !== 'carteira')) { toast('Este recebimento tem cheque(s) já depositado(s) ou repassado(s). Desfaça o depósito/pagamento desses cheques antes.', true); return false; }
+  if (rec.length) { S.chq.lista = S.chq.lista.filter(c => c.lanc_id !== id); await gravarCheques(); }
+  await chequesVoltar(`L:${id}`);
+  return true;
+}
+
+/* ---------- dentro da janela Pagar / Receber ---------- */
+const formaPag = () => document.querySelector('#modal input[name=p_forma]:checked')?.value;
+function pagChqAtualizar() {
+  const box = $('p_chq'); if (!box || !PAG) return;
+  const ativo = FORMAS_CHQ.includes(formaPag()) && !PAG.dividir;
+  box.hidden = !ativo; PAG.chqAtivo = ativo;
+  if (!ativo) return;
+  const { l } = PAG, rec = sinal(l) > 0, conta = contaCheque(l.planilha_id);
+  if (conta && $('p_banco') && !PAG.chqProprio) { $('p_banco').value = conta; desenharBsel?.($('p_banco')); }
+  if (rec) {
+    PAG.chqNovos ||= [{ numero: '', banco: '', emitente: '', bom_para: valCampo('p_data') || HOJE, valor: Number(l.valor) }];
+    box.innerHTML = `<div class="mlbl">Cheque(s) recebido(s) <span class="mut">— ficam na conta <b>${esc(M.banco[conta]?.nome || 'CHEQUES EM CARTEIRA')}</b> até serem depositados ou repassados</span></div>
+      <div class="chq-cab"><span>Nº do cheque</span><span>Banco</span><span>De quem veio</span><span>Bom para</span><span>Valor (R$)</span><span></span></div>
+      ${PAG.chqNovos.map((c, i) => `<div class="chq-l" data-ci="${i}">
+        <input data-cq="numero" value="${esc(c.numero)}" placeholder="000123">
+        <input data-cq="banco" value="${esc(c.banco)}" placeholder="Ex.: Sicoob">
+        <input data-cq="emitente" value="${esc(c.emitente)}" placeholder="Nome do emitente">
+        <input data-cq="bom_para" type="date" value="${esc(c.bom_para)}">
+        <input data-cq="valor" inputmode="decimal" value="${num2(c.valor)}" style="text-align:right;font-weight:700">
+        ${PAG.chqNovos.length > 1 ? `<button type="button" class="ib del" data-act="chqLinhaDel" data-i="${i}">✕</button>` : '<span></span>'}</div>`).join('')}
+      <div class="chq-f"><button type="button" class="mini" data-act="chqLinhaAdd">+ Outro cheque</button><span id="chq_tot"></span></div>`;
+  } else {
+    const L = chqCarteira(l.planilha_id), sel = PAG.chqSel ||= new Set();
+    box.innerHTML = `<div class="mlbl">Pagar com cheque(s) da carteira <span class="mut">— marque os cheques que estão sendo repassados</span></div>
+      <label class="chk chq-prop"><input type="checkbox" id="chq_prop" ${PAG.chqProprio ? 'checked' : ''}> Cheque próprio da empresa (não é cheque da carteira)</label>
+      ${PAG.chqProprio ? '' : L.length ? `<div class="chq-sel">${L.map(c => `<label class="chq-it ${sel.has(c.id) ? 'on' : ''}"><input type="checkbox" data-chqsel="${c.id}" ${sel.has(c.id) ? 'checked' : ''}>
+          <b>nº ${esc(c.numero || '—')}</b><span>${esc(c.emitente || '')}${c.banco ? ' · ' + esc(c.banco) : ''}</span><small class="${c.bom_para > HOJE ? 'mut' : 'pos'}">bom para ${fmtData(c.bom_para)}</small><em>${brl(c.valor)}</em></label>`).join('')}</div>
+        <div class="chq-f"><span id="chq_tot"></span></div>` : '<div class="vazio-s">Nenhum cheque em carteira nesta empresa.</div>'}`;
+  }
+  pagChqTotal();
+}
+function pagChqLer() {
+  document.querySelectorAll('#p_chq .chq-l').forEach(r => { const c = PAG.chqNovos[Number(r.dataset.ci)]; if (!c) return;
+    r.querySelectorAll('[data-cq]').forEach(i => { c[i.dataset.cq] = i.dataset.cq === 'valor' ? (parseValor(i.value) || 0) : i.value.trim(); }); });
+}
+function pagChqTotal() {
+  const el = $('chq_tot'); if (!el || !PAG) return;
+  const { l } = PAG, rec = sinal(l) > 0;
+  let tot;
+  if (rec) { pagChqLer(); tot = r2(PAG.chqNovos.reduce((a, c) => a + (Number(c.valor) || 0), 0)); }
+  else tot = r2(chqCarteira(l.planilha_id).filter(c => PAG.chqSel.has(c.id)).reduce((a, c) => a + Number(c.valor), 0));
+  const resta = r2(Number(l.valor) - tot);
+  el.innerHTML = `Cheques: <b>${brl(tot)}</b> de ${brl(l.valor)} ${Math.abs(resta) < 0.005 ? '<em class="ok">✓ fecha o valor</em>' : resta > 0 ? `<em class="falta">faltam ${brl(resta)} — ficam em aberto</em>` : `<em class="passa">passou ${brl(-resta)}</em>`}`;
+  if (tot > 0 && $('p_valor')) $('p_valor').value = num2(Math.min(tot, Number(l.valor)));
+}
+
+/* ---------- tela de cheques ---------- */
+async function viewCheques() {
+  await carregarCheques();
+  if (S.planilhaId && !contaCheque(S.planilhaId)) { try { await garantirContaCheque(S.planilhaId); } catch (e) { toast(e.message, true); } }
+  try { S.chq.saldo = (await store.saldosBancos(addDias(HOJE, 1)))[contaCheque(S.planilhaId)] || 0; } catch (e) { S.chq.saldo = null; }
+  renderCheques();
+}
+function renderCheques() {
+  const pid = S.planilhaId, todos = S.chq.lista.filter(c => c.planilha_id === pid), aba = S.chq.aba || 'aberto';
+  const cart = chqCarteira(pid), comp = todos.filter(c => c.status !== 'carteira').sort((a, b) => (b.baixa_data || '').localeCompare(a.baixa_data || ''));
+  const soma = a => a.reduce((x, c) => x + Number(c.valor), 0), q = semAcento((S.chq.q || '').trim());
+  const filtra = a => a.filter(c => !q || semAcento(`${c.numero} ${c.emitente} ${c.banco} ${c.origem_desc || ''} ${c.baixa_desc || ''}`).includes(q));
+  const prontos = cart.filter(c => (c.bom_para || '') <= HOJE), sem7 = cart.filter(c => c.bom_para > HOJE && c.bom_para <= addDias(HOJE, 7));
+  const sel = S.chq.sel ||= new Set(); for (const id of [...sel]) if (!cart.some(c => c.id === id)) sel.delete(id);
+  const conta = contaCheque(pid), selTot = soma(cart.filter(c => sel.has(c.id)));
+  const mesAtual = HOJE.slice(0, 7), compMes = comp.filter(c => (c.baixa_data || '').startsWith(mesAtual));
+  $('main').innerHTML = `
+    ${bannerEmpresa(pid, 'CHEQUES')}
+    <h2 class="tit">Controle de cheques</h2>
+    <p class="sub">Cheques recebidos ficam na conta <b>${esc(M.banco[conta]?.nome || 'CHEQUES EM CARTEIRA')}</b>${S.chq.saldo != null ? ` (saldo ${brl(S.chq.saldo)})` : ''} até serem <b>depositados</b> num banco (transferência) ou <b>repassados</b> para pagar uma conta (forma de pagamento Cheque).</p>
+    <div class="tiles">
+      <div class="tile o"><div class="l">Em carteira</div><div class="v">${brl(soma(cart))}</div><div class="s">${cart.length} cheque(s)</div></div>
+      <div class="tile g"><div class="l">Prontos para depositar</div><div class="v">${brl(soma(prontos))}</div><div class="s">${prontos.length} com "bom para" até hoje</div></div>
+      <div class="tile b"><div class="l">Próximos 7 dias</div><div class="v">${brl(soma(sem7))}</div><div class="s">${sem7.length} cheque(s)</div></div>
+      <div class="tile"><div class="l">Compensados no mês</div><div class="v">${brl(soma(compMes))}</div><div class="s">${compMes.length} depositado(s)/repassado(s)</div></div>
+    </div>
+    <div class="barra">
+      <div class="seg"><button class="${aba === 'aberto' ? 'on' : ''}" data-act="chqAba" data-v="aberto">Em aberto (${cart.length})</button><button class="${aba === 'comp' ? 'on' : ''}" data-act="chqAba" data-v="comp">Compensados (${comp.length})</button></div>
+      <input id="chq_q" class="busca-ic" placeholder="Buscar nº, emitente, banco…" value="${esc(S.chq.q || '')}" style="max-width:280px">
+      <div class="filtros"><button class="mini" data-act="chqNovo">+ Cadastrar cheque</button>
+        ${aba === 'aberto' ? `<button class="btn" data-act="chqDepositar" ${sel.size ? '' : 'disabled'}>⇩ Depositar no banco${sel.size ? ` · ${sel.size} · ${brl(selTot)}` : ''}</button>` : ''}</div>
+    </div>
+    ${aba === 'aberto' ? `<div class="tabwrap"><table class="zebra chq-tab"><thead><tr><th><input type="checkbox" data-chg="chqTodos" ${cart.length && cart.every(c => sel.has(c.id)) ? 'checked' : ''}></th><th>Nº</th><th style="text-align:left">De quem veio</th><th>Banco</th><th>Bom para</th><th>Recebido em</th><th style="text-align:left">Recebimento</th><th style="text-align:right">Valor</th><th></th></tr></thead>
+      <tbody>${filtra(cart).map(c => `<tr class="${sel.has(c.id) ? 'chq-on' : ''}">
+        <td class="c"><input type="checkbox" data-chg="chqMarca" data-id="${c.id}" ${sel.has(c.id) ? 'checked' : ''}></td>
+        <td class="c"><b>${esc(c.numero || '—')}</b></td><td class="item-l">${esc(c.emitente || '—')}</td><td class="c">${esc(c.banco || '—')}</td>
+        <td class="c">${(c.bom_para || '') <= HOJE ? `<span class="pill" style="--c:#2e7d32">${fmtData(c.bom_para)} · pode depositar</span>` : `<span class="pill" style="--c:#eda100">${fmtData(c.bom_para)}</span>`}</td>
+        <td class="c mut">${fmtData(c.recebido_em)}</td><td class="item-l mut">${esc(c.origem_desc || (c.lanc_id ? '' : 'cadastro manual'))}</td>
+        <td class="r"><b>${num2(c.valor)}</b></td>
+        <td class="acoes"><button class="ib" data-act="chqEditar" data-id="${c.id}" title="Editar">✎</button><button class="ib del" data-act="chqExcluir" data-id="${c.id}" title="Excluir">✕</button></td></tr>`).join('')
+        || `<tr><td colspan="9" class="vazio">Nenhum cheque em carteira. Ao <b>receber</b> um lançamento com a forma <b>Cheque</b>, informe o nº, de quem veio e o bom para — o cheque aparece aqui.</td></tr>`}</tbody>
+      <tfoot><tr><td colspan="7">${cart.length} cheque(s) em carteira</td><td class="r">${brl(soma(cart))}</td><td></td></tr></tfoot></table></div>`
+    : `<div class="tabwrap"><table class="zebra chq-tab"><thead><tr><th>Nº</th><th style="text-align:left">De quem veio</th><th>Banco</th><th>Bom para</th><th>Compensado em</th><th>Como</th><th style="text-align:left">Destino</th><th style="text-align:right">Valor</th></tr></thead>
+      <tbody>${filtra(comp).map(c => `<tr><td class="c"><b>${esc(c.numero || '—')}</b></td><td class="item-l">${esc(c.emitente || '—')}</td><td class="c">${esc(c.banco || '—')}</td>
+        <td class="c mut">${fmtData(c.bom_para)}</td><td class="c">${fmtData(c.baixa_data)}</td>
+        <td class="c"><span class="pill" style="--c:${c.status === 'depositado' ? '#2a78d6' : '#6250d6'}">${c.status === 'depositado' ? 'Depositado' : 'Repassado (pagamento)'}</span></td>
+        <td class="item-l">${esc(c.baixa_desc || '')}</td><td class="r"><b>${num2(c.valor)}</b></td></tr>`).join('')
+        || '<tr><td colspan="8" class="vazio">Nenhum cheque compensado ainda.</td></tr>'}</tbody></table></div>`}
+    <p class="dica">Para desfazer: excluir a transferência do depósito ou desfazer o pagamento devolve os cheques para a carteira automaticamente.</p>`;
+}
+function abrirEditorCheque(c) {
+  const novo = !c; c = c || { id: 'q' + Date.now().toString(36), planilha_id: S.planilhaId, numero: '', banco: '', emitente: '', bom_para: HOJE, recebido_em: HOJE, valor: 0, status: 'carteira', lanc_id: null };
+  S.chq.ed = { c, novo };
+  abrirModal(`
+    <div class="mh rec"><div><small>${novo ? 'Cadastrar cheque em carteira' : 'Editar cheque'}</small><b>${novo ? 'Novo cheque' : 'Cheque nº ' + esc(c.numero || '—')}</b></div><button class="ib x" data-act="fecharModal">✕</button></div>
+    <div class="mcorpo">
+      <label>Nº do cheque<input id="cq_num" value="${esc(c.numero)}" autofocus></label>
+      <label>Banco do cheque<input id="cq_banco" value="${esc(c.banco)}"></label>
+      <label class="span2">De quem veio (emitente)<input id="cq_emit" value="${esc(c.emitente)}"></label>
+      <label>Bom para<input type="date" id="cq_bom" value="${esc(c.bom_para || '')}"></label>
+      <label>Recebido em<input type="date" id="cq_rec" value="${esc(c.recebido_em || '')}"></label>
+      <label>Valor (R$)<input id="cq_val" inputmode="decimal" class="m-val" value="${num2(c.valor)}" ${c.lanc_id ? 'disabled title="O valor vem do recebimento; altere pelo lançamento"' : ''}></label>
+      ${novo ? '<p class="mut span2" style="margin:0">Cadastro manual não gera lançamento: use para cheques que já estão no saldo da conta de cheques. Para um recebimento novo, use <b>Receber</b> no lançamento com a forma <b>Cheque</b>.</p>' : ''}
+    </div>
+    <div class="mf"><span class="sp"></span><button class="btn sec" data-act="fecharModal">Cancelar</button><button class="btn" data-primary data-act="chqSalvar">Salvar</button></div>`, 'm-ed');
+}
+async function salvarChequeEd() {
+  const { c, novo } = S.chq.ed;
+  const n = { ...c, numero: $('cq_num').value.trim(), banco: $('cq_banco').value.trim(), emitente: $('cq_emit').value.trim(), bom_para: $('cq_bom').value || HOJE, recebido_em: $('cq_rec').value || HOJE,
+    valor: $('cq_val').disabled ? c.valor : parseValor($('cq_val').value) };
+  if (!(n.valor > 0)) return toast('Informe o valor.', true);
+  await carregarCheques();
+  if (novo) S.chq.lista.push(n); else S.chq.lista = S.chq.lista.map(x => x.id === n.id ? n : x);
+  try { await gravarCheques(); } catch (e) { return toast(e.message, true); }
+  fecharModal(true); toast(novo ? 'Cheque cadastrado.' : 'Cheque alterado.'); renderCheques();
+}
+async function excluirCheque(id) {
+  const c = S.chq.lista.find(x => x.id === id); if (!c) return;
+  if (c.lanc_id) return toast('Este cheque veio de um recebimento: para removê-lo, desfaça o recebimento do lançamento.', true);
+  if (!confirm(`Excluir o cheque nº ${c.numero || '—'} de ${brl(c.valor)}?`)) return;
+  await carregarCheques(); S.chq.lista = S.chq.lista.filter(x => x.id !== id);
+  try { await gravarCheques(); } catch (e) { return toast(e.message, true); }
+  toast('Cheque excluído.'); renderCheques();
+}
+// transferência: quando a origem é a conta de cheques, escolhe quais cheques vão para o banco
+function trChqDesenhar() {
+  const box = $('tf_chq'); if (!box || !TRF) return;
+  const o = Number(valCampo('tf_origem')) || null;
+  if (!ehContaCheque(o) || TRF.id) { box.innerHTML = TRF.id && ehContaCheque(o) ? '<div class="tr-av info">Os cheques deste depósito não mudam na edição. Para trocar os cheques, exclua a transferência e lance de novo.</div>' : ''; return; }
+  const pid = Number(Object.keys(S.chq.conta).find(k => Number(S.chq.conta[k]) === o)), L = chqCarteira(pid), sel = TRF.chq ||= new Set();
+  const tot = r2(L.filter(c => sel.has(c.id)).reduce((a, c) => a + Number(c.valor), 0));
+  box.innerHTML = `<div class="tr-chq"><div class="tr-chq-h"><b>Quais cheques serão depositados?</b><span>${sel.size} selecionado(s) · <b>${brl(tot)}</b></span></div>
+    ${L.length ? `<div class="chq-sel">${L.map(c => `<label class="chq-it ${sel.has(c.id) ? 'on' : ''}"><input type="checkbox" data-trchq="${c.id}" ${sel.has(c.id) ? 'checked' : ''}>
+      <b>nº ${esc(c.numero || '—')}</b><span>${esc(c.emitente || '')}${c.banco ? ' · ' + esc(c.banco) : ''}</span><small class="${c.bom_para > HOJE ? 'neg' : 'pos'}">bom para ${fmtData(c.bom_para)}</small><em>${brl(c.valor)}</em></label>`).join('')}</div>`
+      : '<div class="vazio-s">Nenhum cheque em carteira.</div>'}</div>`;
 }
 
 /* ============================ CUSTOS FIXOS ============================ */
@@ -4546,10 +4800,10 @@ function renderTransferencias() {
 // Escolhe a conta que sai e a que entra (com ícones), mostra o saldo de cada uma antes e depois e valida antes de gravar.
 let TRF = null;
 const rotBancoTr = b => b.nome + (b.planilha_id && M.planilha[b.planilha_id] && !normTxt(b.nome).split(' ').includes(normTxt(siglaEmpresa(b.planilha_id))) ? ` · ${siglaEmpresa(b.planilha_id)}` : '');
-function abrirTransf(id = null) {
-  const t = id ? S.trLista.find(x => x.id === id) : null;
+function abrirTransf(id = null, pre = null) {
+  const t = id ? (S.trLista || []).find(x => x.id === id) : null;
   const dataPadrao = (hoje.getFullYear() === S.ano && hoje.getMonth() === S.mes) ? HOJE : periodoMes().ini;
-  TRF = { id: t?.id ?? null, orig: t, saldos: null };
+  TRF = { id: t?.id ?? null, orig: t, saldos: null, chq: new Set(pre?.chq || []), pre };
   const sel = (idc, v, ph) => `<select id="${idc}" data-banco data-chg="tfAtualizar">${opcoes(S.bancos, v ?? '', rotBancoTr, ph)}</select>`;
   abrirModal(`
     <div class="mh tr-mh">
@@ -4572,6 +4826,7 @@ function abrirTransf(id = null) {
       </div>
       <label class="tr-valor"><span class="tr-vl">Valor da transferência</span>
         <span class="tr-vi"><em>R$</em><input id="tf_valor" inputmode="decimal" placeholder="0,00" autocomplete="off" value="${t ? num2(t.valor) : ''}" ${t ? '' : 'autofocus'}></span></label>
+      <div id="tf_chq"></div>
       <div class="tr-campos">
         <label>Data<input type="date" id="tf_data" value="${t?.data ?? dataPadrao}" data-chg="tfData"></label>
         <label><span>Descrição <span class="opc">opcional</span></span><input id="tf_desc" placeholder="Ex.: Depósito do caixa no banco" value="${esc(t?.descricao ?? '')}" autocomplete="off"></label>
@@ -4588,6 +4843,7 @@ function abrirTransf(id = null) {
   const v = $('tf_valor');
   v.addEventListener('input', atualizarTr);
   v.addEventListener('blur', () => { const n = parseValor(v.value); if (n > 0) v.value = num2(n); });
+  if (pre?.origem) { $('tf_origem').value = pre.origem; $('tf_desc').value = pre.desc || ''; }
   carregarSaldosTr();
 }
 async function carregarSaldosTr() {
@@ -4615,6 +4871,7 @@ function atualizarTr() {
       <div><small>Depois</small><b class="${b < 0 ? 'neg' : sinalV > 0 && val ? 'pos' : ''}">${brl(b)}</b></div>`;
   };
   $('tf_so').innerHTML = caixa(o, -1); $('tf_sd').innerHTML = caixa(d, 1);
+  trChqDesenhar();
   for (const [cx, id] of [['tf_cs', o], ['tf_cd', d]]) $(cx).style.setProperty('--ec', id && M.banco[id]?.planilha_id ? corEmpresa(M.banco[id].planilha_id) : 'transparent');
   const av = [];
   if (o && d && o === d) av.push(['erro', 'A conta de origem e a de destino precisam ser diferentes.']);
@@ -4648,27 +4905,41 @@ async function salvarTr(mais = false) {
   if (!(row.valor > 0)) return toast('Informe um valor maior que zero.', true), $('tf_valor').focus();
   if (!row.data) return toast('Informe a data.', true), $('tf_data').focus();
   const editando = !!TRF.id;
+  const chqDep = !editando && ehContaCheque(row.banco_origem_id) ? [...TRF.chq] : [];
+  if (!editando && ehContaCheque(row.banco_origem_id)) {
+    const L = S.chq.lista.filter(c => chqDep.includes(c.id) && c.status === 'carteira'), tot = r2(L.reduce((a, c) => a + Number(c.valor), 0));
+    if (!L.length) return toast('Escolha quais cheques estão sendo depositados.', true);
+    if (Math.abs(tot - row.valor) > 0.004 && !confirm(`Os cheques marcados somam ${brl(tot)} e a transferência é de ${brl(row.valor)}. Continuar mesmo assim?`)) return;
+  }
   try {
     if (editando) await store.update('transferencias', TRF.id, comAjuste(TRF.orig, row));
-    else await store.insert('transferencias', row);
+    else {
+      const tr = await store.insert('transferencias', row);
+      if (chqDep.length) {
+        await carregarCheques();
+        for (const c of S.chq.lista) if (chqDep.includes(c.id) && c.status === 'carteira') { c.status = 'depositado'; c.baixa_ref = `T:${tr.id}`; c.baixa_data = row.data; c.baixa_desc = `Depositado em ${M.banco[row.banco_destino_id]?.nome ?? ''}`; }
+        await gravarCheques(); TRF.chq = new Set();
+      }
+    }
   } catch (e) { return toast(e.message, true); }
   const [a, m] = row.data.split('-').map(Number), fora = a !== S.ano || m - 1 !== S.mes;
   const txt = `${M.banco[row.banco_origem_id]?.nome} → ${M.banco[row.banco_destino_id]?.nome}`;
   toast(editando ? 'Transferência ajustada.' : `Transferência de ${brl(row.valor)} registrada (${txt})${fora ? ` em ${MESES_NOME[m - 1]}/${a}` : ''}.`);
   if (mais && !editando) {
-    await viewTransferencias();
+    await (S.view === 'cheques' ? viewCheques() : viewTransferencias());
     if (!TRF) return;
     $('tf_valor').value = ''; $('tf_desc').value = '';
     await carregarSaldosTr(); $('tf_valor').focus();
     return;
   }
   fecharModal(true); TRF = null;
+  if (S.view === 'cheques') return viewCheques();
   await viewTransferencias();
 }
 async function excluirTr() {
   const t = TRF?.orig; if (!t) return;
   if (!confirm(`Excluir a transferência de ${brl(t.valor)}?`)) return;
-  try { await store.remove('transferencias', t.id); } catch (e) { return toast(e.message, true); }
+  try { await store.remove('transferencias', t.id); await chequesVoltar(`T:${t.id}`); } catch (e) { return toast(e.message, true); }
   fecharModal(true); TRF = null; toast('Transferência excluída.');
   await viewTransferencias();
 }
@@ -5664,6 +5935,18 @@ const ACOES = {
       ini: m == null ? `${S.ano}-01-01` : `${S.ano}-${pad(m + 1)}-01`, fim: m == null ? `${S.ano}-12-31` : `${S.ano}-${pad(m + 1)}-${pad(ultimoDia(S.ano, m))}`, pid, pred });
   },
   confirmarPag: () => confirmarPagamento(),
+  chqLinhaAdd: () => { pagChqLer(); const t = PAG.chqNovos.reduce((a, c) => a + (Number(c.valor) || 0), 0); PAG.chqNovos.push({ numero: '', banco: PAG.chqNovos.at(-1)?.banco || '', emitente: PAG.chqNovos.at(-1)?.emitente || '', bom_para: valCampo('p_data') || HOJE, valor: Math.max(0, r2(Number(PAG.l.valor) - t)) }); pagChqAtualizar(); },
+  chqLinhaDel: d => { pagChqLer(); PAG.chqNovos.splice(Number(d.i), 1); pagChqAtualizar(); },
+  chqAba: d => { S.chq.aba = d.v; renderCheques(); },
+  chqNovo: () => abrirEditorCheque(null),
+  chqEditar: d => abrirEditorCheque(S.chq.lista.find(c => c.id === d.id)),
+  chqSalvar: () => salvarChequeEd(),
+  chqExcluir: d => excluirCheque(d.id),
+  chqDepositar: () => {
+    const L = chqCarteira(S.planilhaId).filter(c => S.chq.sel.has(c.id)); if (!L.length) return;
+    abrirTransf(null, { origem: contaCheque(S.planilhaId), chq: L.map(c => c.id), desc: `Depósito de ${L.length} cheque(s)` });
+    $('tf_valor').value = num2(L.reduce((a, c) => a + Number(c.valor), 0)); atualizarTr();
+  },
   ppAbrir: d => abrirFluxoParcial(Number(d.id), viewParciais),
   fppPagar: () => fppPagar(),
   fppEditar: d => fppEditar(Number(d.id)),
@@ -5814,7 +6097,7 @@ const ACOES = {
   excluirTransf: async d => {
     const t = S.trLista.find(x => x.id === Number(d.id));
     if (!t || !confirm(`Excluir a transferência de ${brl(t.valor)}?`)) return;
-    try { await store.remove('transferencias', t.id); toast('Transferência excluída.'); viewTransferencias(); } catch (e) { toast(e.message, true); }
+    try { await store.remove('transferencias', t.id); await chequesVoltar(`T:${t.id}`); toast('Transferência excluída.'); viewTransferencias(); } catch (e) { toast(e.message, true); }
   },
   cadEditar: d => { if (CAD[S.cadTab]?.modal) return abrirConta(Number(d.id)); S.cadEdit = Number(d.id); renderCadastros(); window.scrollTo(0, 0); },
   cadOrd: d => { const o = (S.cadOrd[S.cadTab] ||= { i: 0, desc: false }), i = Number(d.i); if (o.i === i) o.desc = !o.desc; else { o.i = i; o.desc = false; } renderCadastros(); },
@@ -5846,7 +6129,7 @@ const ACOES = {
   menu: () => document.body.classList.toggle('menu-on'),
   atualizar: async (d, el) => {
     const bt = document.querySelector('.atu-btn'); bt?.classList.add('girando');
-    try { await recarregarCadastros(); if (S.view === 'custos') await carregarCF(); await rerender(); toast('Dados atualizados.'); }
+    try { await recarregarCadastros(); await carregarCheques(); if (S.view === 'custos') await carregarCF(); await rerender(); toast('Dados atualizados.'); }
     catch (e) { toast(e.message, true); }
     finally { setTimeout(() => document.querySelector('.atu-btn')?.classList.remove('girando'), 300); }
   },
@@ -5871,6 +6154,8 @@ const MUDANCAS = {
   impTodos: el => { if (!IMP) return; const R = impResolver().filter(r => (r.st === 'ok' || r.st === 'dup') && (!IMP.filtro || r.st === IMP.filtro)); R.forEach(r => r.l.sel = el.checked); desenharImp(); },
   ePlano: () => atualizarBadgeEntrada(),
   ccPrev: () => ccPrevia(),
+  chqMarca: el => { const s = S.chq.sel; el.checked ? s.add(el.dataset.id) : s.delete(el.dataset.id); renderCheques(); },
+  chqTodos: el => { const L = chqCarteira(S.planilhaId); S.chq.sel = new Set(el.checked ? L.map(c => c.id) : []); renderCheques(); },
   fBanco: el => { S.filtro.banco = el.value; renderLinhas(); },
   fGrupo: el => { S.filtro.grupo = el.value; renderLinhas(); },
   fSit: el => { S.filtro.sit = el.value; renderLancamentos(); },
@@ -5918,6 +6203,14 @@ document.addEventListener('submit', e => {
   if (e.target.id === 'cadForm') { e.preventDefault(); salvarCadastro(e.target.dataset.t); }
 });
 document.addEventListener('change', e => {
+  if (e.target.name === 'p_forma' && PAG) { PAG.chqNovos = null; pagChqAtualizar(); return; }
+  if (e.target.id === 'chq_prop' && PAG) { PAG.chqProprio = e.target.checked; if (e.target.checked) PAG.chqSel.clear(); pagChqAtualizar(); return; }
+  if (e.target.dataset?.chqsel != null && PAG) { e.target.checked ? PAG.chqSel.add(e.target.dataset.chqsel) : PAG.chqSel.delete(e.target.dataset.chqsel); e.target.closest('.chq-it')?.classList.toggle('on', e.target.checked); pagChqTotal(); return; }
+  if (e.target.dataset?.trchq != null && TRF) {
+    e.target.checked ? TRF.chq.add(e.target.dataset.trchq) : TRF.chq.delete(e.target.dataset.trchq);
+    const tot = S.chq.lista.filter(c => TRF.chq.has(c.id)).reduce((a, c) => a + Number(c.valor), 0);
+    $('tf_valor').value = tot ? num2(tot) : ''; atualizarTr(); return;
+  }
   if (e.target.dataset?.mt != null && S.metasEd) {          // total do ano digitado: divide pelos 12 meses
     const v = parseValor(e.target.value) || 0, t = e.target.dataset.mt;
     S.metasEd.dados[t] = v > 0 ? dividir(v, 12) : Array(12).fill(0); S.metasEd.mudou = true; desenharMetas(); return;
@@ -6230,6 +6523,8 @@ document.addEventListener('input', e => {
   }
   if (id === 'f_texto') { S.filtro.texto = e.target.value; renderLinhas(); }
   if (e.target.dataset?.ccp != null) ccPrevia();
+  if (e.target.dataset?.cq != null && PAG) pagChqTotal();
+  if (id === 'chq_q') buscaViva(e.target, v => S.chq.q = v, renderCheques);
   if (id === 'pp_q') buscaViva(e.target, v => S.parc.q = v, renderParciais);
   if (e.target.dataset?.mm != null && S.metasEd) {
     const [t, m] = e.target.dataset.mm.split('|'); (S.metasEd.dados[t] ||= Array(12).fill(0))[Number(m)] = parseValor(e.target.value) || 0;
@@ -6336,6 +6631,7 @@ function renderLogin(msg = '', usuario = '') {
 async function iniciarApp() {
   renderShell();
   try { await recarregarCadastros(); } catch (e) { toast(e.message, true); }
+  await carregarCheques();
   await renovarCustosFixos();
   await irPara('dash');
   await mostrarPendencias();
