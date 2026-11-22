@@ -24,12 +24,12 @@ button{cursor:pointer}
 .pos{color:var(--pos)}.neg{color:var(--neg)}.mut{color:var(--muted)}
 
 /* ---------- topo ---------- */
-.topbar{display:flex;align-items:center;gap:22px;background:#fff;color:var(--teal-d);padding:0 18px;min-height:64px;position:sticky;top:0;z-index:20;border-bottom:3px solid var(--orange);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.topbar{display:flex;align-items:center;gap:22px;background:#fff;color:var(--teal-d);padding:0 18px;height:64px;position:sticky;top:0;z-index:20;border-bottom:3px solid var(--orange);box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .logo-top{height:52px;width:auto;display:block;flex:none}
 .brand{font-weight:800;font-size:20px;letter-spacing:.5px;white-space:nowrap;line-height:1}
 .brand b{color:var(--orange)}
 .brand small{display:block;font-size:9px;font-weight:600;letter-spacing:2px;opacity:.75;margin-top:3px}
-.nav{display:flex;flex-wrap:wrap;gap:4px;flex:1;min-width:0;padding:6px 0}
+.nav{display:flex;gap:4px;flex:1;overflow-x:auto;scrollbar-width:none}
 .nav button{background:transparent;border:0;color:var(--teal);padding:8px 11px;border-radius:6px;font-weight:600;white-space:nowrap}
 .nav button:hover{background:var(--orange-l);color:var(--orange-d)}
 .nav button.on{background:var(--orange);color:#fff}
@@ -132,6 +132,7 @@ table.fluxo tr.det td.r{text-align:right}
 /* ---------- DRE ---------- */
 table.dre th:first-child,table.dre td.l{position:sticky;left:0;z-index:1;text-align:left}
 table.dre td.l{background:#fff;min-width:290px;font-weight:600}
+table.dre th:first-child,table.dre td.l{width:1%}   /* coluna das contas só com a largura necessária: valores ficam perto da legenda */
 table.dre td{text-align:right;font-variant-numeric:tabular-nums;font-size:12px}
 table.dre tr.g td.l{cursor:pointer}
 table.dre tr.g:hover td{background:#fff8f2}
@@ -1037,7 +1038,6 @@ table.ls.imp td input[type=checkbox],table.ls.imp th input[type=checkbox]{width:
   .menu-btn{display:inline-grid;place-items:center;order:-1}
   .nav{display:none;position:fixed;top:56px;left:0;right:0;z-index:60;flex-direction:column;gap:0;background:#fff;border-bottom:3px solid var(--orange);box-shadow:0 14px 30px rgba(0,0,0,.18);padding:6px 10px 10px;max-height:calc(100vh - 56px);overflow:auto}
   body.menu-on .nav{display:flex}
-  .nav{flex-wrap:nowrap}
   .nav button{text-align:left;padding:12px 14px;font-size:15px;border-radius:8px}
   .topbar>.atu-btn{margin-left:auto}
   .pdf-btn{font-size:0;padding:7px 10px}.pdf-btn::before{content:'⎙ PDF';font-size:13px}
@@ -1634,6 +1634,8 @@ const NOMES_USUARIO = { caplojasdk: 'Lúcio' };
 const nomeUsuario = () => { const u = String(S.usuario || '').toLowerCase(); return NOMES_USUARIO[u] || (u ? u.charAt(0).toUpperCase() + u.slice(1) : ''); };
 let store, sb;
 const hoje = new Date(), HOJE = isoData(hoje);
+const pagFuturo = d => !!d && d > HOJE;                 // pagamento/recebimento só com data até hoje
+const MSG_PAG_FUTURO = 'A data de pagamento/recebimento não pode ser depois de hoje (' + HOJE.split('-').reverse().join('/') + ').';
 const S = {
   view: 'dash', cadTab: 'plano_contas',
   planilhaId: MODO_SUPABASE ? null : 1, empresaVis: MODO_SUPABASE ? null : 1,
@@ -1927,6 +1929,7 @@ async function salvarCelula(ed, reg, k, bruto, desfazer) {
   let msg = `Ajustado: ${fmtCampo(f.t, reg[f.c])} → ${fmtCampo(f.t, v)}`;
   if (f.t === 'date' && f.req && v && v.slice(0, 7) !== `${S.ano}-${pad(S.mes + 1)}`) msg += ` (movido para ${MESES_NOME[Number(v.slice(5, 7)) - 1]}/${v.slice(0, 4)})`;
   // data de pagamento num lançamento sem banco: abre a janela para escolher o banco e a forma
+  if (ed === 'lanc' && f.c === 'data_pagamento' && pagFuturo(v)) { toast(MSG_PAG_FUTURO, true); return desfazer(); }
   if (ed === 'lanc' && f.c === 'data_pagamento' && v && !reg.banco_id) { desfazer(); return abrirPagamento({ ...reg, data_pagamento: null }, viewLancamentos, null, v); }
   if (ed === 'lanc' && f.c === 'data_pagamento' && !v) msg += ' · voltou a ficar em aberto';
   await gravarAjuste(ed, reg, f.c, v, msg, desfazer);
@@ -2229,7 +2232,7 @@ function formLancamento(cor, dataPadrao) {
         <label class="f-item">Descrição<input id="e_item" placeholder="Ex.: Pix parcelas, pagamento fornecedor…"></label>
         <label class="f-valor">Valor (R$)<input id="e_valor" placeholder="0,00" inputmode="decimal"></label>
         <label class="f-dp">Data de vencimento<input type="date" id="e_dprog" title="Se ficar vazio, vence na data do lançamento"></label>
-        <label class="f-dp"><span>Data de pagamento <span class="opc">opcional</span></span><input type="date" id="e_dpag" title="Só conta como pago/recebido quando esta data for preenchida"></label>
+        <label class="f-dp"><span>Data de pagamento <span class="opc">opcional</span></span><input type="date" id="e_dpag" max="${HOJE}" title="Só conta como pago/recebido quando esta data for preenchida"></label>
         <div class="f-acoes">
           <button class="salvar" id="e_salvar" data-act="salvarLanc" title="Lançar (Enter)">+ Lançar</button>
           <button class="cancelar" id="e_cancelar" data-act="cancelarLanc" hidden>Cancelar</button>
@@ -2282,6 +2285,7 @@ async function salvarLanc() {
     data_pagamento: valCampo('e_dpag') || null,
   };
   if (!row.data_lancamento) return toast('Informe a data do lançamento.', true), $('e_data').focus();
+  if (pagFuturo(row.data_pagamento)) return toast(MSG_PAG_FUTURO, true), $('e_dpag').focus();
   if (row.data_pagamento && !row.banco_id) return toast('Para marcar como pago/recebido, escolha também o banco.', true), abrirBsel($('e_banco'));
   if (!row.plano_conta_id) return toast('Selecione o plano de contas.', true), $('e_plano').focus();
   if (!(row.valor > 0)) return toast('Informe um valor maior que zero.', true), $('e_valor').focus();
@@ -2369,7 +2373,7 @@ function abrirPagamento(l, depois, voltar, dataSug) {
       <div class="mv"><span>Valor</span><b class="${rec ? 'pos' : 'neg'}">${brl(l.valor)}</b></div>
     </div>
     <div class="mcorpo">
-      <label><span>Data do ${verbo} <i>*</i></span><input type="date" id="p_data" value="${l.data_pagamento || dataSug || HOJE}"></label>
+      <label><span>Data do ${verbo} <i>*</i></span><input type="date" id="p_data" max="${HOJE}" value="${l.data_pagamento || dataSug || HOJE}"></label>
       <label class="p-un"><span>Banco <i>*</i></span><select id="p_banco" data-banco>${opcoes(bancosDaEmpresa(l.planilha_id), l.banco_id ?? '', b => b.nome, 'Escolha o banco…')}</select></label>
       ${pago ? '' : '<div class="p-un p-chq span2" id="p_chq" hidden></div>'}
       ${pago ? '' : `<div class="p-un p-vl span2"><label><span>Valor ${rec ? 'recebido' : 'pago'} agora (R$) <i>*</i></span><input id="p_valor" inputmode="decimal" value="${num2(l.valor)}" class="m-val"></label>
@@ -2419,6 +2423,7 @@ async function confirmarPagamento() {
   const { l, depois } = PAG || {}; if (!l) return;
   const data = $('p_data').value, verbo = sinal(l) > 0 ? 'recebimento' : 'pagamento';
   if (!data) return toast(`Informe a data do ${verbo}.`, true), $('p_data').focus();
+  if (pagFuturo(data)) return toast(MSG_PAG_FUTURO, true), $('p_data').focus();
   const dataLanc = $('p_mover').checked ? data : l.data_lancamento;
   const venc = l.data_programada || l.data_lancamento;
   if (PAG.dividir) {
@@ -2598,7 +2603,7 @@ function editarNaJanela(l, voltar, depois) {
       <label>Valor (R$)<input id="m_valor" inputmode="decimal" value="${num2(l.valor)}" class="m-val"></label>
       <div class="mlbl">Pagamento <span class="mut">— só conta como pago/recebido com a data de pagamento preenchida</span></div>
       <label>Banco<select id="m_banco" data-banco>${opcoes(bancosDaEmpresa(l.planilha_id), l.banco_id ?? '', b => b.nome, 'Em aberto (sem banco)')}</select></label>
-      <label>Data do pagamento<input type="date" id="m_dpag" value="${l.data_pagamento ?? ''}"></label>
+      <label>Data do pagamento<input type="date" id="m_dpag" max="${HOJE}" value="${l.data_pagamento ?? ''}"></label>
       <label class="span2">Forma de pagamento<select id="m_forma"><option value="">—</option>${FORMAS_PAG.map(f => `<option ${f === l.forma_pagamento ? 'selected' : ''}>${esc(f)}</option>`).join('')}</select></label>
     </div>
     <div class="mf">
@@ -2620,6 +2625,7 @@ async function salvarNaJanela() {
   if (!(row.valor > 0)) return toast('Informe um valor maior que zero.', true);
   if (/^(PAR|CC):/.test(l.origem || '') && row.data_programada && row.data_programada !== l.data_programada && row.data_lancamento === l.data_lancamento)
     row.data_lancamento = row.data_programada;                                         // parcela: acompanha o vencimento
+  if (pagFuturo(row.data_pagamento)) return toast(MSG_PAG_FUTURO, true);
   if (row.data_pagamento && !row.banco_id) return toast('Para marcar como pago/recebido, escolha também o banco.', true);
   if (!row.data_pagamento) row.forma_pagamento = null;                                 // sem data de pagamento = em aberto
   if (!l.forma_pagamento && !row.forma_pagamento) delete row.forma_pagamento;          // não grava a coluna à toa
@@ -2799,7 +2805,7 @@ function fppEditar(id) {
       <button class="ib x" data-act="fecharModal" title="Fechar (Esc)">✕</button>
     </div>
     <div class="mcorpo">
-      <label>Data do ${rec ? 'recebimento' : 'pagamento'}<input type="date" id="fe_data" value="${f.data_pagamento || ''}"></label>
+      <label>Data do ${rec ? 'recebimento' : 'pagamento'}<input type="date" id="fe_data" max="${HOJE}" value="${f.data_pagamento || ''}"></label>
       <label>Valor (R$)<input id="fe_valor" inputmode="decimal" value="${num2(f.valor)}" class="m-val" ${quitado ? 'disabled title="Lançamento quitado: desfaça a quitação para mudar valores"' : ''}></label>
       <label>Banco<select id="fe_banco" data-banco>${opcoes(bancosDaEmpresa(pai.planilha_id), f.banco_id ?? '', b => b.nome, 'Escolha o banco…')}</select></label>
       <label>Forma<select id="fe_forma">${FORMAS_PAG.map(x => `<option ${x === f.forma_pagamento ? 'selected' : ''}>${esc(x)}</option>`).join('')}</select></label>
@@ -2812,6 +2818,7 @@ async function fppSalvar(id) {
   const data = $('fe_data').value, banco = Number($('fe_banco').value) || null, forma = $('fe_forma').value;
   const valor = $('fe_valor').disabled ? Number(f.valor) : parseValor($('fe_valor').value);
   if (!data) return toast('Informe a data.', true);
+  if (pagFuturo(data)) return toast(MSG_PAG_FUTURO, true);
   if (!banco) return toast('Escolha o banco.', true);
   if (!(valor > 0)) return toast('Informe um valor maior que zero.', true);
   const restaNovo = r2(Number(pai.valor) - (valor - Number(f.valor)));
@@ -3067,7 +3074,7 @@ function ccPagarFatura(id) {
     <div class="mh desp" style="--ec:${esc(c.cor || '#f37021')}"><div><small>Pagar fatura · ${MESES_NOME[S.mes]}/${S.ano}</small><b>${esc(c.nome)}</b></div><button class="ib x" data-act="fecharModal">✕</button></div>
     <div class="mresumo"><div><span>Itens</span><b>${ab.length} lançamento(s)</b></div><div><span>Vencimento</span><b>${fmtData(vencimento(ab[0]))}</b></div><div class="mv"><span>Total</span><b class="neg">${brl(tot)}</b></div></div>
     <div class="mcorpo">
-      <label>Data do pagamento<input type="date" id="ccp_data" value="${HOJE}"></label>
+      <label>Data do pagamento<input type="date" id="ccp_data" max="${HOJE}" value="${HOJE}"></label>
       <label>Banco<select id="ccp_banco" data-banco>${opcoes(bancosDaEmpresa(S.planilhaId), c.banco_id ?? '', b => b.nome, 'Escolha o banco…')}</select></label>
       <p class="mut span2" style="margin:0">Todas as parcelas da fatura ficam pagas (forma: Cartão de crédito). Na DRE e no fluxo elas continuam no <b>vencimento</b>.</p>
     </div>
@@ -3076,6 +3083,7 @@ function ccPagarFatura(id) {
 async function ccConfirmarPag() {
   const { c, ab } = S.cc.pag, data = $('ccp_data').value, banco = Number($('ccp_banco').value) || null;
   if (!data) return toast('Informe a data do pagamento.', true);
+  if (pagFuturo(data)) return toast(MSG_PAG_FUTURO, true);
   if (!banco) return toast('Escolha o banco.', true), abrirBsel($('ccp_banco'));
   try { for (const l of ab) await store.update('lancamentos', l.id, { banco_id: banco, data_pagamento: data, forma_pagamento: 'Cartão de crédito' }); }
   catch (e) { toast(e.message, true); }
@@ -3638,13 +3646,6 @@ function renderFluxo() {
     <div class="barra">${barraAno()}${barraMeses(corEmpresa(S.empresaVis))}
       <div class="filtros"><label class="chk"><input type="checkbox" data-chg="fluxoVazios" ${S.fluxo.ocultarVazios ? 'checked' : ''}> Ocultar dias sem movimento</label>${botaoPers('fluxo')}${botoesPDF()}</div>
     </div>
-    <div class="tiles">
-      <div class="tile"><div class="l">Saldo inicial</div><div class="v ${clsSinal(saldo0)}">${brl(saldo0)}</div><div class="s">em 01/${pad(S.mes + 1)}</div></div>
-      <div class="tile g"><div class="l">Entradas</div><div class="v">${brl(tEnt)}</div></div>
-      <div class="tile r"><div class="l">Saídas</div><div class="v">${brl(tSai)}</div></div>
-      <div class="tile o"><div class="l">Resultado do mês</div><div class="v ${clsSinal(tEnt - tSai)}">${brl(tEnt - tSai)}</div></div>
-      <div class="tile b"><div class="l">Saldo final</div><div class="v ${clsSinal(s)}">${brl(s)}</div><div class="s">${menor.d ? `Menor saldo: ${brl(menor.v)} (dia ${menor.d})` : ''}</div></div>
-    </div>
     <div class="tabwrap congela"><table class="fluxo zebra ${cfg.compacto ? 'compacto' : ''}">
       <thead><tr><th style="text-align:left">Dia</th>${cfg.cols.map(k => `<th>${colDef('fluxo', k).h}</th>`).join('')}</tr></thead>
       <tbody>${vis.map(d => {
@@ -3751,13 +3752,6 @@ function renderDRE() {
       <button class="mini" data-act="dreMeses" data-p="s1">1º semestre</button>
       <button class="mini" data-act="dreMeses" data-p="s2">2º semestre</button>
       <button class="mini" data-act="dreMeses" data-p="tri">Último trimestre</button>
-    </div>
-    <div class="tiles">
-      <div class="tile g"><div class="l">Receita bruta</div><div class="v">${brl(tot.ROB)}</div></div>
-      <div class="tile"><div class="l">Margem de contribuição</div><div class="v ${clsSinal(tot.MC)}">${brl(tot.MC)}</div><div class="s">${tot.ROB ? pct(tot.MC / tot.ROB) : ''} da receita</div></div>
-      <div class="tile o"><div class="l">EBITDA</div><div class="v ${clsSinal(tot.EBITDA)}">${brl(tot.EBITDA)}</div><div class="s">${tot.ROB ? pct(tot.EBITDA / tot.ROB) : ''} da receita</div></div>
-      <div class="tile b"><div class="l">Geração de caixa</div><div class="v ${clsSinal(tot.GER)}">${brl(tot.GER)}</div><div class="s">após as dívidas</div></div>
-      <div class="tile r"><div class="l">Ponto de equilíbrio / mês</div><div class="v">${n && Number.isFinite(tot.PE) ? brl(tot.PE / n) : '–'}</div><div class="s">faturamento mínimo</div></div>
     </div>
     <div class="tabwrap congela"><table class="dre ${cfg.compacto ? 'compacto' : ''}"><thead>${head}</thead><tbody>${body}</tbody></table></div>`;
 }
@@ -4423,6 +4417,7 @@ async function viewFluxoAcum() {
   const z = () => Array(12).fill(0);
   const grp = {}, conta = {}, ent = z(), sai = z(), comDados = new Set();
   for (const l of lancs) {
+    if (!pagoNoBanco(l)) continue;                     // só entra o que já foi pago/recebido no banco (igual ao saldo dos bancos)
     const m = Number(l.data_lancamento.slice(5, 7)) - 1, v = Number(l.valor), g = grupoDoPlano(l.plano_conta_id);
     comDados.add(m);
     (grp[g?.id ?? 0] ||= z())[m] += v;
@@ -4513,13 +4508,6 @@ function renderFluxoAcum() {
     <div class="barra">${abasEmpresa(S.empresaVis, 'empresaVis', false, 'FLUXO ACUMULADO')}</div>
     <div class="barra">${barraAno()}
       <div class="filtros"><button class="mini" data-act="faTodos">${abertos.size ? 'Recolher contas' : 'Expandir contas'}</button>${botaoPers('fluxoAcum')}${botoesPDF()}</div>
-    </div>
-    <div class="tiles">
-      <div class="tile"><div class="l">Caixa inicial dos bancos</div><div class="v ${clsSinal(s0)}">${brl(s0)}</div><div class="s">em 01/01/${S.ano} · ${cx?.fonte === 'empresa' ? 'saldo do cadastro da empresa' : `${cx?.bancos.length || 0} banco(s)`}</div></div>
-      <div class="tile g"><div class="l">Entradas no ano</div><div class="v">${brl(tEnt)}</div></div>
-      <div class="tile r"><div class="l">Saídas no ano</div><div class="v">${brl(tSai)}</div></div>
-      <div class="tile o"><div class="l">Resultado acumulado</div><div class="v ${clsSinal(tRes)}">${brl(tRes)}</div><div class="s">${melhor != null ? `Melhor: ${MESES_NOME[melhor]} · Pior: ${MESES_NOME[pior]}` : ''}</div></div>
-      <div class="tile b"><div class="l">Saldo acumulado</div><div class="v ${clsSinal(saldoAtual)}">${brl(saldoAtual)}</div><div class="s">${ult >= 0 ? `até ${MESES_NOME[ult]}` : ''}</div></div>
     </div>
     ${cx?.fonte === 'empresa'
       ? `<div class="cx-bancos aviso">Nenhum banco ligado a ${esc(nomeEmpresa(S.empresaVis))} — o caixa inicial vem do saldo do cadastro da empresa. <a href="#" data-act="cadTab" data-t="bancos">Ligar bancos à empresa</a></div>`
@@ -5930,7 +5918,8 @@ const ACOES = {
   },
   faCel: d => {           // fluxo acumulado: clique nos números
     const pid = S.empresaVis === 'all' ? null : S.empresaVis, m = d.m === 'tot' ? null : Number(d.m);
-    const pred = d.c ? (l => l.plano_conta_id === Number(d.c)) : d.g ? (l => String(grupoDoPlano(l.plano_conta_id)?.id ?? 0) === d.g) : d.t === 'e' ? (l => sinal(l) > 0) : d.t === 's' ? (l => sinal(l) < 0) : null;
+    const pred0 = d.c ? (l => l.plano_conta_id === Number(d.c)) : d.g ? (l => String(grupoDoPlano(l.plano_conta_id)?.id ?? 0) === d.g) : d.t === 'e' ? (l => sinal(l) > 0) : d.t === 's' ? (l => sinal(l) < 0) : null;
+    const pred = l => pagoNoBanco(l) && (!pred0 || pred0(l));     // só o que já foi pago/recebido
     const nome = d.c ? planoLabel(Number(d.c)) : d.g ? (M.grupo[d.g]?.nome ?? 'Sem grupo') : d.t === 'e' ? 'Total de entradas' : d.t === 's' ? 'Total de saídas' : 'Resultado';
     abrirLista({ titulo: nome, sub: `${nomeNaTela(S.empresaVis, 'FLUXO ACUMULADO')} · ${m == null ? 'ano de ' + S.ano : MESES_NOME[m] + '/' + S.ano}`, cor: corEmpresa(S.empresaVis),
       ini: m == null ? `${S.ano}-01-01` : `${S.ano}-${pad(m + 1)}-01`, fim: m == null ? `${S.ano}-12-31` : `${S.ano}-${pad(m + 1)}-${pad(ultimoDia(S.ano, m))}`, pid, pred });
